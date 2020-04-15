@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:12.0
+    container_name: ${POSTGRES_HOST}
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PORT
+    networks:
+      - app-network
+    ports:
+      - 5433:5432
+  redis:
+    image: redis:5.0.6-alpine
+    container_name: ${REDIS_HOST}
+    restart: always
+    networks:
+      - app-network
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+volumes:
+  pgdata:
+    driver: local
+networks:
+  app-network:
+    external: true

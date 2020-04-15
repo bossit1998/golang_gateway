@@ -1,0 +1,47 @@
+image: docker:latest
+
+pipelines:
+  branches:
+    staging:
+      - step:
+         name: Test DB migrations
+         deployment: test_migrations
+         image: migrate/migrate
+         script:
+           - echo $DATABASEURL
+           - /migrate -path=migrations/ -database=$DATABASEURL up
+      - step:
+          name: Deploy to test
+          deployment: test
+          services:
+            - docker
+          script:
+            - apk update && apk add make && apk add openssh
+            - docker login $REGISTRY --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+            - make build-image TAG=$BITBUCKET_BUILD_NUMBER
+            - make push-image TAG=$BITBUCKET_BUILD_NUMBER
+            - source .export
+            - ssh ubuntu@$TEST_SERVER_HOST 'docker service update --with-registry-auth --image '$REGISTRY'/'$APP':'$BITBUCKET_BUILD_NUMBER' fiesta_'$APP''
+
+    master:
+      - step:
+          name: Production DB migrations
+          deployment: prod_migrations
+          image: migrate/migrate
+          script:
+            - apk update && apk add openssh
+            - ssh -fNT -L 3333:$DB_HOST:$DB_PORT ubuntu@$PROD_SERVER_HOST
+            - /migrate -path=migrations/ -database=$DATABASEURL up
+      - step:
+          name: Deploy to Prod
+          deployment: test
+          services:
+            - docker
+          script:
+            - apk update && apk add make && apk add openssh
+            - docker login $REGISTRY --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+            - make build-image TAG=$BITBUCKET_BUILD_NUMBER
+            - make push-image  TAG=$BITBUCKET_BUILD_NUMBER
+            - source .export
+            - ssh ubuntu@$PROD_SERVER_HOST 'docker service update --with-registry-auth --image '$REGISTRY'/'$APP':'$BITBUCKET_BUILD_NUMBER' fiesta_'$APP''
+
