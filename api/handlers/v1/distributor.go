@@ -2,7 +2,7 @@ package v1
 
 import (
 	"context"
-	"fmt"
+
 	"net/http"
 
 	"bitbucket.org/alien_soft/api_gateway/api/models"
@@ -73,7 +73,7 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Print("keldi")
+
 	resp, err := h.grpcClient.DistributorService().GetAllDistributors(
 		context.Background(),
 		&pbc.GetAllDistributorsRequest{

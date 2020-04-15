@@ -62,7 +62,7 @@ func Load() Config {
 	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "127.0.0.1"))
 	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 9003))
 
-	c.DistributorServiceHost = cast.ToString(getOrReturnDefault("DISTRIBUTOR_SERVICE_HOST", "distributor_service"))
+	c.DistributorServiceHost = cast.ToString(getOrReturnDefault("DISTRIBUTOR_SERVICE_HOST", "127.0.0.1"))
 	c.DistributorServicePort = cast.ToInt(getOrReturnDefault("DISTRIBUTOR_SERVICE_PORT", 9003))
 
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
