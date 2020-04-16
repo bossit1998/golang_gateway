@@ -44,5 +44,7 @@ func (h *handlerV1) Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, "")
+	c.JSON(200, models.ResponseOK{
+		Message: "order successfully created",
+	})
 }
