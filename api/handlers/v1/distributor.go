@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// @Security ApiKeyAuth
+/*// @Security ApiKeyAuth
 // @Summary Get Distributor
 // @Description Get Distributor API returns event
 // @Tags distributor
@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} models.GetDistributorResp
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/couirer/{distributor_id}/ [get]
+// @Router /v1/couirer/{distributor_id}/ [get]*/
 func (h *handlerV1) GetDistributor(c *gin.Context) {
 
 	distributorResp, err := h.grpcClient.DistributorService().GetDistributor(

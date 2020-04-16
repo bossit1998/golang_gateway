@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"bitbucket.org/alien_soft/api_gateway/api/models"
 	pbo "bitbucket.org/alien_soft/api_gateway/genproto/order_service"
 	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
 	"context"
@@ -9,6 +10,16 @@ import (
 	"net/http"
 )
 
+// @Router /v1/order// [post]
+// @Summary Create Order
+// @Description API for creating order
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order body models.Order true "order"
+// @Success 200
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) Create(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
@@ -20,7 +31,9 @@ func (h *handlerV1) Create(c *gin.Context) {
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &order)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error:ErrorBadRequest,
+		})
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
