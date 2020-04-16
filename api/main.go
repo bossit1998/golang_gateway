@@ -61,11 +61,14 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
 
 	//Fare endpoints
-	r.POST("/v1/fares/", handlerV1.CreateFare)
-	r.GET("/v1/fares/:id/", handlerV1.GetFare)
-	r.GET("/v1/fares/", handlerV1.GetAllFares)
-	r.PUT("/v1/fares/:id", handlerV1.UpdateFare)
-	r.DELETE("/v1/fares/:id", handlerV1.DeleteFare)
+	//r.POST("/v1/fares/", handlerV1.CreateFare)
+	//r.GET("/v1/fares/:id/", handlerV1.GetFare)
+	//r.GET("/v1/fares/", handlerV1.GetAllFares)
+	//r.PUT("/v1/fares/:id", handlerV1.UpdateFare)
+	//r.DELETE("/v1/fares/:id", handlerV1.DeleteFare)
+
+	//Order endpoints
+	r.POST("/v1/order", handlerV1.Create)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

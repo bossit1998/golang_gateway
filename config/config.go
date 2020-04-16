@@ -37,6 +37,9 @@ type Config struct {
 	FareServiceHost string
 	FareServicePort int
 
+	OrderServiceHost string
+	OrderServicePort int
+
 	LogLevel string
 	HTTPPort string
 }
@@ -67,6 +70,9 @@ func Load() Config {
 
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
 	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 8003))
+
+	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "127.0.0.1"))
+	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 8002))
 
 	return c
 }
