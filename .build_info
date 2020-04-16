@@ -1,13 +1,2 @@
 export APP=api_gateway
-
-export POSTGRES_HOST=localhost
-export POSTGRES_DB=user_service
-export POSTGRES_USER=user
-export POSTGRES_PASSWORD=pass
-export POSTGRES_PORT=5433
-
-export REDIS_HOST=localhost
-export REDIS_PORT=6379
-
-export NETWORK_NAME=host
-export REGISTRY=docker.therealstart.com
+export REGISTRY=registry.delever.uz
