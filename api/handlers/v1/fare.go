@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// @Summary Get Fare
+/*// @Summary Get Fare
 // @Description Get Fare API returns Fare
 // @Tags Fare
 // @Accept  json
@@ -24,7 +24,7 @@ import (
 // @Success 200 {object} models.GetFareResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/{id}/ [get]
+// @Router /v1/fares/{id}/ [get]*/
 func (h *handlerV1) GetFare(c *gin.Context) {
 
 	fareResponse, err := h.grpcClient.FareService().GetFare(
@@ -58,14 +58,14 @@ func (h *handlerV1) GetFare(c *gin.Context) {
 
 }
 
-// @Summary Create fare
+/*// @Summary Create fare
 // @Description Get Profile API creates fare
 // @Tags fare
 // @Accept  json
 // @Produce  json
 // @Param fare body models.CreateFareRequestModel true "createFare"
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [POST]
+// @Router /v1/fares/ [POST]*/
 func (h *handlerV1) CreateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -121,14 +121,14 @@ func (h *handlerV1) CreateFare(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Summary Update fare
+/*// @Summary Update fare
 // @Description  updates fares
 // @Tags fare
 // @Accept  json
 // @Produce  json
 // @Param  models.CreateFareRequestModel true "updateFare"
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [PUT]
+// @Router /v1/fares/ [PUT]*/
 func (h *handlerV1) UpdateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -158,7 +158,7 @@ func (h *handlerV1) UpdateFare(c *gin.Context) {
 	c.JSON(http.StatusOK, "")
 }
 
-// @Summary Get All Fares
+/*// @Summary Get All Fares
 // @Tags fare
 // @Produce  json
 // @Param
@@ -167,7 +167,7 @@ func (h *handlerV1) UpdateFare(c *gin.Context) {
 // @Success 200 {object} models.GetAllFareResponseModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [GET]
+// @Router /v1/fares/ [GET]*/
 func (h *handlerV1) GetAllFares(c *gin.Context) {
 	var (
 		jspbMarshal           jsonpb.Marshaler
@@ -277,7 +277,7 @@ func (h *handlerV1) GetAllFares(c *gin.Context) {
 
 }
 
-// @Summary DeleteFare
+/*// @Summary DeleteFare
 // @Description DeleteFare API is for deleting fare
 // @Tags fare
 // @Accept json
@@ -286,7 +286,7 @@ func (h *handlerV1) GetAllFares(c *gin.Context) {
 // @Success 200
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fare/delete_fare/ [delete]
+// @Router /v1/fare/delete_fare/ [delete]*/
 func (h *handlerV1) DeleteFare(c *gin.Context) {
 	var (
 		deleteFare models.DeleteFareModel

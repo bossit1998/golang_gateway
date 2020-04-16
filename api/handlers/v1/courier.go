@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// @Security ApiKeyAuth
+/*// @Security ApiKeyAuth
 // @Summary Get Courier
 // @Description Get Courier API returns event
 // @Tags courier
@@ -23,7 +23,7 @@ import (
 // @Success 200 {object} models.GetCourierResp
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/couirer/{courier_id}/ [get]
+// @Router /v1/couirer/{courier_id}/ [get]*/
 func (h *handlerV1) GetCourier(c *gin.Context) {
 
 	courierResp, err := h.grpcClient.CourierService().GetCourier(
