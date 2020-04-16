@@ -32,6 +32,9 @@ type (
 		PricePerKm   int64  `json:"price_per_km"`
 		MinPrice     int64  `json:"min_price"`
 		IsAcctive    bool   `json:"is_active"`
+		CreatedAt    string `json:"created_at"`
+		UpdatedAt    string `json:"updated_at"`
+		DeletedAt    string `json:"deleted_at"`
 	}
 	//GetFareResponse ....
 	GetFareResponse struct {

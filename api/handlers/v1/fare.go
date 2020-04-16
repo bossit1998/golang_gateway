@@ -1,9 +1,18 @@
 package v1
 
 import (
+	"context"
+	"fmt"
+	"net/http"
 	"strconv"
 
+	"bitbucket.org/alien_soft/api_gateway/api/models"
+	pb "bitbucket.org/alien_soft/api_gateway/genproto/fare_service"
+	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/protobuf/jsonpb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // @Summary Get Fare
@@ -19,33 +28,35 @@ import (
 func (h *handlerV1) GetFare(c *gin.Context) {
 
 	fareResponse, err := h.grpcClient.FareService().GetFare(
-		context.Background(), && &pb.GetFareRequest{
-			Id: c.Param("id")
-		}
+		context.Background(), &pb.GetFareRequest{
+			Id: c.Param("id"),
+		},
 	)
 	fmt.Println(fareResponse)
 	if handleGRPCErr(c, h.log, err) {
 		return
 	}
 
-	fares := helpers.FillFares(h.grpcClient, []*pb.Fare{fareResponse.GetFare()}, true, true)
-
-	if len(fares) == 0 {
+	if fareResponse == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Fare Not Found",
+				Message: "Event Not Found",
 			},
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, models.GetFareResponse{
-		Fare:         fare[0],
+	fare := fareResponse.Fare
+	c.JSON(http.StatusOK, models.GetFareResponseModel{
+		ID:           fare.ID,
+		Name:         fare.Name,
+		DeliveryTime: fare.DeliveryTime,
+		PricePerKm:   fare.PricePerKm,
+		MinPrice:     fare.MinPrice,
+		CreatedAt:    fare.CreatedAt,
 	})
 
 }
-
 
 // @Summary Create fare
 // @Description Get Profile API creates fare
@@ -55,11 +66,11 @@ func (h *handlerV1) GetFare(c *gin.Context) {
 // @Param fare body models.CreateFareRequestModel true "createFare"
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/fares/ [POST]
-func (h *handlerV1) CreateFare(c *gin.Context){
+func (h *handlerV1) CreateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		fare 		  pb.Fare
+		fare          pb.Fare
 	)
 
 	jspbMarshal.OrigName = true
@@ -118,11 +129,11 @@ func (h *handlerV1) CreateFare(c *gin.Context){
 // @Param  models.CreateFareRequestModel true "updateFare"
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/fares/ [PUT]
-func (h *handlerV1) UpdateFare(c *gin.Context){
+func (h *handlerV1) UpdateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		fare 		  pb.Fare
+		fare          pb.Fare
 	)
 	jspbMarshal.OrigName = true
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &fare)
@@ -150,19 +161,19 @@ func (h *handlerV1) UpdateFare(c *gin.Context){
 // @Summary Get All Fares
 // @Tags fare
 // @Produce  json
-// @Param  
+// @Param
 // @Param page query string false "page"
 // @Param limit query string false "limit"
 // @Success 200 {object} models.GetAllFareResponseModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/fares/ [GET]
-func (h *handlerV1) GetAllFares(c *gin.Context){
+func (h *handlerV1) GetAllFares(c *gin.Context) {
 	var (
-		jspbMarshal                   jsonpb.Marshaler
-		pageValue, limitValue 		  string
-		page, limit                   uint64
-		err                           error
+		jspbMarshal           jsonpb.Marshaler
+		pageValue, limitValue string
+		page, limit           uint64
+		err                   error
 	)
 
 	pageValue = c.Query("page")
@@ -218,7 +229,6 @@ func (h *handlerV1) GetAllFares(c *gin.Context){
 			Page:  page,
 		})
 
-	
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -250,7 +260,6 @@ func (h *handlerV1) GetAllFares(c *gin.Context){
 		return
 	}
 
-
 	js, err := jspbMarshal.MarshalToString(fares)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -263,7 +272,6 @@ func (h *handlerV1) GetAllFares(c *gin.Context){
 		return
 	}
 
-	
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 
@@ -279,7 +287,7 @@ func (h *handlerV1) GetAllFares(c *gin.Context){
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/fare/delete_fare/ [delete]
-func (h *handlerV1) DeleteFare(c *gin.Context){
+func (h *handlerV1) DeleteFare(c *gin.Context) {
 	var (
 		deleteFare models.DeleteFareModel
 	)
@@ -294,9 +302,9 @@ func (h *handlerV1) DeleteFare(c *gin.Context){
 		h.log.Error("Error binding json", logger.Error(err))
 		return
 	}
-	_, err = h.grpcClient.FareService().Delele(
+	_, err = h.grpcClient.FareService().Delete(
 		context.Background(),
-		&pbe.DeleteFareRequest{
+		&pb.DeleteFareRequest{
 			Id: deleteFare.ID,
 		},
 	)
