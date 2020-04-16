@@ -60,16 +60,16 @@ func Load() Config {
 	c.HTTPPort = cast.ToString(getOrReturnDefault("HTTP_PORT", ":1235"))
 
 	c.GeoServiceHost = cast.ToString(getOrReturnDefault("GEO_SERVICE_HOST", "geo_service"))
-	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 8000))
+	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 80))
 
-	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "127.0.0.1"))
-	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 9003))
+	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
+	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
 
-	c.DistributorServiceHost = cast.ToString(getOrReturnDefault("DISTRIBUTOR_SERVICE_HOST", "127.0.0.1"))
-	c.DistributorServicePort = cast.ToInt(getOrReturnDefault("DISTRIBUTOR_SERVICE_PORT", 9003))
+	c.DistributorServiceHost = cast.ToString(getOrReturnDefault("DISTRIBUTOR_SERVICE_HOST", "courier_service"))
+	c.DistributorServicePort = cast.ToInt(getOrReturnDefault("DISTRIBUTOR_SERVICE_PORT", 80))
 
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
-	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 8003))
+	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 80))
 
 	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "127.0.0.1"))
 	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 8002))
