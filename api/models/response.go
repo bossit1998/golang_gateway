@@ -23,3 +23,7 @@ type ValidationError struct {
 	Message     string
 	UserMessage string
 }
+
+type ResponseOK struct {
+	Message interface{}
+}
