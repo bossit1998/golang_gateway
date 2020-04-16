@@ -7,6 +7,7 @@ import (
 	pbc "bitbucket.org/alien_soft/api_gateway/genproto/courier_service"
 	pbf "bitbucket.org/alien_soft/api_gateway/genproto/fare_service"
 	pbg "bitbucket.org/alien_soft/api_gateway/genproto/geo_service"
+	pbo "bitbucket.org/alien_soft/api_gateway/genproto/order_service"
 	"google.golang.org/grpc"
 )
 
@@ -15,6 +16,7 @@ type GrpcClientI interface {
 	CourierService() pbc.CourierServiceClient
 	DistributorService() pbc.DistributorServiceClient
 	FareService() pbf.FareServiceClient
+	OrderService() pbo.OrderServiceClient
 }
 
 type GrpcClient struct {
@@ -61,6 +63,16 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.FareServiceHost, cfg.FareServicePort, err)
 	}
 
+	connOrder, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.OrderServiceHost, cfg.OrderServicePort),
+		grpc.WithInsecure(),
+		)
+
+	if err != nil {
+		return nil, fmt.Errorf("order service dial host: %s port:%d err: %s",
+			cfg.OrderServiceHost, cfg.OrderServicePort, err)
+	}
+
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
@@ -68,6 +80,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"courier_service":     pbc.NewCourierServiceClient(connCourier),
 			"distributor_service": pbc.NewDistributorServiceClient(connDistributor),
 			"fare_service":        pbf.NewFareServiceClient(connFare),
+			"order_service":	   pbo.NewOrderServiceClient(connOrder),
 		},
 	}, nil
 }
@@ -86,4 +99,8 @@ func (g *GrpcClient) DistributorService() pbc.DistributorServiceClient {
 
 func (g *GrpcClient) FareService() pbf.FareServiceClient {
 	return g.connections["fare_service"].(pbf.FareServiceClient)
+}
+
+func (g *GrpcClient) OrderService() pbo.OrderServiceClient {
+	return g.connections["order_service"].(pbo.OrderServiceClient)
 }
