@@ -69,6 +69,8 @@ func New(cnf Config) *gin.Engine {
 
 	//Order endpoints
 	r.POST("/v1/order", handlerV1.Create)
+	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
+	r.GET("/v1/order", handlerV1.GetOrders)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

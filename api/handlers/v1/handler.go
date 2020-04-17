@@ -78,8 +78,8 @@ func New(c *HandlerV1Config) *handlerV1 {
 }
 
 //ParsePageQueryParam ...
-func ParsePageQueryParam(c *gin.Context) (int, error) {
-	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+func ParsePageQueryParam(c *gin.Context) (uint64, error) {
+	page, err := strconv.ParseUint(c.DefaultQuery("page", "1"), 10, 10)
 	if err != nil {
 		return 0, err
 	}
@@ -93,8 +93,8 @@ func ParsePageQueryParam(c *gin.Context) (int, error) {
 }
 
 //ParsePageSizeQueryParam ...
-func ParsePageSizeQueryParam(c *gin.Context) (int, error) {
-	pageSize, err := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+func ParsePageSizeQueryParam(c *gin.Context) (uint64, error) {
+	pageSize, err := strconv.ParseUint(c.DefaultQuery("page_size", "10"), 10, 10)
 	if err != nil {
 		return 0, err
 	}
@@ -105,8 +105,8 @@ func ParsePageSizeQueryParam(c *gin.Context) (int, error) {
 }
 
 //ParseLimitQueryParam ...
-func ParseLimitQueryParam(c *gin.Context) (int, error) {
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+func ParseLimitQueryParam(c *gin.Context) (uint64, error) {
+	limit, err := strconv.ParseUint(c.DefaultQuery("limit", "10"), 10, 10)
 	if err != nil {
 		return 0, err
 	}

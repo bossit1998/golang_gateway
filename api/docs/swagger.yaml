@@ -1,4 +1,41 @@
 definitions:
+  models.CreateOrder:
+    properties:
+      branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        example: "998998765432"
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.productModel'
+        type: array
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+    type: object
   models.GeozoneModel:
     properties:
       count:
@@ -8,55 +45,75 @@ definitions:
           $ref: '#/definitions/models.geozone'
         type: array
     type: object
-  models.Location:
-    properties:
-      lat:
-        type: number
-      long:
-        type: number
-    type: object
-  models.Order:
+  models.GetOrder:
     properties:
       branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
       from_location:
         $ref: '#/definitions/models.Location'
         type: object
+      id:
+        example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
+        type: string
       phone_number:
+        example: "998998765432"
         type: string
       products:
-        $ref: '#/definitions/models.Product'
-        type: object
+        items:
+          $ref: '#/definitions/models.getOrderProductModel'
+        type: array
+      status_id:
+        example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
+        type: string
       to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
       user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
     type: object
-  models.Product:
+  models.GetOrders:
     properties:
-      id:
-        type: string
-      name:
-        type: string
-      price:
+      count:
+        type: integer
+      orders:
+        items:
+          $ref: '#/definitions/models.getOrderModel'
+        type: array
+    type: object
+  models.Location:
+    properties:
+      lat:
+        example: 40.123
         type: number
-      quantity:
+      long:
+        example: 60.123
         type: number
     type: object
   models.ResponseError:
     properties:
       error:
+        type: object
+    type: object
+  models.ResponseOK:
+    properties:
+      message:
         type: object
     type: object
   models.geozone:
@@ -69,6 +126,73 @@ definitions:
         type: string
       parent_id:
         type: string
+    type: object
+  models.getOrderModel:
+    properties:
+      branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      id:
+        example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
+        type: string
+      phone_number:
+        example: "998998765432"
+        type: string
+      status_id:
+        example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
+        type: string
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+    type: object
+  models.getOrderProductModel:
+    properties:
+      id:
+        type: string
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
+      total_amount:
+        type: number
+    type: object
+  models.productModel:
+    properties:
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
     type: object
 info:
   contact: {}
@@ -110,7 +234,39 @@ paths:
       summary: Get Geozones
       tags:
       - geo
-  /v1/order//:
+  /v1/order:
+    get:
+      consumes:
+      - application/json
+      description: API for getting orders
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrders'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Orders
+      tags:
+      - order
+  /v1/order/:
     post:
       consumes:
       - application/json
@@ -121,11 +277,14 @@ paths:
         name: order
         required: true
         schema:
-          $ref: '#/definitions/models.Order'
+          $ref: '#/definitions/models.CreateOrder'
       produces:
       - application/json
       responses:
-        "200": {}
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
         "404":
           description: Not Found
           schema:
@@ -135,6 +294,35 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Create Order
+      tags:
+      - order
+  /v1/order/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting order
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrder'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Order
       tags:
       - order
 securityDefinitions:
