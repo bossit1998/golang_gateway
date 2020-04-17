@@ -41,22 +41,22 @@ func New(cnf Config) *gin.Engine {
 		Cfg:        cnf.Cfg,
 	})
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "bratan api getaway bu"})
+		c.JSON(http.StatusOK, gin.H{"data": "api gateway"})
 	})
 
 	//Courier endpoints
 	r.GET("/v1/couriers/", handlerV1.GetAllCouriers)
-	r.GET("/v1/couriers/:id", handlerV1.GetCourier)
+	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
 	r.POST("/v1/couriers/", handlerV1.CreateCourier)
-	r.PUT("/v1/couriers/:id", handlerV1.UpdateCourier)
-	r.DELETE("/v1/couriers/:id", handlerV1.DeleteCourier)
+	r.PUT("/v1/couriers/:courier_id", handlerV1.UpdateCourier)
+	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
 
 	//Distributor endpoints
 	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:id", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
 	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors/:id", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
+	r.PUT("/v1/distributors/:distributor_id", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
 
 	//Geo
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
