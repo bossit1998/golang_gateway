@@ -23,7 +23,7 @@ import (
 //@Router /v1/geozones/ [get]
 func (h *handlerV1) GetGeozones(c *gin.Context) {
 	var (
-		page, limit int
+		page, limit uint64
 		parentID    string
 		err         error
 		hasError    bool

@@ -60,7 +60,56 @@
                 }
             }
         },
-        "/v1/order//": {
+        "/v1/order": {
+            "get": {
+                "description": "API for getting orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get Orders",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetOrders"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/order/": {
             "post": {
                 "description": "API for creating order",
                 "consumes": [
@@ -80,12 +129,61 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Order"
+                            "$ref": "#/definitions/models.CreateOrder"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {},
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/order/{order_id}": {
+            "get": {
+                "description": "API for getting order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetOrder"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -103,6 +201,57 @@
         }
     },
     "definitions": {
+        "models.CreateOrder": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "co_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "creator_type_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "fare_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "from_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "from_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.productModel"
+                    }
+                },
+                "to_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "to_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                }
+            }
+        },
         "models.GeozoneModel": {
             "type": "object",
             "properties": {
@@ -117,72 +266,89 @@
                 }
             }
         },
-        "models.Location": {
-            "type": "object",
-            "properties": {
-                "lat": {
-                    "type": "number"
-                },
-                "long": {
-                    "type": "number"
-                }
-            }
-        },
-        "models.Order": {
+        "models.GetOrder": {
             "type": "object",
             "properties": {
                 "branch_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
                 "co_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
                 "creator_type_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
                 "fare_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
                 "from_address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
                 },
                 "from_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
                 },
+                "id": {
+                    "type": "string",
+                    "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
+                },
                 "phone_number": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "998998765432"
                 },
                 "products": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Product"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.getOrderProductModel"
+                    }
+                },
+                "status_id": {
+                    "type": "string",
+                    "example": "52f248b4-23a0-4350-80b7-1704eaff6c8c"
                 },
                 "to_address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
                 },
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
                 },
                 "user_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 }
             }
         },
-        "models.Product": {
+        "models.GetOrders": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
+                "count": {
+                    "type": "integer"
                 },
-                "name": {
-                    "type": "string"
+                "orders": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.getOrderModel"
+                    }
+                }
+            }
+        },
+        "models.Location": {
+            "type": "object",
+            "properties": {
+                "lat": {
+                    "type": "number",
+                    "example": 40.123
                 },
-                "price": {
-                    "type": "number"
-                },
-                "quantity": {
-                    "type": "number"
+                "long": {
+                    "type": "number",
+                    "example": 60.123
                 }
             }
         },
@@ -190,6 +356,14 @@
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "object"
+                }
+            }
+        },
+        "models.ResponseOK": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "object"
                 }
             }
@@ -208,6 +382,99 @@
                 },
                 "parent_id": {
                     "type": "string"
+                }
+            }
+        },
+        "models.getOrderModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "co_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "creator_type_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "fare_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "from_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "from_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
+                },
+                "status_id": {
+                    "type": "string",
+                    "example": "52f248b4-23a0-4350-80b7-1704eaff6c8c"
+                },
+                "to_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "to_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                }
+            }
+        },
+        "models.getOrderProductModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Choyxona Osh"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 25000
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 2
+                },
+                "total_amount": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.productModel": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Choyxona Osh"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 25000
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 2
                 }
             }
         }
