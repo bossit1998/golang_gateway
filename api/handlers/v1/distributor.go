@@ -29,7 +29,7 @@ func (h *handlerV1) GetDistributor(c *gin.Context) {
 
 	distributorResp, err := h.grpcClient.DistributorService().GetDistributor(
 		context.Background(), &pbc.GetDistributorRequest{
-			Id: c.Param("id"),
+			Id: c.Param("distributor_id"),
 		},
 	)
 
@@ -54,6 +54,51 @@ func (h *handlerV1) GetDistributor(c *gin.Context) {
 		Name:      distributor.Name,
 		CreatedAt: distributor.CreatedAt,
 	})
+}
+
+func (h *handlerV1) GetAllDistributorCouriers(c *gin.Context) {
+
+	page, err := ParsePageQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	pageSize, err := ParsePageSizeQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	resp, err := h.grpcClient.CourierService().GetAllDistributorCouriers(
+		context.Background(),
+		&pbc.GetAllDistributorCouriersRequest{
+			DistributorId: c.Param("distributor_id"),
+			Page:          uint64(page),
+			Limit:         uint64(pageSize),
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+
+	generalResp := models.GetAllCouriersResponseModel{Count: int(resp.GetCount())}
+
+	for _, e := range resp.GetCouriers() {
+		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierResponseModel{
+			ID:        e.Id,
+			Phone:     e.Phone,
+			FirstName: e.FirstName,
+			LastName:  e.LastName,
+			CreatedAt: e.CreatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, generalResp)
 }
 
 func (h *handlerV1) GetAllDistributors(c *gin.Context) {
@@ -177,7 +222,7 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 		h.log.Error("Error while unmarshalling data", logger.Error(err))
 		return
 	}
-	distributor.Id = c.Param("id")
+
 	d, err := h.grpcClient.DistributorService().Update(
 		context.Background(),
 		&distributor,
@@ -218,7 +263,7 @@ func (h *handlerV1) DeleteDistributor(c *gin.Context) {
 	_, err := h.grpcClient.DistributorService().Delete(
 		context.Background(),
 		&pbc.DeleteDistributorRequest{
-			Id: c.Param("id"),
+			Id: c.Param("distributor_id"),
 		},
 	)
 	st, ok := status.FromError(err)

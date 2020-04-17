@@ -48,12 +48,12 @@ func (h *handlerV1) GetFare(c *gin.Context) {
 	}
 	fare := fareResponse.Fare
 	c.JSON(http.StatusOK, models.GetFareResponseModel{
-		ID:           fare.ID,
-		Name:         fare.Name,
-		DeliveryTime: fare.DeliveryTime,
-		PricePerKm:   fare.PricePerKm,
-		MinPrice:     fare.MinPrice,
-		CreatedAt:    fare.CreatedAt,
+		ID:   fare.ID,
+		Name: fare.Name,
+		// DeliveryTime: fare.DeliveryTime,
+		// PricePerKm:   fare.PricePerKm,
+		// MinPrice:     fare.MinPrice,
+		CreatedAt: fare.CreatedAt,
 	})
 
 }
