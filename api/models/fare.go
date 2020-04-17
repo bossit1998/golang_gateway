@@ -12,8 +12,8 @@ type (
 	}
 	//FareGeozoneModel ...
 	FareGeozoneModel struct {
-		ID   string    `json:"id"`
-		Fare FareModel `json: "fare"`
+		ID string `json:"id"`
+		// Fare FareModel `json: "fare"`
 	}
 	//CreateFareRequestModel ...
 	CreateFareRequestModel struct {
