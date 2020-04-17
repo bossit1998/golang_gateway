@@ -41,7 +41,7 @@ func New(cnf Config) *gin.Engine {
 		Cfg:        cnf.Cfg,
 	})
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "bratan api getaway bu"})
+		c.JSON(http.StatusOK, gin.H{"data": "api gateway"})
 	})
 
 	//Courier endpoints
@@ -68,6 +68,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/distributors", handlerV1.CreateDistributor)
 	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
 	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+
 	//Geo
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
 

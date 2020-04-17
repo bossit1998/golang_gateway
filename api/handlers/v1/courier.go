@@ -549,6 +549,7 @@ func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
+
 		h.log.Error("Error while updating vehiclee, service unavailable", logger.Error(err))
 		return
 	}
@@ -578,6 +579,7 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
+
 		h.log.Error("Error while deleting courier vehicle", logger.Error(err))
 		return
 	}
