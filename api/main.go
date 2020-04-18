@@ -57,8 +57,15 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
 	r.PUT("/v1/distributors/:id", handlerV1.UpdateDistributor)
 	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
+
 	//Geo
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
+
+	//GetDistanse
+	r.GET("/v1/get_distance/from/:from_long/:from_lat/to/:to_long/:to_lat", handlerV1.GetDistance)
+
+	//GetTotalDeliverCost
+	r.GET("/v1/get_total_delivery_cost/:limit_distance/:inital_price/:unit_price/:distance", handlerV1.GetTotalDeliveryCost)
 
 	//Fare endpoints
 	//r.POST("/v1/fares/", handlerV1.CreateFare)
