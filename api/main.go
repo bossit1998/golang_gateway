@@ -79,7 +79,9 @@ func New(cnf Config) *gin.Engine {
 	//r.DELETE("/v1/fares/:id", handlerV1.DeleteFare)
 
 	//Order endpoints
-	r.POST("/v1/order", handlerV1.Create)
+	r.POST("/v1/order", handlerV1.CreateOrder)
+	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
+	r.GET("/v1/order", handlerV1.GetOrders)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
