@@ -84,9 +84,9 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
 
 	//Fare endpoints
-	r.POST("/v1/fares", handlerV1.CreateFare)
 	r.GET("/v1/fares/:fare_id", handlerV1.GetFare)
 	r.GET("/v1/fares", handlerV1.GetAllFares)
+	r.POST("/v1/fares", handlerV1.CreateFare)
 	r.PUT("/v1/fares", handlerV1.UpdateFare)
 	r.DELETE("/v1/fares/:fare_id", handlerV1.DeleteFare)
 

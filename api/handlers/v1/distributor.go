@@ -48,7 +48,7 @@ func (h *handlerV1) GetDistributor(c *gin.Context) {
 	}
 	distributor := distributorResp.Distributor
 
-	c.JSON(http.StatusOK, models.GetDistributorResponseModel{
+	c.JSON(http.StatusOK, models.GetDistributorModel{
 		ID:        distributor.Id,
 		Phone:     distributor.Phone,
 		Name:      distributor.Name,
@@ -86,10 +86,10 @@ func (h *handlerV1) GetAllDistributorCouriers(c *gin.Context) {
 		return
 	}
 
-	generalResp := models.GetAllCouriersResponseModel{Count: int(resp.GetCount())}
+	generalResp := models.GetAllCouriersModel{Count: int(resp.GetCount())}
 
 	for _, e := range resp.GetCouriers() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierResponseModel{
+		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
 			ID:        e.Id,
 			Phone:     e.Phone,
 			FirstName: e.FirstName,
@@ -131,10 +131,10 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 		return
 	}
 
-	generalResp := models.GetAllDistributorsResponseModel{Count: int(resp.GetCount())}
+	generalResp := models.GetAllDistributorsModel{Count: int(resp.GetCount())}
 
 	for _, e := range resp.GetDistributors() {
-		generalResp.Distributors = append(generalResp.Distributors, models.GetDistributorResponseModel{
+		generalResp.Distributors = append(generalResp.Distributors, models.GetDistributorModel{
 			ID:        e.Id,
 			Phone:     e.Phone,
 			Name:      e.Name,
