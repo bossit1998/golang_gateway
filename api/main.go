@@ -33,6 +33,11 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
+	r.Use(func(context *gin.Context) {
+		context.Header("Access-Control-Allow-Origin","*")
+		context.Header("Access-Control-Allow-Methods","GET,PUT,POST,DELETE")
+		context.Header("Access-Control-Allow-Headers","Content-Type")
+	})
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:    cnf.Storage,
@@ -41,34 +46,22 @@ func New(cnf Config) *gin.Engine {
 		Cfg:        cnf.Cfg,
 	})
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "api gateway"})
+		c.JSON(http.StatusOK, gin.H{"data": "bratan api getaway bu"})
 	})
 
 	//Courier endpoints
-	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
-	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
-	r.GET("/v1/couriers/:courier_id/courier_details", handlerV1.GetCourierDetails)
-	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
-	r.POST("/v1/couriers", handlerV1.CreateCourier)
-	r.POST("/v1/couriers/courier_details", handlerV1.CreateCourierDetails)
-	r.PUT("/v1/couriers", handlerV1.UpdateCourier)
-	r.PUT("/v1/couriers/courier_details", handlerV1.UpdateCourierDetails)
-	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
-
-	//Vehicle endpoints
-	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
-	r.POST("/v1/vehicles", handlerV1.CreateCourierVehicle)
-	r.PUT("/v1/vehicles", handlerV1.UpdateCourierVehicle)
-	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
+	r.GET("/v1/couriers/", handlerV1.GetAllCouriers)
+	r.GET("/v1/couriers/:id", handlerV1.GetCourier)
+	r.POST("/v1/couriers/", handlerV1.CreateCourier)
+	r.PUT("/v1/couriers/:id", handlerV1.UpdateCourier)
+	r.DELETE("/v1/couriers/:id", handlerV1.DeleteCourier)
 
 	//Distributor endpoints
-	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
-	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
-	r.POST("/v1/distributors", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
-
+	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:id", handlerV1.GetDistributor)
+	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors/:id", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
 	//Geo
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
 
@@ -81,8 +74,6 @@ func New(cnf Config) *gin.Engine {
 
 	//Order endpoints
 	r.POST("/v1/order", handlerV1.Create)
-	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
-	r.GET("/v1/order", handlerV1.GetOrders)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
