@@ -34,6 +34,12 @@ func New(cnf Config) *gin.Engine {
 
 	r.Use(gin.Recovery())
 
+	r.Use(func(context *gin.Context) {
+		context.Header("Access-Control-Allow-Origin","*")
+		context.Header("Access-Control-Allow-Methods","GET,PUT,POST,DELETE")
+		context.Header("Access-Control-Allow-Headers","Content-Type")
+	})
+
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:    cnf.Storage,
 		Logger:     cnf.Logger,
