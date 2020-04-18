@@ -5,6 +5,273 @@
         "license": {}
     },
     "paths": {
+        "/v1/couriers/{courier_id}": {
+            "get": {
+                "description": "API for getting courier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get Courier",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/fares": {
+            "get": {
+                "description": "API for getting fares",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Get Fares",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllFaresModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "API for updating fare",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Update Fare",
+                "parameters": [
+                    {
+                        "description": "fare",
+                        "name": "fare",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateFareModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetFareModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "API for creating fare",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Create Fare",
+                "parameters": [
+                    {
+                        "description": "fare",
+                        "name": "fare",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateFareModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetFareModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/fares/{fare_id}": {
+            "get": {
+                "description": "API for getting fare",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Get Fare",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "fare_id",
+                        "name": "fare_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetFareModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API for deleting fare",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Delete Fare",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "fare_id",
+                        "name": "fare_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/geozones/": {
             "get": {
                 "description": "Get Geozones",
@@ -201,6 +468,26 @@
         }
     },
     "definitions": {
+        "models.CreateFareModel": {
+            "type": "object",
+            "properties": {
+                "delivery_time": {
+                    "type": "integer"
+                },
+                "min_distance": {
+                    "type": "number"
+                },
+                "min_price": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price_per_km": {
+                    "type": "number"
+                }
+            }
+        },
         "models.CreateOrder": {
             "type": "object",
             "properties": {
@@ -263,6 +550,72 @@
                     "items": {
                         "$ref": "#/definitions/models.geozone"
                     }
+                }
+            }
+        },
+        "models.GetAllFaresModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "fares": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetFareModel"
+                    }
+                }
+            }
+        },
+        "models.GetCourierModel": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetFareModel": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_distance": {
+                    "type": "number"
+                },
+                "min_price": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price_per_km": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -365,6 +718,29 @@
             "properties": {
                 "message": {
                     "type": "object"
+                }
+            }
+        },
+        "models.UpdateFareModel": {
+            "type": "object",
+            "properties": {
+                "delivery_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_distance": {
+                    "type": "number"
+                },
+                "min_price": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price_per_km": {
+                    "type": "number"
                 }
             }
         },

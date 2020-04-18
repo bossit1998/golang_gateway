@@ -13,6 +13,16 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// @Router /v1/couriers/{courier_id} [get]
+// @Summary Get Courier
+// @Description API for getting courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.GetCourierModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCourier(c *gin.Context) {
 
 	courierResp, err := h.grpcClient.CourierService().GetCourier(
@@ -36,7 +46,7 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 	}
 	courier := courierResp.Courier
 
-	c.JSON(http.StatusOK, models.GetCourierResponseModel{
+	c.JSON(http.StatusOK, models.GetCourierModel{
 		ID:        courier.Id,
 		Phone:     courier.Phone,
 		FirstName: courier.FirstName,
@@ -68,7 +78,7 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 	}
 	cd := resp.CourierDetails
 
-	c.JSON(http.StatusOK, models.GetCourierDetailsModel{
+	c.JSON(http.StatusOK, models.CourierDetailsModel{
 		PassportNumber:    cd.GetPassportNumber(),
 		Gender:            cd.GetGender().GetValue(),
 		BirthDate:         cd.GetBirthDate(),
@@ -109,10 +119,10 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 		return
 	}
 
-	generalResp := models.GetAllCouriersResponseModel{Count: int(resp.GetCount())}
+	generalResp := models.GetAllCouriersModel{Count: int(resp.GetCount())}
 
 	for _, e := range resp.GetCouriers() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierResponseModel{
+		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
 			ID:        e.Id,
 			Phone:     e.Phone,
 			FirstName: e.FirstName,
@@ -417,7 +427,7 @@ func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
 	}
 	vehicle := courierResp.CourierVehicle
 
-	c.JSON(http.StatusOK, models.GetCourierResponseModel{
+	c.JSON(http.StatusOK, models.GetCourierModel{
 		ID:        vehicle.Id,
 		Phone:     vehicle.Model,
 		FirstName: vehicle.VehicleNumber,
@@ -435,10 +445,10 @@ func (h *handlerV1) GetAllCourierVehicles(c *gin.Context) {
 		return
 	}
 
-	generalResp := models.GetAllCouriersResponseModel{}
+	generalResp := models.GetAllCouriersModel{}
 
 	for _, e := range resp.GetCourierVehicles() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierResponseModel{
+		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
 			ID:        e.Id,
 			Phone:     e.Model,
 			FirstName: e.VehicleNumber,
