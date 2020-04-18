@@ -20,7 +20,7 @@ import (
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) Create(c *gin.Context) {
+func (h *handlerV1) CreateOrder(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
