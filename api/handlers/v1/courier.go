@@ -29,7 +29,7 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Event Not Found",
+				Message: "Courier Not Found",
 			},
 		})
 		return
@@ -270,7 +270,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event", logger.Error(err))
+		h.log.Error("Error while updating courier", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -280,7 +280,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating courier, service unavailable", logger.Error(err))
 		return
 	}
 
