@@ -65,7 +65,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/get_distance/from/:from_long/:from_lat/to/:to_long/:to_lat", handlerV1.GetDistance)
 
 	//GetTotalDeliverCost
-	r.GET("/v1/get_total_delivery_cost/:limit_distance/:inital_price/:unit_price/:distance", handlerV1.GetTotalDeliveryCost)
+	r.GET("/v1/get_total_delivery_cost/limit_distance/:limit_distance/inital_price/:inital_price/unit_price/:unit_price/distance/:distance", handlerV1.GetTotalDeliveryCost)
 
 	//Fare endpoints
 	//r.POST("/v1/fares/", handlerV1.CreateFare)
