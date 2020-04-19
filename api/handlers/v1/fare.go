@@ -2,9 +2,7 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-	"strconv"
 
 	"bitbucket.org/alien_soft/api_gateway/api/models"
 	pb "bitbucket.org/alien_soft/api_gateway/genproto/fare_service"
@@ -15,57 +13,61 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-/*// @Summary Get Fare
-// @Description Get Fare API returns Fare
-// @Tags Fare
+// @Router /v1/fares/{fare_id} [get]
+// @Summary Get Fare
+// @Description API for getting fare
+// @Tags fare
 // @Accept  json
 // @Produce  json
-// @Param id path string true "Fare Id"
-// @Success 200 {object} models.GetFareResponse
+// @Param fare_id path string true "fare_id"
+// @Success 200 {object} models.GetFareModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/{id}/ [get]*/
 func (h *handlerV1) GetFare(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
 
-	fareResponse, err := h.grpcClient.FareService().GetFare(
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.FareService().GetFare(
 		context.Background(), &pb.GetFareRequest{
-			Id: c.Param("id"),
+			Id: c.Param("fare_id"),
 		},
 	)
-	fmt.Println(fareResponse)
+
 	if handleGRPCErr(c, h.log, err) {
 		return
 	}
 
-	if fareResponse == nil {
+	if res == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Event Not Found",
+				Message: "Fare Not Found",
 			},
 		})
 		return
 	}
-	fare := fareResponse.Fare
-	c.JSON(http.StatusOK, models.GetFareResponseModel{
-		ID:           fare.ID,
-		Name:         fare.Name,
-		DeliveryTime: fare.DeliveryTime,
-		PricePerKm:   fare.PricePerKm,
-		MinPrice:     fare.MinPrice,
-		CreatedAt:    fare.CreatedAt,
-	})
+	js, err := jspbMarshal.MarshalToString(res.GetFare())
 
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
-/*// @Summary Create fare
-// @Description Get Profile API creates fare
+// @Router /v1/fares [post]
+// @Summary Create Fare
+// @Description API for creating fare
 // @Tags fare
 // @Accept  json
 // @Produce  json
-// @Param fare body models.CreateFareRequestModel true "createFare"
+// @Param fare body models.CreateFareModel true "fare"
+// @Success 200 {object} models.GetFareModel
+// @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [POST]*/
 func (h *handlerV1) CreateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -87,7 +89,7 @@ func (h *handlerV1) CreateFare(c *gin.Context) {
 		return
 	}
 
-	createdFare, err := h.grpcClient.FareService().Create(
+	res, err := h.grpcClient.FareService().Create(
 		context.Background(),
 		&fare,
 	)
@@ -113,22 +115,26 @@ func (h *handlerV1) CreateFare(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(createdFare.Fare)
-	if err != nil {
+	js, err := jspbMarshal.MarshalToString(res.GetFare())
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
+
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
 
-/*// @Summary Update fare
-// @Description  updates fares
+// @Router /v1/fares [put]
+// @Summary Update Fare
+// @Description API for updating fare
 // @Tags fare
 // @Accept  json
 // @Produce  json
-// @Param  models.CreateFareRequestModel true "updateFare"
+// @Param fare body models.UpdateFareModel true "fare"
+// @Success 200 {object} models.GetFareModel
+// @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [PUT]*/
 func (h *handlerV1) UpdateFare(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -136,6 +142,7 @@ func (h *handlerV1) UpdateFare(c *gin.Context) {
 		fare          pb.Fare
 	)
 	jspbMarshal.OrigName = true
+
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &fare)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -148,86 +155,13 @@ func (h *handlerV1) UpdateFare(c *gin.Context) {
 		return
 	}
 
-	_, err = h.grpcClient.FareService().Update(
+	res, err := h.grpcClient.FareService().Update(
 		context.Background(),
 		&fare,
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating fare") {
 		return
 	}
-	c.JSON(http.StatusOK, "")
-}
-
-/*// @Summary Get All Fares
-// @Tags fare
-// @Produce  json
-// @Param
-// @Param page query string false "page"
-// @Param limit query string false "limit"
-// @Success 200 {object} models.GetAllFareResponseModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-// @Router /v1/fares/ [GET]*/
-func (h *handlerV1) GetAllFares(c *gin.Context) {
-	var (
-		jspbMarshal           jsonpb.Marshaler
-		pageValue, limitValue string
-		page, limit           uint64
-		err                   error
-	)
-
-	pageValue = c.Query("page")
-	limitValue = c.Query("limit")
-	if pageValue == "" {
-		page = 1
-	} else {
-		page, err = strconv.ParseUint(pageValue, 10, 10)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error: models.InternalServerError{
-					Code:    ErrorCodeInvalidURL,
-					Message: "Invalid query",
-				},
-			})
-			h.log.Error("Error while parsing page", logger.Error(err))
-			return
-		}
-	}
-
-	if page == 0 {
-		page = 1
-	}
-
-	if limitValue == "" {
-		limit = 10
-	} else {
-		limit, err = strconv.ParseUint(limitValue, 10, 10)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error: models.InternalServerError{
-					Code:    ErrorCodeInvalidURL,
-					Message: "Invalid query",
-				},
-			})
-			h.log.Error("Error while parsing limit", logger.Error(err))
-			return
-		}
-	}
-
-	if limit == 0 {
-		limit = 10
-	}
-
-	jspbMarshal.OrigName = true
-
-	fares, err := h.grpcClient.FareService().GetAllFares(
-		context.Background(),
-		&pb.GetAllFaresRequest{
-			Limit: limit,
-			Page:  page,
-		})
 
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
@@ -237,78 +171,101 @@ func (h *handlerV1) GetAllFares(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while getting all fare", logger.Error(err))
+		h.log.Error("Error while updating fare", logger.Error(err))
 		return
 	}
-	if st.Code() == codes.NotFound {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Not found",
-			},
-		})
-		h.log.Error("Error while getting all fares, not found", logger.Error(err))
-		return
-	} else if st.Code() == codes.Unavailable {
+	if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while getting  all fares, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating fare, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(fares)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while marshalling", logger.Error(err))
+	js, err := jspbMarshal.MarshalToString(res.GetFare())
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
-
 }
 
-/*// @Summary DeleteFare
-// @Description DeleteFare API is for deleting fare
+// @Router /v1/fares [get]
+// @Summary Get Fares
+// @Description API for getting fares
 // @Tags fare
-// @Accept json
-// @Produce json
-// @Param  body models.DeleteFareModel true "delete fare"
-// @Success 200
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllFaresModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/fare/delete_fare/ [delete]*/
-func (h *handlerV1) DeleteFare(c *gin.Context) {
-	var (
-		deleteFare models.DeleteFareModel
-	)
-	err := c.ShouldBindJSON(&deleteFare)
+func (h *handlerV1) GetAllFares(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	page, err := ParsePageQueryParam(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInvalidJSON,
-				Message: "Invalid Json",
-			},
+			Error: ErrorBadRequest,
 		})
-		h.log.Error("Error binding json", logger.Error(err))
 		return
 	}
-	_, err = h.grpcClient.FareService().Delete(
+
+	pageSize, err := ParsePageSizeQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	res, err := h.grpcClient.FareService().GetAllFares(
 		context.Background(),
-		&pb.DeleteFareRequest{
-			Id: deleteFare.ID,
+		&pb.GetAllFaresRequest{
+			Page:  uint64(page),
+			Limit: uint64(pageSize),
 		},
 	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
 
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/fares/{fare_id} [delete]
+// @Summary Delete Fare
+// @Description API for deleting fare
+// @Tags fare
+// @Accept  json
+// @Produce  json
+// @Param fare_id path string true "fare_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) DeleteFare(c *gin.Context) {
+	_, err := h.grpcClient.FareService().Delete(
+		context.Background(),
+		&pb.DeleteFareRequest{
+			Id: c.Param("fare_id"),
+		},
+	)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -339,8 +296,8 @@ func (h *handlerV1) DeleteFare(c *gin.Context) {
 		h.log.Error("Error while deleting fare, service unavailable", logger.Error(err))
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"answer": "success",
 	})
-
 }

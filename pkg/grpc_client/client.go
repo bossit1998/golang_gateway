@@ -45,15 +45,6 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.CourierServiceHost, cfg.CourierServicePort, err)
 	}
 
-	connDistributor, err := grpc.Dial(
-		fmt.Sprintf("%s:%d", cfg.DistributorServiceHost, cfg.DistributorServicePort),
-		grpc.WithInsecure())
-
-	if err != nil {
-		return nil, fmt.Errorf("Distributor service dial host: %s port:%d err: %s",
-			cfg.DistributorServiceHost, cfg.DistributorServicePort, err)
-	}
-
 	connFare, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", cfg.FareServiceHost, cfg.FareServicePort),
 		grpc.WithInsecure())
@@ -66,7 +57,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 	connOrder, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", cfg.OrderServiceHost, cfg.OrderServicePort),
 		grpc.WithInsecure(),
-		)
+	)
 
 	if err != nil {
 		return nil, fmt.Errorf("order service dial host: %s port:%d err: %s",
@@ -78,9 +69,9 @@ func New(cfg config.Config) (*GrpcClient, error) {
 		connections: map[string]interface{}{
 			"geo_service":         pbg.NewGeoServiceClient(connGeo),
 			"courier_service":     pbc.NewCourierServiceClient(connCourier),
-			"distributor_service": pbc.NewDistributorServiceClient(connDistributor),
+			"distributor_service": pbc.NewDistributorServiceClient(connCourier),
 			"fare_service":        pbf.NewFareServiceClient(connFare),
-			"order_service":	   pbo.NewOrderServiceClient(connOrder),
+			"order_service":       pbo.NewOrderServiceClient(connOrder),
 		},
 	}, nil
 }

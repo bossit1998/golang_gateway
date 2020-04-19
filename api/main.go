@@ -33,6 +33,17 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
+	r.Use(func(context *gin.Context) {
+		context.Header("Access-Control-Allow-Origin", "*")
+		context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+		context.Header("Access-Control-Allow-Headers", "Content-Type")
+	})
+
+	r.Use(func(context *gin.Context) {
+		context.Header("Access-Control-Allow-Origin", "*")
+		context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+		context.Header("Access-Control-Allow-Headers", "Content-Type")
+	})
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:    cnf.Storage,
@@ -45,11 +56,21 @@ func New(cnf Config) *gin.Engine {
 	})
 
 	//Courier endpoints
-	r.GET("/v1/couriers/", handlerV1.GetAllCouriers)
-	r.GET("/v1/couriers/:id", handlerV1.GetCourier)
-	r.POST("/v1/couriers/", handlerV1.CreateCourier)
-	r.PUT("/v1/couriers/:id", handlerV1.UpdateCourier)
-	r.DELETE("/v1/couriers/:id", handlerV1.DeleteCourier)
+	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
+	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
+	r.GET("/v1/couriers/:courier_id/courier_details", handlerV1.GetCourierDetails)
+	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
+	r.POST("/v1/couriers", handlerV1.CreateCourier)
+	r.POST("/v1/couriers/courier_details", handlerV1.CreateCourierDetails)
+	r.PUT("/v1/couriers", handlerV1.UpdateCourier)
+	r.PUT("/v1/couriers/courier_details", handlerV1.UpdateCourierDetails)
+	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
+
+	//Vehicle endpoints
+	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
+	r.POST("/v1/vehicles", handlerV1.CreateCourierVehicle)
+	r.PUT("/v1/vehicles", handlerV1.UpdateCourierVehicle)
+	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
 	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
@@ -59,6 +80,14 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
 
 	//Geo
+	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
+	r.POST("/v1/distributors", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+
+	//Geozone endpoints
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
 
 	//GetDistanse
@@ -68,14 +97,14 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/get_total_delivery_cost/limit_distance/:limit_distance/inital_price/:inital_price/unit_price/:unit_price/distance/:distance", handlerV1.GetTotalDeliveryCost)
 
 	//Fare endpoints
-	//r.POST("/v1/fares/", handlerV1.CreateFare)
-	//r.GET("/v1/fares/:id/", handlerV1.GetFare)
-	//r.GET("/v1/fares/", handlerV1.GetAllFares)
-	//r.PUT("/v1/fares/:id", handlerV1.UpdateFare)
-	//r.DELETE("/v1/fares/:id", handlerV1.DeleteFare)
+	r.GET("/v1/fares/:fare_id", handlerV1.GetFare)
+	r.GET("/v1/fares", handlerV1.GetAllFares)
+	r.POST("/v1/fares", handlerV1.CreateFare)
+	r.PUT("/v1/fares", handlerV1.UpdateFare)
+	r.DELETE("/v1/fares/:fare_id", handlerV1.DeleteFare)
 
 	//Order endpoints
-	r.POST("/v1/order", handlerV1.Create)
+	r.POST("/v1/order", handlerV1.CreateOrder)
 	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
 	r.GET("/v1/order", handlerV1.GetOrders)
 

@@ -31,9 +31,6 @@ type Config struct {
 	CourierServiceHost string
 	CourierServicePort int
 
-	DistributorServiceHost string
-	DistributorServicePort int
-
 	FareServiceHost string
 	FareServicePort int
 
@@ -65,14 +62,11 @@ func Load() Config {
 	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
 	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
 
-	c.DistributorServiceHost = cast.ToString(getOrReturnDefault("DISTRIBUTOR_SERVICE_HOST", "courier_service"))
-	c.DistributorServicePort = cast.ToInt(getOrReturnDefault("DISTRIBUTOR_SERVICE_PORT", 80))
-
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
 	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 80))
 
-	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "127.0.0.1"))
-	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 8002))
+	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
+	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
 
 	return c
 }
