@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
-	pb "bitbucket.org/alien_soft/api_getaway/genproto/fare_service"
+	pb "genproto/fare_service"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"

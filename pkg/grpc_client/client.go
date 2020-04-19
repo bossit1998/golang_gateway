@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"bitbucket.org/alien_soft/api_getaway/config"
-	pbc "bitbucket.org/alien_soft/api_getaway/genproto/courier_service"
-	pbf "bitbucket.org/alien_soft/api_getaway/genproto/fare_service"
-	pbg "bitbucket.org/alien_soft/api_getaway/genproto/geo_service"
-	pbo "bitbucket.org/alien_soft/api_getaway/genproto/order_service"
+	pbc "genproto/courier_service"
+	pbf "genproto/fare_service"
+	pbg "genproto/geo_service"
+	pbo "genproto/order_service"
 	"google.golang.org/grpc"
 )
 
