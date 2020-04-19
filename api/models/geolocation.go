@@ -2,14 +2,23 @@ package models
 
 type (
 
-
-	Coordinate struct {
-		FromLong float64 `json:"from_long"`
-		FromLat float64 `json:"from_lat"`
-		ToLong float64 `json:"to_long"`
-		ToLat float64 `json:"to_lat"`
+	//Response Models
+	GetDistanceResponse struct {
+		Distance float64 `json:"distance"`
 	}
 
+	GetTotalDeliveryCost struct {
+		TotalDeliveryCost float64 `json:"total_delivery_cost"`
+	}
+
+
+	//Cordinate
+	Coordinate struct {
+	FromLong float64 `json:"from_long"`
+	FromLat float64 `json:"from_lat"`
+	ToLong float64 `json:"to_long"`
+	ToLat float64 `json:"to_lat"`
+	}
 
 
 	//GeoDrivingLegs ...
