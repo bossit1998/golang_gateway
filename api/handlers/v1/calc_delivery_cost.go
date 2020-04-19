@@ -1,66 +1,71 @@
 package v1
 
 import (
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"context"
+	"fmt"
+	pbf "genproto/fare_service"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
-
-
-// @Router /v1/gettotaldeliverycost/limit_distance/{limit_distance}/initial_price/{initial_price}/unit_price/{unit_price}/distance/{distance} [get]
-// @Summary Get Distance
+// @Router /v1/calc-delivery-cost [post]
+// @Summary Calculate Delivery Price For Clients
 // @Description API for getting total delivery cost
 // @Tags geo
 // @Accept  json
 // @Produce  json
-// @Param limit_distance path string true "limit_distance"
-// @Param initial_price path string true "initial_price"
-// @Param unit_price path string true "unit_price"
-// @Param distance path string true "distance"
-// @Success 200 {object} models.GetTotalDeliveryCost
+// @Param calc body models.CalcDeliveryCostRequest true "calc-delivery-cost"
+// @Success 200 {object} models.CalcDeliveryCostResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetTotalDeliveryCost(c *gin.Context) {
-
-	var(
-		LimitDistance float64
-		InitialPrice float64
-		UnitPrice float64
-		Distance float64
+func (h *handlerV1) CalcDeliveryCost(c *gin.Context) {
+	var (
+		calcCostModel models.CalcDeliveryCostRequest
 	)
-	params := c.Params
+	err := c.ShouldBindJSON(&calcCostModel)
 
-	if s, err := strconv.ParseFloat(params.ByName("limit_distance"), 64); err == nil {
-		LimitDistance = s
-	}
-	if s, err := strconv.ParseFloat(params.ByName("initial_price"), 64); err == nil {
-		InitialPrice = s
-	}
-	if s, err := strconv.ParseFloat(params.ByName("unit_price"), 64); err == nil {
-		UnitPrice = s
-	}
-	if s, err := strconv.ParseFloat(params.ByName("distance"), 64); err == nil {
-		Distance = s
+	if handleGrpcErrWithMessage(c, h.log, err, "error while binding") {
+		return
 	}
 
-	//distance := getDistance(location, token)
-	//totalDeliveryCost := calcDeliveryCost(3000, 5000, 500, 9000)
-	totalDeliveryCost := calcDeliveryCost(LimitDistance, InitialPrice, UnitPrice, Distance)
+	distance := getDistance(calcCostModel.FromLocation, calcCostModel.ToLocation, h.cfg)
 
-	c.JSON(200, gin.H{"total_delivery_cost": totalDeliveryCost})
+	totalDeliveryCost := calcDeliveryCost(calcCostModel.MinDistance, calcCostModel.MinPrice, calcCostModel.PerKmPrice, distance)
+
+	c.JSON(200, models.CalcDeliveryCostResponse{
+		Distance: distance,
+		Price: totalDeliveryCost,
+	})
 }
 
+func calcDeliveryCost(limitDistance float64, initialPrice float64, unitPrice float64, distance float64) float64{
+	totalDeliveryCost := 0.0
+	fmt.Println(distance, limitDistance)
 
-
-func calcDeliveryCost(limit_distance float64, inital_price float64, unit_price float64, distance float64) float64{
-
-	total_delivery_cost := 0.0
-
-	if distance < limit_distance {
-		total_delivery_cost = inital_price
+	if distance < limitDistance {
+		totalDeliveryCost = initialPrice
 	} else {
-		total_delivery_cost = inital_price + distance*unit_price/1000
+		price := int((distance - limitDistance) * unitPrice / 1000)
+		price = (price/100) * 100
+		totalDeliveryCost = initialPrice + float64(price)
 	}
-	return total_delivery_cost
+	return totalDeliveryCost
+}
+
+func calcDeliveryPriceWithFare(c *gin.Context, h *handlerV1, fareID string, fromLocation, toLocation models.Location) (float64, error) {
+	fare, err := h.grpcClient.FareService().GetFare(context.Background(),
+		&pbf.GetFareRequest{
+			Id:fareID,
+		})
+
+	if err != nil {
+		return 0, err
+	}
+
+	distance := getDistance(fromLocation, toLocation, h.cfg)
+
+	price := calcDeliveryCost(float64(fare.Fare.MinDistance), float64(fare.Fare.MinPrice), float64(fare.Fare.PricePerKm), distance)
+
+	return price, nil
 }
 

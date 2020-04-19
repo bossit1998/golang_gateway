@@ -5,6 +5,52 @@
         "license": {}
     },
     "paths": {
+        "/v1/calc-delivery-cost": {
+            "post": {
+                "description": "API for getting total delivery cost",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "geo"
+                ],
+                "summary": "Calculate Delivery Price For Clients",
+                "parameters": [
+                    {
+                        "description": "calc-delivery-cost",
+                        "name": "calc",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CalcDeliveryCostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CalcDeliveryCostResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers/{courier_id}": {
             "get": {
                 "description": "API for getting courier",
@@ -392,71 +438,6 @@
                 }
             }
         },
-        "/v1/gettotaldeliverycost/limit_distance/{limit_distance}/initial_price/{initial_price}/unit_price/{unit_price}/distance/{distance}": {
-            "get": {
-                "description": "API for getting total delivery cost",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "geo"
-                ],
-                "summary": "Get Distance",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "limit_distance",
-                        "name": "limit_distance",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "initial_price",
-                        "name": "initial_price",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "unit_price",
-                        "name": "unit_price",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "distance",
-                        "name": "distance",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetTotalDeliveryCost"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/order": {
             "get": {
                 "description": "API for getting orders",
@@ -598,6 +579,39 @@
         }
     },
     "definitions": {
+        "models.CalcDeliveryCostRequest": {
+            "type": "object",
+            "properties": {
+                "from_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "min_distance": {
+                    "type": "number"
+                },
+                "min_price": {
+                    "type": "number"
+                },
+                "per_km_price": {
+                    "type": "number"
+                },
+                "to_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                }
+            }
+        },
+        "models.CalcDeliveryCostResponse": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
         "models.CreateFareModel": {
             "type": "object",
             "properties": {
@@ -632,6 +646,10 @@
                 "creator_type_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "deliver_price": {
+                    "type": "number",
+                    "example": 10000
                 },
                 "fare_id": {
                     "type": "string",
@@ -772,6 +790,10 @@
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
+                "deliver_price": {
+                    "type": "number",
+                    "example": 10000
+                },
                 "fare_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
@@ -827,14 +849,6 @@
                     "items": {
                         "$ref": "#/definitions/models.getOrderModel"
                     }
-                }
-            }
-        },
-        "models.GetTotalDeliveryCost": {
-            "type": "object",
-            "properties": {
-                "total_delivery_cost": {
-                    "type": "number"
                 }
             }
         },
@@ -921,6 +935,10 @@
                 "creator_type_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "deliver_price": {
+                    "type": "number",
+                    "example": 10000
                 },
                 "fare_id": {
                     "type": "string",

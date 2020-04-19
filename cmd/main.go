@@ -27,7 +27,7 @@ var (
 
 func initDeps() {
 	cfg = config.Load()
-	log = logger.New(cfg.LogLevel, "api_gateway")
+	log = logger.New(cfg.LogLevel, "api_getaway")
 
 	log.Info("main: sqlxConfig",
 		logger.String("host", cfg.PostgresHost),

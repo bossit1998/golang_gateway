@@ -2,9 +2,9 @@ package v1
 
 import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
-	pbo "genproto/order_service"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
+	pbo "genproto/order_service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"net/http"
@@ -37,6 +37,21 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
+	fromLocation := models.Location{
+		Long:float64(order.FromLocation.Long),
+		Lat:float64(order.FromLocation.Lat),
+	}
+	toLocation := models.Location{
+		Long:float64(order.ToLocation.Long),
+		Lat:float64(order.ToLocation.Lat),
+	}
+	deliveryTotalPrice, err := calcDeliveryPriceWithFare(c, h, order.FareId, fromLocation, toLocation)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while calculating delivery price by fare") {
+		return
+	}
+
+	order.DeliverTotalPrice = float32(deliveryTotalPrice)
 
 	_, err = h.grpcClient.OrderService().Create(context.Background(), &order)
 
@@ -135,4 +150,3 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
-//
