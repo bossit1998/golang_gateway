@@ -6,13 +6,11 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/config"
 	pbc "genproto/courier_service"
 	pbf "genproto/fare_service"
-	pbg "genproto/geo_service"
 	pbo "genproto/order_service"
 	"google.golang.org/grpc"
 )
 
 type GrpcClientI interface {
-	GeoService() pbg.GeoServiceClient
 	CourierService() pbc.CourierServiceClient
 	DistributorService() pbc.DistributorServiceClient
 	FareService() pbf.FareServiceClient
@@ -25,15 +23,6 @@ type GrpcClient struct {
 }
 
 func New(cfg config.Config) (*GrpcClient, error) {
-
-	connGeo, err := grpc.Dial(
-		fmt.Sprintf("%s:%d", cfg.GeoServiceHost, cfg.GeoServicePort),
-		grpc.WithInsecure())
-	if err != nil {
-		return nil, fmt.Errorf("geo service dial host: %s port:%d err: %s",
-			cfg.GeoServiceHost, cfg.GeoServicePort, err)
-	}
-
 	connCourier, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", cfg.CourierServiceHost, cfg.CourierServicePort),
 		grpc.WithInsecure())
@@ -67,17 +56,12 @@ func New(cfg config.Config) (*GrpcClient, error) {
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
-			"geo_service":         pbg.NewGeoServiceClient(connGeo),
 			"courier_service":     pbc.NewCourierServiceClient(connCourier),
 			"distributor_service": pbc.NewDistributorServiceClient(connCourier),
 			"fare_service":        pbf.NewFareServiceClient(connFare),
 			"order_service":       pbo.NewOrderServiceClient(connOrder),
 		},
 	}, nil
-}
-
-func (g *GrpcClient) GeoService() pbg.GeoServiceClient {
-	return g.connections["geo_service"].(pbg.GeoServiceClient)
 }
 
 func (g *GrpcClient) CourierService() pbc.CourierServiceClient {

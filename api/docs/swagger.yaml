@@ -1,4 +1,26 @@
 definitions:
+  models.CalcDeliveryCostRequest:
+    properties:
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      min_distance:
+        type: number
+      min_price:
+        type: number
+      per_km_price:
+        type: number
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+    type: object
+  models.CalcDeliveryCostResponse:
+    properties:
+      distance:
+        type: number
+      price:
+        type: number
+    type: object
   models.CreateFareModel:
     properties:
       delivery_time:
@@ -23,6 +45,9 @@ definitions:
       creator_type_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
+      deliver_price:
+        example: 10000
+        type: number
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -117,6 +142,9 @@ definitions:
       creator_type_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
+      deliver_price:
+        example: 10000
+        type: number
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -157,11 +185,6 @@ definitions:
         items:
           $ref: '#/definitions/models.getOrderModel'
         type: array
-    type: object
-  models.GetTotalDeliveryCost:
-    properties:
-      total_delivery_cost:
-        type: number
     type: object
   models.Location:
     properties:
@@ -219,6 +242,9 @@ definitions:
       creator_type_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
+      deliver_price:
+        example: 10000
+        type: number
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -279,6 +305,36 @@ info:
   contact: {}
   license: {}
 paths:
+  /v1/calc-delivery-cost:
+    post:
+      consumes:
+      - application/json
+      description: API for getting total delivery cost
+      parameters:
+      - description: calc-delivery-cost
+        in: body
+        name: calc
+        required: true
+        schema:
+          $ref: '#/definitions/models.CalcDeliveryCostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CalcDeliveryCostResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Calculate Delivery Price For Clients
+      tags:
+      - geo
   /v1/couriers/{courier_id}:
     get:
       consumes:
@@ -524,50 +580,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.GetDistanceResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Distance
-      tags:
-      - geo
-  ? /v1/gettotaldeliverycost/limit_distance/{limit_distance}/initial_price/{initial_price}/unit_price/{unit_price}/distance/{distance}
-  : get:
-      consumes:
-      - application/json
-      description: API for getting total delivery cost
-      parameters:
-      - description: limit_distance
-        in: path
-        name: limit_distance
-        required: true
-        type: string
-      - description: initial_price
-        in: path
-        name: initial_price
-        required: true
-        type: string
-      - description: unit_price
-        in: path
-        name: unit_price
-        required: true
-        type: string
-      - description: distance
-        in: path
-        name: distance
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetTotalDeliveryCost'
         "404":
           description: Not Found
           schema:

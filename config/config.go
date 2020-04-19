@@ -32,6 +32,7 @@ type Config struct {
 	HTTPPort string
 
 	CasbinConfigPath string
+	MapboxToken string
 }
 
 // Load loads environment vars and inflates Config
@@ -62,6 +63,8 @@ func Load() Config {
 	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
+
+	c.MapboxToken = cast.ToString(getOrReturnDefault("MAPBOX_TOKEN", "pk.eyJ1IjoidGRvc3RvbiIsImEiOiJjazh0cmRrMnowMWszM29sc2Y5c3A5NTZ4In0.mtrOXD4cD4QKZ-dnZ_vKdA"))
 
 	return c
 }

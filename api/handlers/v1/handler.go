@@ -2,8 +2,10 @@
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -282,3 +284,24 @@ func handleStorageErrWithMessage(c *gin.Context, l logger.Logger, err error, mes
 
 	return false
 }
+
+func getDistance(fromLocation models.Location, toLocation models.Location, cfg config.Config) float64 {
+	coordinates := fmt.Sprintf("%f,%f;%f,%f", fromLocation.Long, fromLocation.Lat, toLocation.Long, toLocation.Lat)
+	url := "https://api.mapbox.com/directions/v5/mapbox/driving/"+ coordinates +"/?approaches=unrestricted;curb&access_token="+ cfg.MapboxToken + ""
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return 0
+		// handle error
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	geodriving := models.GeoDrivingAPIResponse{}
+	json.Unmarshal(body, &geodriving)
+
+	dist := geodriving.RoutesList[0].LegsList[0].Distance
+
+	return dist
+  }

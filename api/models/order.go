@@ -22,6 +22,7 @@ type orderModel struct {
 	CoID string `json:"co_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
 	CreatorTypeID string `json:"creator_type_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
 	UserID string `json:"user_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
+	DeliverPrice float64 `json:"deliver_price" example:"10000"`
 }
 
 type CreateOrder struct {
