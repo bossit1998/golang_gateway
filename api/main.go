@@ -8,14 +8,14 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "bitbucket.org/alien_soft/api_gateway/api/docs" //for swagger
+	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
 
-	v1 "bitbucket.org/alien_soft/api_gateway/api/handlers/v1"
-	"bitbucket.org/alien_soft/api_gateway/config"
-	"bitbucket.org/alien_soft/api_gateway/pkg/grpc_client"
-	//"bitbucket.org/alien_soft/api_gateway/pkg/http/middleware"
-	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
-	"bitbucket.org/alien_soft/api_gateway/storage"
+	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
+	"bitbucket.org/alien_soft/api_getaway/config"
+	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage"
 )
 
 //Config ...

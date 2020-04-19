@@ -3,7 +3,7 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_gateway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"

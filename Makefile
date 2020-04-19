@@ -27,6 +27,8 @@ build:
 
 proto-gen:
 	./scripts/gen-proto.sh	${CURRENT_DIR}
+	rm -rf vendor/genproto
+	mv genproto vendor
 
 pull-proto-module:
 	git submodule update --init --recursive

@@ -5,9 +5,9 @@ import (
 
 	"net/http"
 
-	"bitbucket.org/alien_soft/api_gateway/api/models"
-	pbc "bitbucket.org/alien_soft/api_gateway/genproto/courier_service"
-	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	pbc "genproto/courier_service"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"google.golang.org/grpc/codes"

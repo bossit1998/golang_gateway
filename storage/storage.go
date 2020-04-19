@@ -3,8 +3,8 @@ package storage
 import (
 	"github.com/jmoiron/sqlx"
 
-	"bitbucket.org/alien_soft/api_gateway/storage/postgres"
-	"bitbucket.org/alien_soft/api_gateway/storage/repo"
+	"bitbucket.org/alien_soft/api_getaway/storage/postgres"
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 )
 
 // Sql Storage ...
