@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	//"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -12,16 +13,18 @@ import (
 	v1 "bitbucket.org/alien_soft/api_gateway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_gateway/config"
 	"bitbucket.org/alien_soft/api_gateway/pkg/grpc_client"
+	//"bitbucket.org/alien_soft/api_gateway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
 	"bitbucket.org/alien_soft/api_gateway/storage"
 )
 
 //Config ...
 type Config struct {
-	Storage    storage.StorageI
-	Logger     logger.Logger
-	GrpcClient *grpc_client.GrpcClient
-	Cfg        config.Config
+	Storage    		storage.StorageI
+	Logger     		logger.Logger
+	GrpcClient 		*grpc_client.GrpcClient
+	Cfg        		config.Config
+	//CasbinEnforcer  *casbin.Enforcer
 }
 
 // @securityDefinitions.apikey ApiKeyAuth
@@ -33,11 +36,8 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
-	r.Use(func(context *gin.Context) {
-		context.Header("Access-Control-Allow-Origin", "*")
-		context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
-		context.Header("Access-Control-Allow-Headers", "Content-Type")
-	})
+
+	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
 	r.Use(func(context *gin.Context) {
 		context.Header("Access-Control-Allow-Origin", "*")
@@ -51,6 +51,7 @@ func New(cnf Config) *gin.Engine {
 		GrpcClient: cnf.GrpcClient,
 		Cfg:        cnf.Cfg,
 	})
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "bratan api getaway bu"})
 	})
@@ -81,11 +82,11 @@ func New(cnf Config) *gin.Engine {
 
 	//Geo
 	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
-	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
+	//r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
+	//r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
 	r.POST("/v1/distributors", handlerV1.CreateDistributor)
 	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+	//r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
 
 	//Geozone endpoints
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
