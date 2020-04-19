@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_gateway/api/models"
-	pbo "bitbucket.org/alien_soft/api_gateway/genproto/order_service"
-	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	pbo "bitbucket.org/alien_soft/api_getaway/genproto/order_service"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"

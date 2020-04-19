@@ -10,11 +10,11 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"bitbucket.org/alien_soft/api_gateway/api"
-	"bitbucket.org/alien_soft/api_gateway/config"
-	"bitbucket.org/alien_soft/api_gateway/pkg/grpc_client"
-	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
-	"bitbucket.org/alien_soft/api_gateway/storage"
+	"bitbucket.org/alien_soft/api_getaway/api"
+	"bitbucket.org/alien_soft/api_getaway/config"
+	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage"
 )
 
 var (

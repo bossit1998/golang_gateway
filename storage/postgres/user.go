@@ -7,8 +7,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq" // for db driver
 
-	"bitbucket.org/alien_soft/api_gateway/pkg/etc"
-	"bitbucket.org/alien_soft/api_gateway/storage/repo"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 )
 
 type userRepo struct {

@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_gateway/api/models"
-	pbg "bitbucket.org/alien_soft/api_gateway/genproto/geo_service"
-	"bitbucket.org/alien_soft/api_gateway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	pbg "bitbucket.org/alien_soft/api_getaway/genproto/geo_service"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"

@@ -3,11 +3,11 @@ package grpc_client
 import (
 	"fmt"
 
-	"bitbucket.org/alien_soft/api_gateway/config"
-	pbc "bitbucket.org/alien_soft/api_gateway/genproto/courier_service"
-	pbf "bitbucket.org/alien_soft/api_gateway/genproto/fare_service"
-	pbg "bitbucket.org/alien_soft/api_gateway/genproto/geo_service"
-	pbo "bitbucket.org/alien_soft/api_gateway/genproto/order_service"
+	"bitbucket.org/alien_soft/api_getaway/config"
+	pbc "bitbucket.org/alien_soft/api_getaway/genproto/courier_service"
+	pbf "bitbucket.org/alien_soft/api_getaway/genproto/fare_service"
+	pbg "bitbucket.org/alien_soft/api_getaway/genproto/geo_service"
+	pbo "bitbucket.org/alien_soft/api_getaway/genproto/order_service"
 	"google.golang.org/grpc"
 )
 

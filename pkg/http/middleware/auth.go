@@ -4,13 +4,13 @@ import (
 	"net/http"
 	s "strings"
 
-	"bitbucket.org/alien_soft/api_gateway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/api/models"
 
 	"github.com/casbin/casbin/v2"
 	jwtg "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 
-	"bitbucket.org/alien_soft/api_gateway/pkg/jwt"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 )
 
 var (
