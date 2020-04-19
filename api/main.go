@@ -73,6 +73,13 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
+	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:id", handlerV1.GetDistributor)
+	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors/:id", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
+
+	//Geo
 	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
 	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
 	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
@@ -82,6 +89,12 @@ func New(cnf Config) *gin.Engine {
 
 	//Geozone endpoints
 	r.GET("/v1/geozones/", handlerV1.GetGeozones)
+
+	//GetDistanse
+	r.GET("/v1/get_distance/from/:from_long/:from_lat/to/:to_long/:to_lat", handlerV1.GetDistance)
+
+	//GetTotalDeliverCost
+	r.GET("/v1/get_total_delivery_cost/limit_distance/:limit_distance/inital_price/:inital_price/unit_price/:unit_price/distance/:distance", handlerV1.GetTotalDeliveryCost)
 
 	//Fare endpoints
 	r.GET("/v1/fares/:fare_id", handlerV1.GetFare)
