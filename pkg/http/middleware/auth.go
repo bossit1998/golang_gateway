@@ -14,8 +14,7 @@ import (
 )
 
 var (
-	mySigningKey = []byte("secretphrase")
-	newSigningKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
+	signingKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
 )
 
 //NewAuthorizer is a middleware for gin to get role and
@@ -43,7 +42,8 @@ type JWTRoleAuthorizer struct {
 	enforcer *casbin.Enforcer
 }
 
-//GetRole ...
+//GetRole gets role from jwt token if it is sent
+//or sets role to unauthorized if token is not sent
 func (a *JWTRoleAuthorizer) GetRole(r *http.Request) (string, error) {
 	var (
 		role string
@@ -58,25 +58,22 @@ func (a *JWTRoleAuthorizer) GetRole(r *http.Request) (string, error) {
 		return "unauthorized", nil
 	}
 
-	claims, err = jwt.ExtractClaims(token, mySigningKey)
+	claims, err = jwt.ExtractClaims(token, signingKey)
 	if err != nil {
-		claims, err = jwt.ExtractClaims(token, newSigningKey)
-		if err != nil {
-			return "", err
-		}
+		return "", err
 	}
 
 
-	if claims["role"].(string) == "cluber" {
-		role = "cluber"
-	} else if claims["role"].(string) == "club" {
-		role = "club"
-	} else if claims["role"].(string) == "promoter" {
-		role = "promoter"
+	if claims["role"].(string) == "cargo_owner_admin" {
+		role = "cargo_owner_admin"
+	} else if claims["role"].(string) == "cargo_api" {
+		role = "cargo_api"
+	} else if claims["role"].(string) == "distributor_admin" {
+		role = "distributor_admin"
+	} else if claims["role"].(string) == "courier" {
+		role = "courier"
 	} else if claims["role"].(string) == "admin" {
 		role = "admin"
-	} else if claims["role"].(string) == "authorized" {
-		role = "authorized"
 	} else {
 		role = "unknown"
 	}

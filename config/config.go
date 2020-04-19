@@ -6,15 +6,6 @@ import (
 	"github.com/spf13/cast"
 )
 
-var (
-	FollowTypeID = "086032bc-fae4-4a85-aedd-83e37b52f309"
-	LikeTypeId   = "23f0ed87-6874-40be-993a-140fa31d7050"
-	SystemTypeID = "70e21be4-d511-4284-b8e2-f1d94205ef1e"
-	NewStatusId  = "2cb46139-7c5f-4e0d-88f6-50fe79986fa6"
-	SentStatusId = "f9c31d41-7e91-42a1-859b-e0991357566c"
-	ReadStatusId = "303d5102-7595-4ba4-9c67-0c5d969d6a3e"
-)
-
 // Config ...
 type Config struct {
 	Environment string // develop, staging, production
@@ -39,6 +30,8 @@ type Config struct {
 
 	LogLevel string
 	HTTPPort string
+
+	CasbinConfigPath string
 }
 
 // Load loads environment vars and inflates Config
@@ -67,6 +60,8 @@ func Load() Config {
 
 	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
 	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
+
+	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 
 	return c
 }

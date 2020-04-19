@@ -282,20 +282,3 @@ func handleStorageErrWithMessage(c *gin.Context, l logger.Logger, err error, mes
 
 	return false
 }
-
-func genContent(recType, typeId, objectType string) string {
-	if recType == "club" {
-		if config.FollowTypeID == typeId {
-			return "followed your club"
-		} else if config.LikeTypeId == typeId {
-			return fmt.Sprintf("liked your club %s", objectType)
-		}
-	} else {
-		if config.FollowTypeID == typeId {
-			return "followed you"
-		} else if config.LikeTypeId == typeId {
-			return fmt.Sprintf("liked your %s", objectType)
-		}
-	}
-	return ""
-}
