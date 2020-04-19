@@ -6,13 +6,27 @@ import (
 )
 
 
+
+// @Router /v1/gettotaldeliverycost/limit_distance/{limit_distance}/initial_price/{initial_price}/unit_price/{unit_price}/distance/{distance} [get]
+// @Summary Get Distance
+// @Description API for getting total delivery cost
+// @Tags geo
+// @Accept  json
+// @Produce  json
+// @Param limit_distance path string true "limit_distance"
+// @Param initial_price path string true "initial_price"
+// @Param unit_price path string true "unit_price"
+// @Param distance path string true "distance"
+// @Success 200 {object} models.GetTotalDeliveryCost
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetTotalDeliveryCost(c *gin.Context) {
 
 	var(
-	LimitDistance float64
-	InitialPrice float64
-	UnitPrice float64
-	Distance float64
+		LimitDistance float64
+		InitialPrice float64
+		UnitPrice float64
+		Distance float64
 	)
 	params := c.Params
 
@@ -49,5 +63,4 @@ func calcDeliveryCost(limit_distance float64, inital_price float64, unit_price f
 	}
 	return total_delivery_cost
 }
-
 

@@ -80,6 +80,11 @@ definitions:
       phone:
         type: string
     type: object
+  models.GetDistanceResponse:
+    properties:
+      distance:
+        type: number
+    type: object
   models.GetFareModel:
     properties:
       created_at:
@@ -152,6 +157,11 @@ definitions:
         items:
           $ref: '#/definitions/models.getOrderModel'
         type: array
+    type: object
+  models.GetTotalDeliveryCost:
+    properties:
+      total_delivery_cost:
+        type: number
     type: object
   models.Location:
     properties:
@@ -479,6 +489,94 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Geozones
+      tags:
+      - geo
+  /v1/getdistance/from/{from_lat}/{from_long}/to/{to_lat}/{to_long}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting distance
+      parameters:
+      - description: from_lat
+        in: path
+        name: from_lat
+        required: true
+        type: string
+      - description: from_long
+        in: path
+        name: from_long
+        required: true
+        type: string
+      - description: to_lat
+        in: path
+        name: to_lat
+        required: true
+        type: string
+      - description: to_long
+        in: path
+        name: to_long
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistanceResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Distance
+      tags:
+      - geo
+  ? /v1/gettotaldeliverycost/limit_distance/{limit_distance}/initial_price/{initial_price}/unit_price/{unit_price}/distance/{distance}
+  : get:
+      consumes:
+      - application/json
+      description: API for getting total delivery cost
+      parameters:
+      - description: limit_distance
+        in: path
+        name: limit_distance
+        required: true
+        type: string
+      - description: initial_price
+        in: path
+        name: initial_price
+        required: true
+        type: string
+      - description: unit_price
+        in: path
+        name: unit_price
+        required: true
+        type: string
+      - description: distance
+        in: path
+        name: distance
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetTotalDeliveryCost'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Distance
       tags:
       - geo
   /v1/order:
