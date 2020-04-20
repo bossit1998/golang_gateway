@@ -64,3 +64,7 @@ type Status struct {
 type GetStatuses struct {
 	Statuses []Status `json:"statuses"`
 }
+
+type AddCourierRequest struct {
+	CourierID string `json:"courier_id"`
+} 
