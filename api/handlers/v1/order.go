@@ -4,6 +4,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
+	"fmt"
 	pbo "genproto/order_service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -174,6 +175,7 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 	if handleBadRequestErrWithMessage(c, h.log, err,"error while binding to json") {
 		return
 	}
+	fmt.Println(changeStatusModel)
 
 	_, err = h.grpcClient.OrderService().ChangeStatus(
 		context.Background(),
@@ -181,6 +183,7 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 			Id: orderID,
 			StatusId: changeStatusModel.StatusID,
 		})
+	fmt.Println(err)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
 		return
