@@ -2,11 +2,13 @@ package models
 
 //Courier
 type GetCourierModel struct {
-	ID        string `json:"id"`
-	Phone     string `json:"phone"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	CreatedAt string `json:"created_at"`
+	ID          string `json:"id"`
+	AccessToken string `json:"access_token"`
+	Phone       string `json:"phone"`
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name"`
+	CreatedAt   string `json:"created_at"`
+	IsActive    string `json:"is_active"`
 }
 
 type GetAllCouriersModel struct {
@@ -29,6 +31,7 @@ type UpdateCourierModel struct {
 
 //Courier Details
 type CourierDetailsModel struct {
+	CourierId         string `json:"courier_id"`
 	PassportNumber    string `json:"passport_number"`
 	Gender            string `json:"gender"`
 	BirthDate         string `json:"birth_date"`

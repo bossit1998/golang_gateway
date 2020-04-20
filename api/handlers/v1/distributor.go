@@ -5,29 +5,36 @@ import (
 
 	"net/http"
 
-	"bitbucket.org/alien_soft/api_getaway/api/models"
 	pbc "genproto/courier_service"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-/*// @Security ApiKeyAuth
+// @Router /v1/distributors/{distributor_id} [get]
 // @Summary Get Distributor
-// @Description Get Distributor API returns event
+// @Description API for getting distributor
 // @Tags distributor
 // @Accept  json
 // @Produce  json
 // @Param distributor_id path string true "distributor Id"
-// @Success 200 {object} models.GetDistributorResp
+// @Success 200 {object} models.GetDistributorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/couirer/{distributor_id}/ [get]*/
 func (h *handlerV1) GetDistributor(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
 
-	distributorResp, err := h.grpcClient.DistributorService().GetDistributor(
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.DistributorService().GetDistributor(
 		context.Background(), &pbc.GetDistributorRequest{
 			Id: c.Param("distributor_id"),
 		},
@@ -37,7 +44,7 @@ func (h *handlerV1) GetDistributor(c *gin.Context) {
 		return
 	}
 
-	if distributorResp == nil {
+	if res == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
@@ -46,17 +53,32 @@ func (h *handlerV1) GetDistributor(c *gin.Context) {
 		})
 		return
 	}
-	distributor := distributorResp.Distributor
+	js, err := jspbMarshal.MarshalToString(res.GetDistributor())
 
-	c.JSON(http.StatusOK, models.GetDistributorModel{
-		ID:        distributor.Id,
-		Phone:     distributor.Phone,
-		Name:      distributor.Name,
-		CreatedAt: distributor.CreatedAt,
-	})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/distributors/{distributor_id}/couriers [get]
+// @Summary Get Distributor Couriers
+// @Description API for getting all distributor couriers
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllCouriersModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllDistributorCouriers(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
 
 	page, err := ParsePageQueryParam(c)
 	if err != nil {
@@ -74,7 +96,7 @@ func (h *handlerV1) GetAllDistributorCouriers(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.CourierService().GetAllDistributorCouriers(
+	res, err := h.grpcClient.CourierService().GetAllDistributorCouriers(
 		context.Background(),
 		&pbc.GetAllDistributorCouriersRequest{
 			DistributorId: c.Param("distributor_id"),
@@ -85,23 +107,32 @@ func (h *handlerV1) GetAllDistributorCouriers(c *gin.Context) {
 	if handleGRPCErr(c, h.log, err) {
 		return
 	}
+	js, err := jspbMarshal.MarshalToString(res)
 
-	generalResp := models.GetAllCouriersModel{Count: int(resp.GetCount())}
-
-	for _, e := range resp.GetCouriers() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
-			ID:        e.Id,
-			Phone:     e.Phone,
-			FirstName: e.FirstName,
-			LastName:  e.LastName,
-			CreatedAt: e.CreatedAt,
-		})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, generalResp)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/distributors [get]
+// @Summary Get All Distributors
+// @Description API for getting all distributors
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllDistributorsModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllDistributors(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
 
 	page, err := ParsePageQueryParam(c)
 	if err != nil {
@@ -119,7 +150,7 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.DistributorService().GetAllDistributors(
+	res, err := h.grpcClient.DistributorService().GetAllDistributors(
 		context.Background(),
 		&pbc.GetAllDistributorsRequest{
 			Page:  uint64(page),
@@ -131,20 +162,26 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 		return
 	}
 
-	generalResp := models.GetAllDistributorsModel{Count: int(resp.GetCount())}
+	js, err := jspbMarshal.MarshalToString(res)
 
-	for _, e := range resp.GetDistributors() {
-		generalResp.Distributors = append(generalResp.Distributors, models.GetDistributorModel{
-			ID:        e.Id,
-			Phone:     e.Phone,
-			Name:      e.Name,
-			CreatedAt: e.CreatedAt,
-		})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, generalResp)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/distributor [post]
+// @Summary Create Distributor
+// @Description API for creating distributor
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param distirbutor body models.CreateDistributorModel true "distributor"
+// @Success 200 {object} models.GetDistributorModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateDistributor(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -166,7 +203,16 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 		return
 	}
 
-	createdDistributor, err := h.grpcClient.DistributorService().Create(
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return
+	}
+
+	accessToken, err := jwt.GenerateJWT(id.String(), "distributor", newSigningKey)
+
+	distributor.Id = id.String()
+	distributor.AccessToken = accessToken
+	res, err := h.grpcClient.DistributorService().Create(
 		context.Background(),
 		&distributor,
 	)
@@ -178,7 +224,7 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event", logger.Error(err))
+		h.log.Error("Error while creating distributor", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -188,12 +234,12 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event, service unavailable", logger.Error(err))
+		h.log.Error("Error while creating distributor, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(createdDistributor.Distributor)
-	if err != nil {
+	js, err := jspbMarshal.MarshalToString(res.GetDistributor())
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
@@ -201,8 +247,17 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/distributor [put]
+// @Summary Update Distributor
+// @Description API for updating distributor
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param distributor body models.UpdateDistributorModel true "distributor"
+// @Success 200 {object} models.GetDistributorModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateDistributor(c *gin.Context) {
-
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -223,7 +278,7 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 		return
 	}
 
-	d, err := h.grpcClient.DistributorService().Update(
+	res, err := h.grpcClient.DistributorService().Update(
 		context.Background(),
 		&distributor,
 	)
@@ -235,7 +290,7 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event", logger.Error(err))
+		h.log.Error("Error while updating distributor", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -245,12 +300,12 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating distributor, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(d.Distributor)
-	if err != nil {
+	js, err := jspbMarshal.MarshalToString(res.GetDistributor())
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
@@ -258,6 +313,16 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/distributor/{distributor_id} [delete]
+// @Summary Delete Distributor
+// @Description API for deleting distributor
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param distributor_id path string true "distributor_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteDistributor(c *gin.Context) {
 
 	_, err := h.grpcClient.DistributorService().Delete(
@@ -274,7 +339,7 @@ func (h *handlerV1) DeleteDistributor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting event", logger.Error(err))
+		h.log.Error("Error while deleting distributor", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.NotFound {
@@ -284,7 +349,7 @@ func (h *handlerV1) DeleteDistributor(c *gin.Context) {
 				Message: "Not found",
 			},
 		})
-		h.log.Error("Error while deleting event, not found", logger.Error(err))
+		h.log.Error("Error while deleting distributor, not found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -300,4 +365,170 @@ func (h *handlerV1) DeleteDistributor(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"answer": "success",
 	})
+}
+
+// @Router /v1/parks/{park_id} [get]
+// @Summary Get Park
+// @Description API for getting park
+// @Tags park
+// @Accept  json
+// @Produce  json
+// @Param park_id path string true " Id"
+// @Success 200 {object} models.GetParkModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetPark(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.DistributorService().GetPark(
+		context.Background(), &pbc.GetParkRequest{
+			Id: c.Param("park_id"),
+		},
+	)
+
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+
+	if res == nil {
+		c.JSON(http.StatusNotFound, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Not Found",
+			},
+		})
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res.GetPark())
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/parks/{distributor_id}/parks [get]
+// @Summary Get All Distributor Parks
+// @Description API for getting all distributor parks
+// @Tags distributor
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllParksModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetAllDistributorParks(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	page, err := ParsePageQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	pageSize, err := ParsePageSizeQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	res, err := h.grpcClient.DistributorService().GetAllDistributorParks(
+		context.Background(),
+		&pbc.GetAllDistributorParksRequest{
+			Page:  uint64(page),
+			Limit: uint64(pageSize),
+		},
+	)
+
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/distributor [post]
+// @Summary Create Park
+// @Description API for creating park
+// @Tags park
+// @Accept  json
+// @Produce  json
+// @Param distirbutor body models.CreateParkModel true "park"
+// @Success 200 {object} models.GetParkModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CreatePark(c *gin.Context) {
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		park          pbc.Park
+	)
+
+	jspbMarshal.OrigName = true
+
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &park)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while unmarshalling data", logger.Error(err))
+		return
+	}
+
+	res, err := h.grpcClient.DistributorService().CreatePark(
+		context.Background(),
+		&park,
+	)
+	st, ok := status.FromError(err)
+	if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while creating park", logger.Error(err))
+		return
+	}
+	if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while creating park, service unavailable", logger.Error(err))
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(res.GetPark())
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
