@@ -13,6 +13,16 @@ import (
 	"net/http"
 )
 
+// @Router /v1/cargo-owner [post]
+// @Summary Create Cargo Owner
+// @Description API for creating cargo owner
+// @Tags cargo-owner
+// @Accept  json
+// @Produce  json
+// @Param cargo_owner body models.CreateCargoOwner true "cargo_owner"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateCO(c *gin.Context) {
 	var (
 		jspbUnmarshal jsonpb.Unmarshaler

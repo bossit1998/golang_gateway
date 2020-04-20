@@ -28,7 +28,7 @@ build:
 proto-gen:
 	./scripts/gen-proto.sh	${CURRENT_DIR}
 	rm -rf vendor/genproto
-	rm -rf ${GOROOT}/genproto
+	sudo rm -rf ${GOROOT}/src/genproto
 	sudo cp -R genproto ${GOROOT}/src
 	mv genproto vendor
 
