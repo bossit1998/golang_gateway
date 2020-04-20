@@ -107,6 +107,9 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("v1/order/:order_id/add-courier", handlerV1.AddCourier)
 	r.PATCH("v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
 
+	//Cargo owner
+	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
+
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 

@@ -7,6 +7,7 @@ import (
 	pbc "genproto/courier_service"
 	pbf "genproto/fare_service"
 	pbo "genproto/order_service"
+	pbco "genproto/co_service"
 	"google.golang.org/grpc"
 )
 
@@ -53,6 +54,16 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.OrderServiceHost, cfg.OrderServicePort, err)
 	}
 
+	connCO, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.COServiceHost, cfg.COServicePort),
+		grpc.WithInsecure(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("cargo_owner service dial host: %s port:%d err: %s",
+			cfg.COServiceHost, cfg.COServicePort, err)
+	}
+
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
@@ -60,6 +71,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"distributor_service": pbc.NewDistributorServiceClient(connCourier),
 			"fare_service":        pbf.NewFareServiceClient(connFare),
 			"order_service":       pbo.NewOrderServiceClient(connOrder),
+			"co_service":          pbco.NewCOServiceClient(connCO),
 		},
 	}, nil
 }
@@ -78,4 +90,8 @@ func (g *GrpcClient) FareService() pbf.FareServiceClient {
 
 func (g *GrpcClient) OrderService() pbo.OrderServiceClient {
 	return g.connections["order_service"].(pbo.OrderServiceClient)
+}
+
+func (g *GrpcClient) COService() pbco.COServiceClient {
+	return g.connections["co_service"].(pbco.COServiceClient)
 }

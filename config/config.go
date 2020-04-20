@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/cast"
 )
 
+const (
+	RoleCargoOwner = "cargo_owner"
+)
+
 // Config ...
 type Config struct {
 	Environment string // develop, staging, production
@@ -27,6 +31,9 @@ type Config struct {
 
 	OrderServiceHost string
 	OrderServicePort int
+
+	COServiceHost string
+	COServicePort int
 
 	LogLevel string
 	HTTPPort string
@@ -61,6 +68,9 @@ func Load() Config {
 
 	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
 	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
+
+	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
+	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 
