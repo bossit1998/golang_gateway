@@ -193,3 +193,39 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 		Message: "changing order status successfully",
 	})
 }
+
+// @Router /v1/order-statuses [get]
+// @Summary Get All Possible Order Statuses
+// @Description API for getting order statuses
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.GetStatuses
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetStatuses(c *gin.Context) {
+	var (
+		model models.GetStatuses
+		status models.Status
+	)
+
+	status = models.Status{"986a0d09-7b4d-4ca9-8567-aa1c6d770505", "New"}
+	model.Statuses = append(model.Statuses, status)
+
+	status = models.Status{"6ba783a3-1c2e-479c-9626-25526b3d9d36", "Cancelled"}
+	model.Statuses = append(model.Statuses, status)
+
+	status = models.Status{"8781af8e-f74d-4fb6-ae23-fd997f4a2ee0", "Accepted"}
+	model.Statuses = append(model.Statuses, status)
+
+	status = models.Status{"84be5a2f-3a92-4469-8283-220ca34a0de4", "Picked up"}
+	model.Statuses = append(model.Statuses, status)
+
+	status = models.Status{"79413606-a56f-45ed-97c3-f3f18e645972", "Delivered"}
+	model.Statuses = append(model.Statuses, status)
+
+	status = models.Status{"e665273d-5415-4243-a329-aee410e39465", "Finished"}
+	model.Statuses = append(model.Statuses, status)
+
+	c.JSON(http.StatusOK, model)
+}
