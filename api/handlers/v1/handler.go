@@ -209,9 +209,9 @@ func handleGrpcErrWithMessage(c *gin.Context, l logger.Logger, err error, messag
 		l.Error(message+", already exists", logger.Error(err))
 		return true
 	} else if st.Code() == codes.InvalidArgument {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
+		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
+				Code:    ErrorBadRequest,
 				Message: st.Message(),
 			},
 		})

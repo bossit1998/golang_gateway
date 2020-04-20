@@ -51,3 +51,7 @@ type GetOrders struct {
 	Orders []getOrderModel `json:"orders"`
 	Count uint64 `json:"count"`
 }
+
+type ChangeStatusRequest struct {
+	StatusID string `json:"status_id"`
+} 

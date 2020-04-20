@@ -21,6 +21,11 @@ definitions:
       price:
         type: number
     type: object
+  models.ChangeStatusRequest:
+    properties:
+      status_id:
+        type: string
+    type: object
   models.CreateFareModel:
     properties:
       delivery_time:
@@ -74,15 +79,6 @@ definitions:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
     type: object
-  models.GeozoneModel:
-    properties:
-      count:
-        type: integer
-      geozones:
-        items:
-          $ref: '#/definitions/models.geozone'
-        type: array
-    type: object
   models.GetAllFaresModel:
     properties:
       count:
@@ -104,11 +100,6 @@ definitions:
         type: string
       phone:
         type: string
-    type: object
-  models.GetDistanceResponse:
-    properties:
-      distance:
-        type: number
     type: object
   models.GetFareModel:
     properties:
@@ -219,17 +210,6 @@ definitions:
         type: string
       price_per_km:
         type: number
-    type: object
-  models.geozone:
-    properties:
-      geometry:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      parent_id:
-        type: string
     type: object
   models.getOrderModel:
     properties:
@@ -511,86 +491,6 @@ paths:
       summary: Get Fare
       tags:
       - fare
-  /v1/geozones/:
-    get:
-      consumes:
-      - application/json
-      description: Get Geozones
-      parameters:
-      - description: Parent ID
-        in: query
-        name: parent_id
-        type: string
-      - description: PAGE
-        in: query
-        name: page
-        type: integer
-      - description: PAGE
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GeozoneModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Geozones
-      tags:
-      - geo
-  /v1/getdistance/from/{from_lat}/{from_long}/to/{to_lat}/{to_long}:
-    get:
-      consumes:
-      - application/json
-      description: API for getting distance
-      parameters:
-      - description: from_lat
-        in: path
-        name: from_lat
-        required: true
-        type: string
-      - description: from_long
-        in: path
-        name: from_long
-        required: true
-        type: string
-      - description: to_lat
-        in: path
-        name: to_lat
-        required: true
-        type: string
-      - description: to_long
-        in: path
-        name: to_long
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetDistanceResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Distance
-      tags:
-      - geo
   /v1/order:
     get:
       consumes:
@@ -680,6 +580,41 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Order
+      tags:
+      - order
+  /v1/order/{order_id}/change-status:
+    patch:
+      consumes:
+      - application/json
+      description: API for changing order status
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: status
+        in: body
+        name: status
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Change Order Status
       tags:
       - order
 securityDefinitions:
