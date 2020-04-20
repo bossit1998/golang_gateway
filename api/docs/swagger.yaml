@@ -1,4 +1,9 @@
 definitions:
+  models.AddCourierRequest:
+    properties:
+      courier_id:
+        type: string
+    type: object
   models.CalcDeliveryCostRequest:
     properties:
       from_location:
@@ -619,6 +624,41 @@ paths:
       summary: Get Order
       tags:
       - order
+  /v1/order/{order_id}/add-courier:
+    patch:
+      consumes:
+      - application/json
+      description: API for adding order courier
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCourierRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Add Order Courier
+      tags:
+      - order
   /v1/order/{order_id}/change-status:
     patch:
       consumes:
@@ -652,6 +692,35 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Change Order Status
+      tags:
+      - order
+  /v1/order/{order_id}/remove-courier:
+    patch:
+      consumes:
+      - application/json
+      description: API for changing order courier
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Remove Order Courier
       tags:
       - order
 securityDefinitions:

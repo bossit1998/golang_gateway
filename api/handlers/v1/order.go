@@ -229,3 +229,73 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 
 	c.JSON(http.StatusOK, model)
 }
+
+// @Router /v1/order/{order_id}/add-courier [patch]
+// @Summary Add Order Courier
+// @Description API for adding order courier
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "ORDER ID"
+// @Param courier body models.AddCourierRequest true "courier"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) AddCourier(c *gin.Context) {
+	var (
+		orderID string
+		addCourierModel models.AddCourierRequest
+	)
+	orderID = c.Param("order_id")
+	err := c.ShouldBindJSON(&addCourierModel)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	_, err = h.grpcClient.OrderService().AddCourier(
+		context.Background(),
+		&pbo.AddCourierRequest{
+			OrderId: orderID,
+			CourierId: addCourierModel.CourierID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while adding order courier") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "courier added successfully",
+	})
+}
+
+// @Router /v1/order/{order_id}/remove-courier [patch]
+// @Summary Remove Order Courier
+// @Description API for changing order courier
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "ORDER ID"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) RemoveCourier(c *gin.Context) {
+	var (
+		orderID string
+	)
+	orderID = c.Param("order_id")
+
+	_, err := h.grpcClient.OrderService().RemoveCourier(
+		context.Background(),
+		&pbo.RemoveCourierRequest{
+			OrderId: orderID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while removing order courier") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "courier removed successfully",
+	})
+}
