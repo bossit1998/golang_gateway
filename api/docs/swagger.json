@@ -1600,18 +1600,21 @@
                     "application/json"
                 ],
                 "tags": [
-                    "courier"
+                    "vehicle"
                 ],
                 "summary": "Get All Vehicles",
                 "parameters": [
                     {
-                        "description": "courier_vehicle",
-                        "name": "courier_vehicle",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateCourierModel"
-                        }
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1738,6 +1741,9 @@
                     "type": "string"
                 },
                 "birth_date": {
+                    "type": "string"
+                },
+                "courier_id": {
                     "type": "string"
                 },
                 "gender": {

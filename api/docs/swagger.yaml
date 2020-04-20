@@ -37,6 +37,8 @@ definitions:
         type: string
       birth_date:
         type: string
+      courier_id:
+        type: string
       gender:
         type: string
       img:
@@ -1526,12 +1528,14 @@ paths:
       - application/json
       description: API for getting all vehicles
       parameters:
-      - description: courier_vehicle
-        in: body
-        name: courier_vehicle
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateCourierModel'
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
@@ -1549,7 +1553,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All Vehicles
       tags:
-      - courier
+      - vehicle
   /v1/vehicles/{vehicle_id}:
     delete:
       consumes:

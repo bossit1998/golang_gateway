@@ -676,10 +676,11 @@ func (h *handlerV1) GetAllCourierVehicles(c *gin.Context) {
 // @Router /v1/vehicles [get]
 // @Summary Get All Vehicles
 // @Description API for getting all vehicles
-// @Tags courier
+// @Tags vehicle
 // @Accept  json
 // @Produce  json
-// @Param courier_vehicle body models.CreateCourierModel true "courier_vehicle"
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
 // @Success 200 {object} models.GetAllCourierVehiclesModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError

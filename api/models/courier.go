@@ -31,6 +31,7 @@ type UpdateCourierModel struct {
 
 //Courier Details
 type CourierDetailsModel struct {
+	CourierId         string `json:"courier_id"`
 	PassportNumber    string `json:"passport_number"`
 	Gender            string `json:"gender"`
 	BirthDate         string `json:"birth_date"`
