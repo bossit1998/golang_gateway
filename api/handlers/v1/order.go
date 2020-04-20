@@ -150,3 +150,43 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
+
+// @Router /v1/order/{order_id}/change-status [patch]
+// @Summary Change Order Status
+// @Description API for changing order status
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "ORDER ID"
+// @Param status body models.ChangeStatusRequest true "status"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
+	var (
+		orderID string
+		changeStatusModel models.ChangeStatusRequest
+	)
+	orderID = c.Param("order_id")
+
+	err := c.ShouldBindJSON(&changeStatusModel)
+
+	if handleBadRequestErrWithMessage(c, h.log, err,"error while binding to json") {
+		return
+	}
+
+	_, err = h.grpcClient.OrderService().ChangeStatus(
+		context.Background(),
+		&pbo.ChangeStatusRequest{
+			Id: orderID,
+			StatusId: changeStatusModel.StatusID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
+		return
+	}
+
+	c.JSON(200, models.ResponseOK{
+		Message: "changing order status successfully",
+	})
+}

@@ -318,126 +318,6 @@
                 }
             }
         },
-        "/v1/geozones/": {
-            "get": {
-                "description": "Get Geozones",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "geo"
-                ],
-                "summary": "Get Geozones",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Parent ID",
-                        "name": "parent_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "PAGE",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "PAGE",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GeozoneModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/getdistance/from/{from_lat}/{from_long}/to/{to_lat}/{to_long}": {
-            "get": {
-                "description": "API for getting distance",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "geo"
-                ],
-                "summary": "Get Distance",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "from_lat",
-                        "name": "from_lat",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "from_long",
-                        "name": "from_long",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "to_lat",
-                        "name": "to_lat",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "to_long",
-                        "name": "to_long",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetDistanceResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/order": {
             "get": {
                 "description": "API for getting orders",
@@ -576,6 +456,59 @@
                     }
                 }
             }
+        },
+        "/v1/order/{order_id}/change-status": {
+            "patch": {
+                "description": "API for changing order status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Change Order Status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ORDER ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "status",
+                        "name": "status",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangeStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -609,6 +542,14 @@
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "models.ChangeStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status_id": {
+                    "type": "string"
                 }
             }
         },
@@ -687,20 +628,6 @@
                 }
             }
         },
-        "models.GeozoneModel": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "geozones": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.geozone"
-                    }
-                }
-            }
-        },
         "models.GetAllFaresModel": {
             "type": "object",
             "properties": {
@@ -732,14 +659,6 @@
                 },
                 "phone": {
                     "type": "string"
-                }
-            }
-        },
-        "models.GetDistanceResponse": {
-            "type": "object",
-            "properties": {
-                "distance": {
-                    "type": "number"
                 }
             }
         },
@@ -901,23 +820,6 @@
                 },
                 "price_per_km": {
                     "type": "number"
-                }
-            }
-        },
-        "models.geozone": {
-            "type": "object",
-            "properties": {
-                "geometry": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "parent_id": {
-                    "type": "string"
                 }
             }
         },
