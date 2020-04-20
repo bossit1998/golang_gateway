@@ -13,6 +13,7 @@ import (
 	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+
 	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
@@ -20,10 +21,10 @@ import (
 
 //Config ...
 type Config struct {
-	Storage    		storage.StorageI
-	Logger     		logger.Logger
-	GrpcClient 		*grpc_client.GrpcClient
-	Cfg        		config.Config
+	Storage    storage.StorageI
+	Logger     logger.Logger
+	GrpcClient *grpc_client.GrpcClient
+	Cfg        config.Config
 	//CasbinEnforcer  *casbin.Enforcer
 }
 
@@ -74,19 +75,17 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
-	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:id", handlerV1.GetDistributor)
-	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors/:id", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:id", handlerV1.DeleteDistributor)
-
-	//Geo
 	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
-	//r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
-	//r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
+	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
+	r.GET("/v1/distributors/:distributor_id/parks", handlerV1.GetAllDistributorParks)
 	r.POST("/v1/distributors", handlerV1.CreateDistributor)
 	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
-	//r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+
+	//Park endpoints
+	r.GET("/v1/parks/:park_id", handlerV1.GetPark)
+	r.POST("/v1/parks", handlerV1.CreatePark)
 
 	//GetDistanse
 	r.POST("/v1/calc-delivery-cost", handlerV1.CalcDeliveryCost)

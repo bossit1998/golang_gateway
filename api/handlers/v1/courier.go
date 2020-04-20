@@ -4,11 +4,14 @@ import (
 	"context"
 	"net/http"
 
-	"bitbucket.org/alien_soft/api_getaway/api/models"
 	pbc "genproto/courier_service"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -24,8 +27,12 @@ import (
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCourier(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
 
-	courierResp, err := h.grpcClient.CourierService().GetCourier(
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetCourier(
 		context.Background(), &pbc.GetCourierRequest{
 			Id: c.Param("courier_id"),
 		},
@@ -35,7 +42,7 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 		return
 	}
 
-	if courierResp == nil {
+	if res == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
@@ -44,20 +51,33 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 		})
 		return
 	}
-	courier := courierResp.Courier
+	js, err := jspbMarshal.MarshalToString(res.GetCourier())
 
-	c.JSON(http.StatusOK, models.GetCourierModel{
-		ID:        courier.Id,
-		Phone:     courier.Phone,
-		FirstName: courier.FirstName,
-		LastName:  courier.LastName,
-		CreatedAt: courier.CreatedAt,
-	})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers/{courier_id}/courier_details [get]
+// @Summary Get Courier Details
+// @Description API for getting courier details
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.CourierDetailsModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCourierDetails(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
 
-	resp, err := h.grpcClient.CourierService().GetCourierDetails(
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetCourierDetails(
 		context.Background(), &pbc.GetCourierDetailsRequest{
 			CourierId: c.Param("courier_id"),
 		},
@@ -67,7 +87,7 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 		return
 	}
 
-	if resp == nil {
+	if res == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
@@ -76,21 +96,32 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 		})
 		return
 	}
-	cd := resp.CourierDetails
+	js, err := jspbMarshal.MarshalToString(res.GetCourierDetails())
 
-	c.JSON(http.StatusOK, models.CourierDetailsModel{
-		PassportNumber:    cd.GetPassportNumber(),
-		Gender:            cd.GetGender().GetValue(),
-		BirthDate:         cd.GetBirthDate(),
-		Address:           cd.GetAddress().GetValue(),
-		Img:               cd.GetImg().GetValue(),
-		LisenseNumber:     cd.GetLisenseNumber(),
-		LisenseGivenDate:  cd.GetLisenseGivenDate(),
-		LisenseExpiryDate: cd.GetLisenseExpiryDate(),
-	})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers [get]
+// @Summary Get Couriers
+// @Description API for getting couriers
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllCouriersModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCouriers(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
 
 	page, err := ParsePageQueryParam(c)
 	if err != nil {
@@ -108,7 +139,7 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.CourierService().GetAllCouriers(
+	res, err := h.grpcClient.CourierService().GetAllCouriers(
 		context.Background(),
 		&pbc.GetAllCouriersRequest{
 			Page:  uint64(page),
@@ -118,22 +149,26 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 	if handleGRPCErr(c, h.log, err) {
 		return
 	}
+	js, err := jspbMarshal.MarshalToString(res)
 
-	generalResp := models.GetAllCouriersModel{Count: int(resp.GetCount())}
-
-	for _, e := range resp.GetCouriers() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
-			ID:        e.Id,
-			Phone:     e.Phone,
-			FirstName: e.FirstName,
-			LastName:  e.LastName,
-			CreatedAt: e.CreatedAt,
-		})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, generalResp)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers [post]
+// @Summary Create Courier
+// @Description API for creating courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier body models.CreateCourierModel true "courier"
+// @Success 200 {object} models.GetCourierModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateCourier(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -155,7 +190,15 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		return
 	}
 
-	createdCourier, err := h.grpcClient.CourierService().Create(
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return
+	}
+	accessToken, err := jwt.GenerateJWT(id.String(), "courier", newSigningKey)
+
+	courier.Id = id.String()
+	courier.AccessToken = accessToken
+	res, err := h.grpcClient.CourierService().Create(
 		context.Background(),
 		&courier,
 	)
@@ -167,7 +210,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event", logger.Error(err))
+		h.log.Error("Error while creating courier", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -177,11 +220,11 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event, service unavailable", logger.Error(err))
+		h.log.Error("Error while creating courier, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(createdCourier.Courier)
+	js, err := jspbMarshal.MarshalToString(res.Courier)
 	if err != nil {
 		return
 	}
@@ -190,6 +233,16 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers/courier_details [post]
+// @Summary Create Courier Details
+// @Description API for creating courier details
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier body models.CourierDetailsModel true "courier_details"
+// @Success 200 {object} models.CourierDetailsModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateCourierDetails(c *gin.Context) {
 	var (
 		jspbMarshal    jsonpb.Marshaler
@@ -223,7 +276,7 @@ func (h *handlerV1) CreateCourierDetails(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event", logger.Error(err))
+		h.log.Error("Error while creating courier details", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -233,7 +286,7 @@ func (h *handlerV1) CreateCourierDetails(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while creating event, service unavailable", logger.Error(err))
+		h.log.Error("Error while creating courier details, service unavailable", logger.Error(err))
 		return
 	}
 
@@ -246,6 +299,16 @@ func (h *handlerV1) CreateCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers [put]
+// @Summary Update Courier
+// @Description API for updating courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier body models.UpdateCourierModel true "courier"
+// @Success 200 {object} models.GetCourierModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateCourier(c *gin.Context) {
 
 	var (
@@ -268,7 +331,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 		return
 	}
 
-	updatedCourier, err := h.grpcClient.CourierService().Update(
+	res, err := h.grpcClient.CourierService().Update(
 		context.Background(),
 		&courier,
 	)
@@ -294,7 +357,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(updatedCourier.Courier)
+	js, err := jspbMarshal.MarshalToString(res.GetCourier())
 	if err != nil {
 		return
 	}
@@ -303,6 +366,16 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers/courier_details [put]
+// @Summary Update Courier Details
+// @Description API for updating courier details
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_details body models.CourierDetailsModel true "courier_details"
+// @Success 200 {object} models.CourierDetailsModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateCourierDetails(c *gin.Context) {
 
 	var (
@@ -325,7 +398,7 @@ func (h *handlerV1) UpdateCourierDetails(c *gin.Context) {
 		return
 	}
 
-	cd, err := h.grpcClient.CourierService().UpdateCourierDetails(
+	res, err := h.grpcClient.CourierService().UpdateCourierDetails(
 		context.Background(),
 		&courierDetails,
 	)
@@ -351,7 +424,7 @@ func (h *handlerV1) UpdateCourierDetails(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(cd.CourierDetails)
+	js, err := jspbMarshal.MarshalToString(res.CourierDetails)
 	if err != nil {
 		return
 	}
@@ -360,6 +433,16 @@ func (h *handlerV1) UpdateCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers/{courier_id} [delete]
+// @Summary Delete Courier
+// @Description API for deleting courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteCourier(c *gin.Context) {
 
 	_, err := h.grpcClient.CourierService().Delete(
@@ -404,9 +487,131 @@ func (h *handlerV1) DeleteCourier(c *gin.Context) {
 	})
 }
 
-func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
+// @Router /v1/couriers/{courier_id}/block [post]
+// @Summary Blocking Courier
+// @Description API for blocking courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) BlockCourier(c *gin.Context) {
 
-	courierResp, err := h.grpcClient.CourierService().GetCourierVehicle(
+	_, err := h.grpcClient.CourierService().BlockCourier(
+		context.Background(),
+		&pbc.BlockCourierRequest{
+			Id: c.Param("courier_id"),
+		},
+	)
+	st, ok := status.FromError(err)
+	if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting courier", logger.Error(err))
+		return
+	}
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Not found",
+			},
+		})
+		h.log.Error("Error while deleting courier, not found", logger.Error(err))
+		return
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting courier, service unavailable", logger.Error(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": "success",
+	})
+}
+
+// @Router /v1/couriers/{courier_id}/unblock [post]
+// @Summary Unblocking Courier
+// @Description API for unblocking courier
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) UnblockCourier(c *gin.Context) {
+
+	_, err := h.grpcClient.CourierService().UnblockCourier(
+		context.Background(),
+		&pbc.UnblockCourierRequest{
+			Id: c.Param("courier_id"),
+		},
+	)
+	st, ok := status.FromError(err)
+	if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting courier", logger.Error(err))
+		return
+	}
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Not found",
+			},
+		})
+		h.log.Error("Error while deleting courier, not found", logger.Error(err))
+		return
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting courier, service unavailable", logger.Error(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": "success",
+	})
+}
+
+// @Router /v1/vehicle/{vehicle_id} [get]
+// @Summary Get Courier Vehicle
+// @Description API for getting courier vehicle
+// @Tags vehicle
+// @Accept  json
+// @Produce  json
+// @Param vehicle_id path string true "vehicle_id"
+// @Success 200 {object} models.GetCourierVehicleModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetCourierVehicle(
 		context.Background(), &pbc.GetCourierVehicleRequest{
 			Id: c.Param("vehicle_id"),
 		},
@@ -416,49 +621,101 @@ func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
 		return
 	}
 
-	if courierResp == nil {
+	if res == nil {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Event Not Found",
+				Message: "Vehicle Not Found",
 			},
 		})
 		return
 	}
-	vehicle := courierResp.CourierVehicle
+	js, err := jspbMarshal.MarshalToString(res.GetCourierVehicle())
 
-	c.JSON(http.StatusOK, models.GetCourierModel{
-		ID:        vehicle.Id,
-		Phone:     vehicle.Model,
-		FirstName: vehicle.VehicleNumber,
-		CreatedAt: vehicle.CreatedAt,
-	})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/couriers/{courier_id}/vehicles [get]
+// @Summary Get All Courier Vehicles
+// @Description API for getting courier's vehicles
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.GetAllCourierVehiclesModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCourierVehicles(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
 
-	resp, err := h.grpcClient.CourierService().GetAllCourierVehicles(
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetAllCourierVehicles(
 		context.Background(),
 		&pbc.GetAllCourierVehiclesRequest{},
 	)
 	if handleGRPCErr(c, h.log, err) {
 		return
 	}
+	js, err := jspbMarshal.MarshalToString(res)
 
-	generalResp := models.GetAllCouriersModel{}
-
-	for _, e := range resp.GetCourierVehicles() {
-		generalResp.Couriers = append(generalResp.Couriers, models.GetCourierModel{
-			ID:        e.Id,
-			Phone:     e.Model,
-			FirstName: e.VehicleNumber,
-			CreatedAt: e.CreatedAt,
-		})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, generalResp)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/vehicles [get]
+// @Summary Get All Vehicles
+// @Description API for getting all vehicles
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_vehicle body models.CreateCourierModel true "courier_vehicle"
+// @Success 200 {object} models.GetAllCourierVehiclesModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetAllVehicles(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetAllCourierVehicles(
+		context.Background(),
+		&pbc.GetAllCourierVehiclesRequest{},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/vehicle [post]
+// @Summary Create Courier Vehicle
+// @Description API for creating courier vehicle
+// @Tags vehicle
+// @Accept  json
+// @Produce  json
+// @Param courier_vehicle body models.CreateCourierVehicleModel true "courier_vehicle"
+// @Success 200 {object} models.GetCourierVehicleModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -480,7 +737,7 @@ func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 		return
 	}
 
-	v, err := h.grpcClient.CourierService().CreateCourierVehicle(
+	res, err := h.grpcClient.CourierService().CreateCourierVehicle(
 		context.Background(),
 		&vehicle,
 	)
@@ -506,8 +763,9 @@ func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(v.CourierVehicle)
-	if err != nil {
+	js, err := jspbMarshal.MarshalToString(res.GetCourierVehicle())
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
@@ -515,6 +773,16 @@ func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/vehicle [put]
+// @Summary Update Courier Vehicle
+// @Description API for updating courier vehicle
+// @Tags vehicle
+// @Accept  json
+// @Produce  json
+// @Param courier_vehicle body models.UpdateCourierVehicleModel true "courier_vehicle"
+// @Success 200 {object} models.GetCourierVehicleModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 
 	var (
@@ -537,7 +805,7 @@ func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 		return
 	}
 
-	v, err := h.grpcClient.CourierService().UpdateCourierVehicle(
+	res, err := h.grpcClient.CourierService().UpdateCourierVehicle(
 		context.Background(),
 		&vehicle,
 	)
@@ -560,12 +828,13 @@ func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 			},
 		})
 
-		h.log.Error("Error while updating vehiclee, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating vehicle, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(v.CourierVehicle)
-	if err != nil {
+	js, err := jspbMarshal.MarshalToString(res.CourierVehicle)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
@@ -573,6 +842,16 @@ func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Router /v1/vehicles/{vehicle_id} [delete]
+// @Summary Delete Courier Vehicle
+// @Description API for deleting courier vehicle
+// @Tags vehicle
+// @Accept  json
+// @Produce  json
+// @Param vehicle_id path string true "vehicle_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 
 	_, err := h.grpcClient.CourierService().DeleteCourierVehicle(
