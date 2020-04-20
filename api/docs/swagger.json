@@ -51,6 +51,52 @@
                 }
             }
         },
+        "/v1/cargo-owner": {
+            "post": {
+                "description": "API for creating cargo owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cargo-owner"
+                ],
+                "summary": "Create Cargo Owner",
+                "parameters": [
+                    {
+                        "description": "cargo_owner",
+                        "name": "cargo_owner",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateCargoOwner"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers": {
             "get": {
                 "description": "API for getting couriers",
@@ -1762,6 +1808,29 @@
                     "type": "string"
                 },
                 "passport_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateCargoOwner": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
                     "type": "string"
                 }
             }

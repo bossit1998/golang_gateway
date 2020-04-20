@@ -52,6 +52,21 @@ definitions:
       passport_number:
         type: string
     type: object
+  models.CreateCargoOwner:
+    properties:
+      description:
+        type: string
+      login:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
   models.CreateCourierModel:
     properties:
       first_name:
@@ -510,6 +525,36 @@ paths:
       summary: Calculate Delivery Price For Clients
       tags:
       - geo
+  /v1/cargo-owner:
+    post:
+      consumes:
+      - application/json
+      description: API for creating cargo owner
+      parameters:
+      - description: cargo_owner
+        in: body
+        name: cargo_owner
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCargoOwner'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Cargo Owner
+      tags:
+      - cargo-owner
   /v1/couriers:
     get:
       consumes:
