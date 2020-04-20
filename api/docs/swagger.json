@@ -367,6 +367,41 @@
                 }
             }
         },
+        "/v1/order-statuses": {
+            "get": {
+                "description": "API for getting order statuses",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get All Possible Order Statuses",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetStatuses"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/order/": {
             "post": {
                 "description": "API for creating order",
@@ -771,6 +806,17 @@
                 }
             }
         },
+        "models.GetStatuses": {
+            "type": "object",
+            "properties": {
+                "statuses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Status"
+                    }
+                }
+            }
+        },
         "models.Location": {
             "type": "object",
             "properties": {
@@ -797,6 +843,17 @@
             "properties": {
                 "message": {
                     "type": "object"
+                }
+            }
+        },
+        "models.Status": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

@@ -177,6 +177,13 @@ definitions:
           $ref: '#/definitions/models.getOrderModel'
         type: array
     type: object
+  models.GetStatuses:
+    properties:
+      statuses:
+        items:
+          $ref: '#/definitions/models.Status'
+        type: array
+    type: object
   models.Location:
     properties:
       lat:
@@ -195,6 +202,13 @@ definitions:
     properties:
       message:
         type: object
+    type: object
+  models.Status:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
     type: object
   models.UpdateFareModel:
     properties:
@@ -521,6 +535,29 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Orders
+      tags:
+      - order
+  /v1/order-statuses:
+    get:
+      consumes:
+      - application/json
+      description: API for getting order statuses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetStatuses'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Possible Order Statuses
       tags:
       - order
   /v1/order/:

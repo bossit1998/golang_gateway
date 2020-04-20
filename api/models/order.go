@@ -54,4 +54,13 @@ type GetOrders struct {
 
 type ChangeStatusRequest struct {
 	StatusID string `json:"status_id"`
-} 
+}
+
+type Status struct {
+	ID string `json:"id"`
+	Name string `json:"name"`
+}
+
+type GetStatuses struct {
+	Statuses []Status `json:"statuses"`
+}
