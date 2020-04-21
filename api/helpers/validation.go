@@ -10,7 +10,7 @@ func ValidatePassword(password string) error {
 	if password == "" {
 		return errors.New("password cannot be blank")
 	}
-	if len(password) < 8 && len(password) > 30 {
+	if len(password) < 8 || len(password) > 30 {
 		return errors.New("password length should be 8 to 30 characters")
 	}
 	if validation.Validate(password, validation.Match(regexp.MustCompile("^[A-Za-z0-9$_@.#]+$"))) != nil {
