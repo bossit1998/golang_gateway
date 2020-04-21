@@ -110,6 +110,8 @@ func New(cnf Config) *gin.Engine {
 
 	//Cargo owner
 	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
+	r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
+	r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

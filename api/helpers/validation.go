@@ -1,98 +1,39 @@
 package helpers
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v8"
-	"net/http"
-	"reflect"
-	"strconv"
-	"strings"
+	"errors"
+	validation "github.com/go-ozzo/ozzo-validation/v3"
+	"regexp"
 )
 
-type (
-	StdRespError struct {
-		Message string `json:"message"`
-		Field   string `json:"field"`
+func ValidatePassword(password string) error {
+	if password == "" {
+		return errors.New("password cannot be blank")
 	}
-	StdResp struct {
-		Code    string         `json:"code,omitempty"`
-		Message string         `json:"message,omitempty"`
-		Errors  []StdRespError `json:"errors,omitempty"`
+	if len(password) < 8 && len(password) > 30 {
+		return errors.New("password length should be 8 to 30 characters")
 	}
-)
-
-func BindJSON(c *gin.Context, obj interface{}) error {
-	err := c.ShouldBindJSON(obj)
-	if err == nil {
-		return nil
+	if validation.Validate(password, validation.Match(regexp.MustCompile("^[A-Za-z0-9$_@.#]+$"))) != nil {
+		return errors.New("password should contain only alphabetic characters, numbers and special characters(@, $, _, ., #)")
 	}
-	elem := reflect.TypeOf(obj).Elem()
-	switch err.(type) {
-	case validator.ValidationErrors:
-		errors := make([]StdRespError, 0)
-		for _, fieldErr := range err.(validator.ValidationErrors) {
-			text := ""
-			field, ok := elem.FieldByName(fieldErr.Field)
-			if !ok {
-				continue
-			}
-			tagValue := field.Tag.Get("json")
-			if tagValue == "" {
-				tagValue = fieldErr.Field
-			}
-			switch fieldErr.Tag {
-			case "required":
-				text = "Cannot be blank"
-			case "email":
-				text = "Is not a valid email address"
-			case "min":
-				if fieldErr.Type.Name() == "string" {
-					i, _ := strconv.Atoi(vMethodArg(field, "min"))
-					text = fmt.Sprintf("Should contain at least %d characters", i)
-				}
-			case "eqfield":
-				rel := ""
-				if arg := vMethodArg(field, "eqfield"); arg != "" {
-					if field, ok := elem.FieldByName(arg); ok {
-						rel = field.Tag.Get("json")
-					}
-				}
-				text = fmt.Sprintf("Must be equal to \"%s\"", rel)
-			case "lte":
-				text = fmt.Sprintf("Must be less than or equal to \"%s\"", vMethodArg(field, "lte"))
-			case "gte":
-				text = fmt.Sprintf("Must be greater than or equal to \"%s\"", vMethodArg(field, "gte"))
-			}
-			if text != "" {
-				errors = append(errors, StdRespError{text, tagValue})
-			}
-		}
-		c.JSON(http.StatusBadRequest, StdResp{Errors: errors})
-		return fmt.Errorf("Input data %+v are not valid", obj)
-	default:
-		c.JSON(http.StatusBadRequest, StdResp{Code: "PARSE_REQUEST_BODY", Message: err.Error()})
-		return err
+	if validation.Validate(password, validation.Match(regexp.MustCompile("[0-9]"))) != nil {
+		return errors.New("password should contain at least one number")
 	}
+	if validation.Validate(password, validation.Match(regexp.MustCompile("[A-Za-z]"))) != nil {
+		return errors.New("password should contain at least one alphabetic character")
+	}
+	return nil
 }
 
-func vMethodArg(field reflect.StructField, vMethod string) string {
-	tagValue := field.Tag.Get("binding")
-	i, l := 0, len(vMethod)+1
-	if i = strings.Index(tagValue, vMethod+"="); i == -1 {
-		return ""
+func ValidateLogin(login string) error  {
+	if login == "" {
+		return errors.New("login cannot be blank")
 	}
-	if j := strings.Index(tagValue[i+l:], ","); j != -1 {
-		return tagValue[i+l : i+l+j]
+	if len(login) < 6 && len(login) > 15 {
+		return errors.New("login length should be 8 to 30 characters")
 	}
-	return tagValue[i+l:]
-}
-
-func InEnums(str string, enums []string) bool {
-	for _, enum := range enums {
-		if enum == str {
-			return true
-		}
+	if validation.Validate(login, validation.Match(regexp.MustCompile("^[A-Za-z0-9$@_.#]+$"))) != nil {
+		return errors.New("login should contain only alphabetic characters, numbers and special characters(@, $, _, ., #)")
 	}
-	return false
+	return nil
 }

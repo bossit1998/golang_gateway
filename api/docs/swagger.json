@@ -97,6 +97,98 @@
                 }
             }
         },
+        "/v1/cargo-owner/check-login": {
+            "post": {
+                "description": "API for checking cargo owner login exists or not in the table",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cargo-owner"
+                ],
+                "summary": "Check Cargo Owner Login",
+                "parameters": [
+                    {
+                        "description": "cargo_owner_login",
+                        "name": "cargo_owner_login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckExistsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/cargo-owner/check-name": {
+            "post": {
+                "description": "API for checking cargo owner name exists or not in the table",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cargo-owner"
+                ],
+                "summary": "Check Cargo Owner Name",
+                "parameters": [
+                    {
+                        "description": "cargo_owner_name",
+                        "name": "cargo_owner_name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckNameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckExistsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers": {
             "get": {
                 "description": "API for getting couriers",
@@ -1780,6 +1872,31 @@
                 }
             }
         },
+        "models.CheckExistsResponse": {
+            "type": "object"
+        },
+        "models.CheckLoginRequest": {
+            "type": "object",
+            "required": [
+                "login"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CheckNameRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CourierDetailsModel": {
             "type": "object",
             "properties": {
@@ -1814,6 +1931,12 @@
         },
         "models.CreateCargoOwner": {
             "type": "object",
+            "required": [
+                "login",
+                "logo",
+                "name",
+                "password"
+            ],
             "properties": {
                 "description": {
                     "type": "string"

@@ -31,6 +31,22 @@ definitions:
       status_id:
         type: string
     type: object
+  models.CheckExistsResponse:
+    type: object
+  models.CheckLoginRequest:
+    properties:
+      login:
+        type: string
+    required:
+    - login
+    type: object
+  models.CheckNameRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   models.CourierDetailsModel:
     properties:
       address:
@@ -66,6 +82,11 @@ definitions:
         type: string
       phone_number:
         type: string
+    required:
+    - login
+    - logo
+    - name
+    - password
     type: object
   models.CreateCourierModel:
     properties:
@@ -553,6 +574,66 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Create Cargo Owner
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/check-login:
+    post:
+      consumes:
+      - application/json
+      description: API for checking cargo owner login exists or not in the table
+      parameters:
+      - description: cargo_owner_login
+        in: body
+        name: cargo_owner_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckExistsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Cargo Owner Login
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/check-name:
+    post:
+      consumes:
+      - application/json
+      description: API for checking cargo owner name exists or not in the table
+      parameters:
+      - description: cargo_owner_name
+        in: body
+        name: cargo_owner_name
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckNameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckExistsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Cargo Owner Name
       tags:
       - cargo-owner
   /v1/couriers:
