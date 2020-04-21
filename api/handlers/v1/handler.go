@@ -1,10 +1,12 @@
   package v1
 
 import (
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
+	jwtg "github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -304,4 +306,51 @@ func getDistance(fromLocation models.Location, toLocation models.Location, cfg c
 	dist := geodriving.RoutesList[0].LegsList[0].Distance
 
 	return dist
+}
+
+func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
+	claims, err := GetClaims(h, c)
+
+	if err != nil {
+		return models.UserInfo{}, err
+	}
+
+	userID := claims["sub"].(string)
+	userRole := claims["role"].(string)
+
+	return models.UserInfo{
+		ID: userID,
+		Role: userRole,
+	}, nil
+}
+
+func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
+	var (
+		ErrUnauthorized = errors.New("unauthorized")
+		authorization   models.AuthorizationModel
+		claims          jwtg.MapClaims
+		err             error
+	)
+
+	authorization.Token = c.GetHeader("Authorization")
+	if c.Request.Header.Get("Authorization") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error:ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
+		return nil, ErrUnauthorized
+	}
+
+	claims, err = jwt.ExtractClaims(authorization.Token, mySigningKey)
+	if err != nil {
+		claims, err = jwt.ExtractClaims(authorization.Token, newSigningKey)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, models.ResponseError{
+				Error: ErrorCodeUnauthorized,
+			})
+			h.log.Error("Unauthorized request: ", logger.Error(err))
+			return nil, ErrUnauthorized
+		}
+	}
+	return claims, nil
   }

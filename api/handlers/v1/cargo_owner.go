@@ -96,6 +96,46 @@ func (h *handlerV1) CreateCO(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
+// @Router /v1/cargo-owner [get]
+// @Summary Create Cargo Owner
+// @Description API for creating cargo owner
+// @Tags cargo-owner
+// @Accept  json
+// @Produce  json
+// @Param co_id query string false "co_id"
+// @Success 200 {object} models.GetCO
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCO(c *gin.Context) {
+	var (
+		coID string
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role == config.RoleCargoOwner {
+		coID = userInfo.ID
+	} else if userInfo.Role == config.RoleSuperAdmin {
+		coID = c.Query("co_id")
+	}
+
+	co, err := h.grpcClient.COService().Get(
+		context.Background(),
+		&pbco.GetRequest{
+			Id:coID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting cargo owner") {
+		return
+	}
+
+	c.JSON(http.StatusOK, co)
+}
+
 // @Router /v1/cargo-owner/check-name [post]
 // @Summary Check Cargo Owner Name
 // @Description API for checking cargo owner name exists or not in the table
@@ -194,4 +234,104 @@ func (h *handlerV1) CheckLogin(c *gin.Context) {
 
 	c.Header("content-type", "application/json")
 	c.String(http.StatusOK, js)
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/cargo-owner/refresh-token [post]
+// @Summary Refresh Cargo Owner Token
+// @Description API for refreshing cargo owner token
+// @Tags cargo-owner
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.RefreshTokenResponse
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) RefreshToken(c *gin.Context) {
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	token, err := jwt.GenerateJWT(userInfo.ID, userInfo.Role, newSigningKey)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while generating token") {
+		return
+	}
+
+	_, err = h.grpcClient.COService().UpdateToken(
+		context.Background(),
+		&pbco.CargoOwner{
+			Id:userInfo.ID,
+			Token:token,
+		})
+
+	c.JSON(http.StatusOK, models.RefreshTokenResponse{
+		Token: token,
+	})
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/cargo-owner/change-credentials [post]
+// @Summary Change Cargo Owner Login And Password
+// @Description API for changing cargo owner login and password
+// @Tags cargo-owner
+// @Accept  json
+// @Produce  json
+// @Param cargo_owner_credentials body models.ChangeLoginPasswordRequest true "cargo_owner_credentials"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) ChangeLoginPassword(c *gin.Context) {
+	var (
+		model models.ChangeLoginPasswordRequest
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	err = c.ShouldBindJSON(&model)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding json") {
+		return
+	}
+
+	model.Login = strings.TrimSpace(model.Login)
+
+	err = helpers.ValidateLogin(model.Login)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	err = helpers.ValidatePassword(model.Password)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	passwordHash, err := etc.GeneratePasswordHash(model.Password)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while hashing password") {
+		return
+	}
+
+	_, err = h.grpcClient.COService().ChangeLoginPassword(
+		context.Background(),
+		&pbco.CargoOwner{
+			Id: userInfo.ID,
+			Login: model.Login,
+			Password: string(passwordHash),
+		})
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message:"login and password successfully changed",
+	})
 }

@@ -26,3 +26,23 @@ type CheckExistsResponse struct {
 type CheckLoginRequest struct {
 	Login string `json:"login" binding:"required"`
 }
+
+type RefreshTokenResponse struct {
+	Token string `json:"token"`
+}
+
+type ChangeLoginPasswordRequest struct {
+	Login string `json:"login" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type GetCO struct {
+	ID string `json:"id"`
+	Name string `json:"name"`
+	Logo string `json:"logo"`
+	Login string `json:"login"`
+	PhoneNumber string `json:"phone_number"`
+	Token string `json:"token"`
+	Description string `json:"description"`
+	IsActive bool `json:"is_active"`
+}

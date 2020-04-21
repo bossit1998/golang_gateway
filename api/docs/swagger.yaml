@@ -26,6 +26,16 @@ definitions:
       price:
         type: number
     type: object
+  models.ChangeLoginPasswordRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
   models.ChangeStatusRequest:
     properties:
       status_id:
@@ -221,6 +231,25 @@ definitions:
           $ref: '#/definitions/models.GetParkModel'
         type: array
     type: object
+  models.GetCO:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      login:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      token:
+        type: string
+    type: object
   models.GetCourierModel:
     properties:
       access_token:
@@ -380,6 +409,11 @@ definitions:
         type: number
       phone:
         type: number
+    type: object
+  models.RefreshTokenResponse:
+    properties:
+      token:
+        type: string
     type: object
   models.ResponseError:
     properties:
@@ -547,6 +581,35 @@ paths:
       tags:
       - geo
   /v1/cargo-owner:
+    get:
+      consumes:
+      - application/json
+      description: API for creating cargo owner
+      parameters:
+      - description: co_id
+        in: query
+        name: co_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Cargo Owner
+      tags:
+      - cargo-owner
     post:
       consumes:
       - application/json
@@ -574,6 +637,38 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Create Cargo Owner
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/change-credentials:
+    post:
+      consumes:
+      - application/json
+      description: API for changing cargo owner login and password
+      parameters:
+      - description: cargo_owner_credentials
+        in: body
+        name: cargo_owner_credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeLoginPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Change Cargo Owner Login And Password
       tags:
       - cargo-owner
   /v1/cargo-owner/check-login:
@@ -634,6 +729,31 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Check Cargo Owner Name
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: API for refreshing cargo owner token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RefreshTokenResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Refresh Cargo Owner Token
       tags:
       - cargo-owner
   /v1/couriers:
