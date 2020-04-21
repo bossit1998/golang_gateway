@@ -1,0 +1,1717 @@
+definitions:
+  models.AddCourierRequest:
+    properties:
+      courier_id:
+        type: string
+    type: object
+  models.CalcDeliveryCostRequest:
+    properties:
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      min_distance:
+        type: number
+      min_price:
+        type: number
+      per_km_price:
+        type: number
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+    type: object
+  models.CalcDeliveryCostResponse:
+    properties:
+      distance:
+        type: number
+      price:
+        type: number
+    type: object
+  models.ChangeStatusRequest:
+    properties:
+      status_id:
+        type: string
+    type: object
+  models.CheckExistsResponse:
+    type: object
+  models.CheckLoginRequest:
+    properties:
+      login:
+        type: string
+    required:
+    - login
+    type: object
+  models.CheckNameRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.CourierDetailsModel:
+    properties:
+      address:
+        type: string
+      birth_date:
+        type: string
+      courier_id:
+        type: string
+      gender:
+        type: string
+      img:
+        type: string
+      lisense_expiry_date:
+        type: string
+      lisense_given_date:
+        type: string
+      lisense_number:
+        type: string
+      passport_number:
+        type: string
+    type: object
+  models.CreateCargoOwner:
+    properties:
+      description:
+        type: string
+      login:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - login
+    - logo
+    - name
+    - password
+    type: object
+  models.CreateCourierModel:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.CreateCourierVehicleModel:
+    properties:
+      model:
+        type: string
+      vehicle_number:
+        type: string
+    type: object
+  models.CreateDistributorModel:
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.CreateFareModel:
+    properties:
+      delivery_time:
+        type: integer
+      min_distance:
+        type: number
+      min_price:
+        type: number
+      name:
+        type: string
+      price_per_km:
+        type: number
+    type: object
+  models.CreateOrder:
+    properties:
+      branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      deliver_price:
+        example: 10000
+        type: number
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        example: "998998765432"
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.productModel'
+        type: array
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+    type: object
+  models.CreateParkModel:
+    properties:
+      address:
+        type: string
+      location:
+        $ref: '#/definitions/models.LocationModel'
+        type: object
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.GetAllCourierVehiclesModel:
+    properties:
+      count:
+        type: integer
+      courier_vehicles:
+        items:
+          $ref: '#/definitions/models.GetCourierVehicleModel'
+        type: array
+    type: object
+  models.GetAllCouriersModel:
+    properties:
+      count:
+        type: integer
+      couriers:
+        items:
+          $ref: '#/definitions/models.GetCourierModel'
+        type: array
+    type: object
+  models.GetAllDistributorsModel:
+    properties:
+      count:
+        type: integer
+      distributors:
+        items:
+          $ref: '#/definitions/models.GetDistributorModel'
+        type: array
+    type: object
+  models.GetAllFaresModel:
+    properties:
+      count:
+        type: integer
+      fares:
+        items:
+          $ref: '#/definitions/models.GetFareModel'
+        type: array
+    type: object
+  models.GetAllParksModel:
+    properties:
+      count:
+        type: integer
+      parks:
+        items:
+          $ref: '#/definitions/models.GetParkModel'
+        type: array
+    type: object
+  models.GetCourierModel:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.GetCourierVehicleModel:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      model:
+        type: string
+      vehicle_number:
+        type: string
+    type: object
+  models.GetDistributorModel:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.GetFareModel:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      delivery_time:
+        type: integer
+      id:
+        type: string
+      min_distance:
+        type: number
+      min_price:
+        type: number
+      name:
+        type: string
+      price_per_km:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  models.GetOrder:
+    properties:
+      branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      deliver_price:
+        example: 10000
+        type: number
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      id:
+        example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
+        type: string
+      phone_number:
+        example: "998998765432"
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.getOrderProductModel'
+        type: array
+      status_id:
+        example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
+        type: string
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+    type: object
+  models.GetOrders:
+    properties:
+      count:
+        type: integer
+      orders:
+        items:
+          $ref: '#/definitions/models.getOrderModel'
+        type: array
+    type: object
+  models.GetParkModel:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      distributor_id:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: string
+      location:
+        $ref: '#/definitions/models.LocationModel'
+        type: object
+      name:
+        type: string
+    type: object
+  models.GetStatuses:
+    properties:
+      statuses:
+        items:
+          $ref: '#/definitions/models.Status'
+        type: array
+    type: object
+  models.Location:
+    properties:
+      lat:
+        example: 40.123
+        type: number
+      long:
+        example: 60.123
+        type: number
+    type: object
+  models.LocationModel:
+    properties:
+      name:
+        type: number
+      phone:
+        type: number
+    type: object
+  models.ResponseError:
+    properties:
+      error:
+        type: object
+    type: object
+  models.ResponseOK:
+    properties:
+      message:
+        type: object
+    type: object
+  models.Status:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.UpdateCourierModel:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateCourierVehicleModel:
+    properties:
+      id:
+        type: string
+      model:
+        type: string
+      vehicle_number:
+        type: string
+    type: object
+  models.UpdateDistributorModel:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateFareModel:
+    properties:
+      delivery_time:
+        type: integer
+      id:
+        type: string
+      min_distance:
+        type: number
+      min_price:
+        type: number
+      name:
+        type: string
+      price_per_km:
+        type: number
+    type: object
+  models.getOrderModel:
+    properties:
+      branch_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      co_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      creator_type_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      deliver_price:
+        example: 10000
+        type: number
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      from_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      from_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      id:
+        example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
+        type: string
+      phone_number:
+        example: "998998765432"
+        type: string
+      status_id:
+        example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
+        type: string
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      user_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+    type: object
+  models.getOrderProductModel:
+    properties:
+      id:
+        type: string
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
+      total_amount:
+        type: number
+    type: object
+  models.productModel:
+    properties:
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /v1/calc-delivery-cost:
+    post:
+      consumes:
+      - application/json
+      description: API for getting total delivery cost
+      parameters:
+      - description: calc-delivery-cost
+        in: body
+        name: calc
+        required: true
+        schema:
+          $ref: '#/definitions/models.CalcDeliveryCostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CalcDeliveryCostResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Calculate Delivery Price For Clients
+      tags:
+      - geo
+  /v1/cargo-owner:
+    post:
+      consumes:
+      - application/json
+      description: API for creating cargo owner
+      parameters:
+      - description: cargo_owner
+        in: body
+        name: cargo_owner
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCargoOwner'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Cargo Owner
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/check-login:
+    post:
+      consumes:
+      - application/json
+      description: API for checking cargo owner login exists or not in the table
+      parameters:
+      - description: cargo_owner_login
+        in: body
+        name: cargo_owner_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckExistsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Cargo Owner Login
+      tags:
+      - cargo-owner
+  /v1/cargo-owner/check-name:
+    post:
+      consumes:
+      - application/json
+      description: API for checking cargo owner name exists or not in the table
+      parameters:
+      - description: cargo_owner_name
+        in: body
+        name: cargo_owner_name
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckNameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckExistsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Cargo Owner Name
+      tags:
+      - cargo-owner
+  /v1/couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting couriers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCouriersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Couriers
+      tags:
+      - courier
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier
+      parameters:
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCourierModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier
+      tags:
+      - courier
+    put:
+      consumes:
+      - application/json
+      description: API for updating courier
+      parameters:
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCourierModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Courier
+      tags:
+      - courier
+  /v1/couriers/{courier_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting courier
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Courier
+      tags:
+      - courier
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Courier
+      tags:
+      - courier
+  /v1/couriers/{courier_id}/block:
+    post:
+      consumes:
+      - application/json
+      description: API for blocking courier
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Blocking Courier
+      tags:
+      - courier
+  /v1/couriers/{courier_id}/courier_details:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier details
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourierDetailsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Courier Details
+      tags:
+      - courier
+  /v1/couriers/{courier_id}/unblock:
+    post:
+      consumes:
+      - application/json
+      description: API for unblocking courier
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Unblocking Courier
+      tags:
+      - courier
+  /v1/couriers/{courier_id}/vehicles:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier's vehicles
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCourierVehiclesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Courier Vehicles
+      tags:
+      - courier
+  /v1/couriers/courier_details:
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier details
+      parameters:
+      - description: courier_details
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.CourierDetailsModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourierDetailsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier Details
+      tags:
+      - courier
+    put:
+      consumes:
+      - application/json
+      description: API for updating courier details
+      parameters:
+      - description: courier_details
+        in: body
+        name: courier_details
+        required: true
+        schema:
+          $ref: '#/definitions/models.CourierDetailsModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourierDetailsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Courier Details
+      tags:
+      - courier
+  /v1/distributor:
+    post:
+      consumes:
+      - application/json
+      description: API for creating park
+      parameters:
+      - description: park
+        in: body
+        name: distirbutor
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateParkModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetParkModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Park
+      tags:
+      - park
+    put:
+      consumes:
+      - application/json
+      description: API for updating distributor
+      parameters:
+      - description: distributor
+        in: body
+        name: distributor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateDistributorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistributorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Distributor
+      tags:
+      - distributor
+  /v1/distributor/{distributor_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting distributor
+      parameters:
+      - description: distributor_id
+        in: path
+        name: distributor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Distributor
+      tags:
+      - distributor
+  /v1/distributors:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all distributors
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllDistributorsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Distributors
+      tags:
+      - distributor
+  /v1/distributors/{distributor_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting distributor
+      parameters:
+      - description: distributor Id
+        in: path
+        name: distributor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistributorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Distributor
+      tags:
+      - distributor
+  /v1/distributors/{distributor_id}/couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all distributor couriers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCouriersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Distributor Couriers
+      tags:
+      - distributor
+  /v1/fares:
+    get:
+      consumes:
+      - application/json
+      description: API for getting fares
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllFaresModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Fares
+      tags:
+      - fare
+    post:
+      consumes:
+      - application/json
+      description: API for creating fare
+      parameters:
+      - description: fare
+        in: body
+        name: fare
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateFareModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetFareModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Fare
+      tags:
+      - fare
+    put:
+      consumes:
+      - application/json
+      description: API for updating fare
+      parameters:
+      - description: fare
+        in: body
+        name: fare
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateFareModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetFareModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Fare
+      tags:
+      - fare
+  /v1/fares/{fare_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting fare
+      parameters:
+      - description: fare_id
+        in: path
+        name: fare_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Fare
+      tags:
+      - fare
+    get:
+      consumes:
+      - application/json
+      description: API for getting fare
+      parameters:
+      - description: fare_id
+        in: path
+        name: fare_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetFareModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Fare
+      tags:
+      - fare
+  /v1/order:
+    get:
+      consumes:
+      - application/json
+      description: API for getting orders
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrders'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Orders
+      tags:
+      - order
+  /v1/order-statuses:
+    get:
+      consumes:
+      - application/json
+      description: API for getting order statuses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetStatuses'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Possible Order Statuses
+      tags:
+      - order
+  /v1/order/:
+    post:
+      consumes:
+      - application/json
+      description: API for creating order
+      parameters:
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Order
+      tags:
+      - order
+  /v1/order/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting order
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrder'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Order
+      tags:
+      - order
+  /v1/order/{order_id}/add-courier:
+    patch:
+      consumes:
+      - application/json
+      description: API for adding order courier
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddCourierRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Add Order Courier
+      tags:
+      - order
+  /v1/order/{order_id}/change-status:
+    patch:
+      consumes:
+      - application/json
+      description: API for changing order status
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: status
+        in: body
+        name: status
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Change Order Status
+      tags:
+      - order
+  /v1/order/{order_id}/remove-courier:
+    patch:
+      consumes:
+      - application/json
+      description: API for changing order courier
+      parameters:
+      - description: ORDER ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Remove Order Courier
+      tags:
+      - order
+  /v1/parks/{distributor_id}/parks:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all distributor parks
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllParksModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Distributor Parks
+      tags:
+      - distributor
+  /v1/parks/{park_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting park
+      parameters:
+      - description: ' Id'
+        in: path
+        name: park_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetParkModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Park
+      tags:
+      - park
+  /v1/vehicle:
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier vehicle
+      parameters:
+      - description: courier_vehicle
+        in: body
+        name: courier_vehicle
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCourierVehicleModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier Vehicle
+      tags:
+      - vehicle
+    put:
+      consumes:
+      - application/json
+      description: API for updating courier vehicle
+      parameters:
+      - description: courier_vehicle
+        in: body
+        name: courier_vehicle
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCourierVehicleModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Courier Vehicle
+      tags:
+      - vehicle
+  /v1/vehicle/{vehicle_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier vehicle
+      parameters:
+      - description: vehicle_id
+        in: path
+        name: vehicle_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Courier Vehicle
+      tags:
+      - vehicle
+  /v1/vehicles:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all vehicles
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCourierVehiclesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Vehicles
+      tags:
+      - vehicle
+  /v1/vehicles/{vehicle_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting courier vehicle
+      parameters:
+      - description: vehicle_id
+        in: path
+        name: vehicle_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Courier Vehicle
+      tags:
+      - vehicle
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

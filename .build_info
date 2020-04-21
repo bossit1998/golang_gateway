@@ -1,0 +1,2 @@
+export APP=api_gateway
+export REGISTRY=registry.delever.uz

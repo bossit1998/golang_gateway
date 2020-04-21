@@ -1,0 +1,56 @@
+services:
+  - docker:19.03.1-dind
+
+stages:
+  - staging
+  - prod
+
+migrate_staging:
+  only:
+    - staging
+  stage: staging
+  script:
+    - source .build_info
+    - docker run --mount type=bind,source="$(pwd)/migrations,target=/migrations" --network host migrate/migrate -path=/migrations -database="$TEST_DATABASEURL&x-migrations-table=migrations_$APP" up
+
+deploy_staging:
+  stage: staging
+  only:
+    - staging
+  script:
+    - apk update && apk add make && apk add openssh
+    - docker login $REGISTRY --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+    - make build-image TAG=$CI_COMMIT_SHORT_SHA
+    - make push-image TAG=$CI_COMMIT_SHORT_SHA
+    - cp $TEST_PEM_FILE fiesta.pem
+    - chmod 600 fiesta.pem
+    - source .build_info
+    - ssh -i fiesta.pem -o StrictHostKeyChecking=no  ubuntu@$TEST_SERVER_HOST 'docker service update --with-registry-auth --image '$REGISTRY'/'$APP':'$CI_COMMIT_SHORT_SHA' fiesta_'$APP''
+    - rm fiesta.pem $SERVER_PEM_FILE
+  environment: staging
+
+migrate_production:
+  only:
+    - master
+  stage: prod
+  script:
+    - source .build_info
+    - docker run --mount type=bind,source="$(pwd)/migrations,target=/migrations" --network host migrate/migrate -path=/migrations -database="$PROD_DATABASEURL&x-migrations-table=migrations_$APP" up
+  when: manual
+
+deploy_production:
+  stage: prod
+  only:
+    - master
+  script:
+    - apk update && apk add openssh && apk add make
+    - docker login $REGISTRY --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+    - make build-image TAG=$CI_COMMIT_SHORT_SHA ENV_TAG=production
+    - make push-image TAG=$CI_COMMIT_SHORT_SHA ENV_TAG=production
+    - cp $PROD_PEM_FILE fiesta.pem
+    - chmod 400 fiesta.pem
+    - source .build_info
+    - ssh -i fiesta.pem -o StrictHostKeyChecking=no ubuntu@$PROD_SERVER_HOST 'docker service update --with-registry-auth --image '$REGISTRY'/'$APP':'$CI_COMMIT_SHORT_SHA' fiesta_'$APP''
+    - rm fiesta.pem $SERVER_PEM_FILE
+  environment: prod
+  when: manual
