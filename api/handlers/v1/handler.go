@@ -62,7 +62,6 @@ const (
 	ErrorCodeWrongClub = "WRONG_CLUB"
 	//ErrorCodePasswordsNotEqual ...
 	ErrorCodePasswordsNotEqual = "PASSWORDS_NOT_EQUAL"
-	ErrorCodePas
 )
 
 var (

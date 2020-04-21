@@ -37,4 +37,3 @@ func ValidateLogin(login string) error  {
 	}
 	return nil
 }
-
