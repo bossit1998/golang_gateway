@@ -7,7 +7,9 @@ import (
 )
 
 const (
+	//RoleCargoOwner ...
 	RoleCargoOwner = "cargo_owner"
+	//RoleSuperAdmin ...
 	RoleSuperAdmin = "super_admin"
 )
 
@@ -20,6 +22,9 @@ type Config struct {
 	PostgresDatabase string
 	PostgresUser     string
 	PostgresPassword string
+
+	RedisHost string
+	RedisPort int
 
 	GeoServiceHost string
 	GeoServicePort int
@@ -36,6 +41,9 @@ type Config struct {
 	COServiceHost string
 	COServicePort int
 
+	SmsServiceHost string
+	SmsServicePort int
+
 	LogLevel string
 	HTTPPort string
 
@@ -47,7 +55,7 @@ type Config struct {
 func Load() Config {
 	c := Config{}
 
-	c.Environment = cast.ToString(getOrReturnDefault("ENVIRONMENT", "develop"))
+	c.Environment = cast.ToString(getOrReturnDefault("ENVIRONMENT", "prod"))
 
 	c.PostgresHost = cast.ToString(getOrReturnDefault("POSTGRES_HOST", "127.0.0.1"))
 	c.PostgresPort = cast.ToInt(getOrReturnDefault("POSTGRES_PORT", 5432))
@@ -55,14 +63,17 @@ func Load() Config {
 	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "delever"))
 	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "delever"))
 
+	c.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "127.0.0.1"))
+	c.RedisPort = cast.ToInt(getOrReturnDefault("REDIS_PORT", 6379))
+
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
 	c.HTTPPort = cast.ToString(getOrReturnDefault("HTTP_PORT", ":1235"))
 
 	c.GeoServiceHost = cast.ToString(getOrReturnDefault("GEO_SERVICE_HOST", "geo_service"))
 	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 80))
 
-	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
-	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
+	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "localhost"))
+	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 9003))
 
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
 	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 80))
@@ -72,6 +83,10 @@ func Load() Config {
 
 	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
 	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
+
+	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "localhost"))
+	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 2323))
+
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

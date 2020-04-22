@@ -100,6 +100,8 @@ definitions:
     type: object
   models.CreateCourierModel:
     properties:
+      distributor_id:
+        type: string
       first_name:
         type: string
       last_name:
@@ -1019,6 +1021,38 @@ paths:
       summary: Get All Courier Vehicles
       tags:
       - courier
+  /v1/couriers/check-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether courier exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Courier Login
+      tags:
+      - courier
   /v1/couriers/courier_details:
     post:
       consumes:
@@ -1196,6 +1230,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All Distributors
+      tags:
+      - distributor
+  /v1/distributors/:
+    post:
+      consumes:
+      - application/json
+      description: API for creating distributor
+      parameters:
+      - description: distributor
+        in: body
+        name: distirbutor
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDistributorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistributorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Distributor
       tags:
       - distributor
   /v1/distributors/{distributor_id}:

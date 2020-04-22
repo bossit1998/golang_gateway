@@ -172,7 +172,7 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributor [post]
+// @Router /v1/distributors/ [post]
 // @Summary Create Distributor
 // @Description API for creating distributor
 // @Tags distributor
