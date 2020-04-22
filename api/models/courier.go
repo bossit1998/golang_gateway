@@ -1,6 +1,6 @@
 package models
 
-//Courier
+//GetCourierModel ...
 type GetCourierModel struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
@@ -11,17 +11,20 @@ type GetCourierModel struct {
 	IsActive    string `json:"is_active"`
 }
 
+//GetAllCouriersModel ...
 type GetAllCouriersModel struct {
 	Count    int               `json:"count"`
 	Couriers []GetCourierModel `json:"couriers"`
 }
 
+//CreateCourierModel ...
 type CreateCourierModel struct {
 	Phone     string `json:"phone"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
 
+//UpdateCourierModel ...
 type UpdateCourierModel struct {
 	Id        string `json:"id"`
 	Phone     string `json:"phone"`
@@ -29,7 +32,7 @@ type UpdateCourierModel struct {
 	LastName  string `json:"last_name"`
 }
 
-//Courier Details
+//CourierDetailsModel ...
 type CourierDetailsModel struct {
 	CourierId         string `json:"courier_id"`
 	PassportNumber    string `json:"passport_number"`
@@ -42,7 +45,7 @@ type CourierDetailsModel struct {
 	LisenseExpiryDate string `json:"lisense_expiry_date"`
 }
 
-//Courier Vehicle
+//GetCourierVehicleModel ...
 type GetCourierVehicleModel struct {
 	ID            string `json:"id"`
 	Model         string `json:"model"`
@@ -50,18 +53,27 @@ type GetCourierVehicleModel struct {
 	CreatedAt     string `json:"created_at"`
 }
 
+//GetAllCourierVehicleModel ...
 type GetAllCourierVehiclesModel struct {
 	Count           int                      `json:"count"`
 	CourierVehicles []GetCourierVehicleModel `json:"courier_vehicles"`
 }
 
+//CreateCourierVehicleModel ...
 type CreateCourierVehicleModel struct {
 	Model         string `json:"model"`
 	VehicleNumber string `json:"vehicle_number"`
 }
 
+//UpdateCourierVehicleModel ...
 type UpdateCourierVehicleModel struct {
 	Id            string `json:"id"`
 	Model         string `json:"model"`
 	VehicleNumber string `json:"vehicle_number"`
+}
+
+//CheckLoginResponse ...
+type CheckLoginResponse struct {
+	Code string `json:"code"`
+	Phone string `json:"phone"`
 }

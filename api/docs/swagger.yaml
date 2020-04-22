@@ -756,6 +756,38 @@ paths:
       summary: Refresh Cargo Owner Token
       tags:
       - cargo-owner
+  /v1/courier/check-login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether courier exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Courier Login
+      tags:
+      - courier
   /v1/couriers:
     get:
       consumes:

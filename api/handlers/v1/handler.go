@@ -1,4 +1,4 @@
-  package v1
+package v1
 
 import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
@@ -27,6 +27,7 @@ import (
 type handlerV1 struct {
 	storage    storage.StorageI
 	log        logger.Logger
+	inMemoryStorage repo.InMemoryStorageI
 	grpcClient *grpc_client.GrpcClient
 	cfg        config.Config
 }
@@ -35,6 +36,7 @@ type handlerV1 struct {
 type HandlerV1Config struct {
 	Storage    storage.StorageI
 	Logger     logger.Logger
+	InMemoryStorage repo.InMemoryStorageI
 	GrpcClient *grpc_client.GrpcClient
 	Cfg        config.Config
 }

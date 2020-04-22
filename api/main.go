@@ -9,6 +9,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 
 	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_getaway/config"
@@ -23,6 +24,7 @@ import (
 type Config struct {
 	Storage    storage.StorageI
 	Logger     logger.Logger
+	InMemoryStorage repo.InMemoryStorageI
 	GrpcClient *grpc_client.GrpcClient
 	Cfg        config.Config
 	//CasbinEnforcer  *casbin.Enforcer
@@ -48,6 +50,7 @@ func New(cnf Config) *gin.Engine {
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:    cnf.Storage,
+		InMemoryStorage: cnf.InMemoryStorage,
 		Logger:     cnf.Logger,
 		GrpcClient: cnf.GrpcClient,
 		Cfg:        cnf.Cfg,

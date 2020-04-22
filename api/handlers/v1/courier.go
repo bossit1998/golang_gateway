@@ -6,8 +6,10 @@ import (
 	"strings"
 
 	pbc "genproto/courier_service"
+	pbs "genproto/sms_service"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -878,14 +880,22 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 	})
 }
 
+// @Router /v1/courier/check-login [POST]
+// @Summary Check Courier Login
+// @Description API that checks whether courier exists
+// @Description and if exists sends sms to their number
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param check_login body models.CheckLoginRequest true "check login"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 	var (
-		jspbMarshal jsonpb.Marshaler
 		checkLoginModel models.CheckLoginRequest
+		code string
 	)
-
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
 
 	err := c.ShouldBindJSON(&checkLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
@@ -906,14 +916,40 @@ func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 	if !resp.Exists {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:    ErrorCodeAlreadyExists,
+				Code:    ErrorCodeNotFound,
 				Message: "Courier not found",
 			},
 		})
-		h.log.Error("Error while checking mail, Already exists", logger.Error(err))
+		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
 		return
 	}
 
-	
+	if h.cfg.Environment == "develop" {
+		code = etc.GenerateCode(6, true)
+	} else {
+		code = etc.GenerateCode(6)
+		_, err = h.grpcClient.SmsService().Send(
+			context.Background(), &pbs.Sms{
+				Text: code,
+				Recipients: []string{checkLoginModel.Login},
+			},
+		)
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
+			return
+		}
+	}
 
+	err = h.inMemoryStorage.SetWithTTl(checkLoginModel.Login, code, 1800)
+	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.CheckLoginResponse{
+		Code: code,
+		Phone: checkLoginModel.Login,
+	})
 }
+/*
+func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
+
+}*/
