@@ -50,12 +50,26 @@ definitions:
     required:
     - login
     type: object
+  models.CheckLoginResponse:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
   models.CheckNameRequest:
     properties:
       name:
         type: string
     required:
     - name
+    type: object
+  models.ConfirmLoginRequest:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
     type: object
   models.CourierDetailsModel:
     properties:
@@ -1041,7 +1055,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseOK'
+            $ref: '#/definitions/models.CheckLoginResponse'
         "404":
           description: Not Found
           schema:
@@ -1051,6 +1065,38 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Check Courier Login
+      tags:
+      - courier
+  /v1/couriers/confirm-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether courier entered
+        valid token
+      parameters:
+      - description: confirm login
+        in: body
+        name: confirm_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm Courier Login
       tags:
       - courier
   /v1/couriers/courier_details:

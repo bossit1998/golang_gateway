@@ -69,8 +69,7 @@ const (
 )
 
 var (
-	mySigningKey  = []byte("secretphrase")
-	newSigningKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
+	signingKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
 )
 
 //New ...
@@ -344,16 +343,14 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 		return nil, ErrUnauthorized
 	}
 
-	claims, err = jwt.ExtractClaims(authorization.Token, mySigningKey)
+	claims, err = jwt.ExtractClaims(authorization.Token, signingKey)
 	if err != nil {
-		claims, err = jwt.ExtractClaims(authorization.Token, newSigningKey)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, models.ResponseError{
-				Error: ErrorCodeUnauthorized,
-			})
-			h.log.Error("Unauthorized request: ", logger.Error(err))
-			return nil, ErrUnauthorized
-		}
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: ", logger.Error(err))
+		return nil, ErrUnauthorized
 	}
+	
 	return claims, nil
   }

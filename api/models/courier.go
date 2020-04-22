@@ -78,3 +78,15 @@ type CheckLoginResponse struct {
 	Code string `json:"code"`
 	Phone string `json:"phone"`
 }
+
+//ConfirmLoginRequest ...
+type ConfirmLoginRequest struct {
+	Code string `json:"code"`
+	Phone string `json:"phone"`
+}
+
+//ConfirmLoginResponse ...
+type ConfirmLoginResponse struct {
+	ID string `json:"id"`
+	AccessToken string `json:"access_token"`
+}
