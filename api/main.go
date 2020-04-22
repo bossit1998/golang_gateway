@@ -73,6 +73,7 @@ func New(cnf Config) *gin.Engine {
 	r.PUT("/v1/couriers/courier_details", handlerV1.UpdateCourierDetails)
 	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
 	r.POST("/v1/couriers/check-login/", handlerV1.CheckCourierLogin)
+	r.POST("/v1/couriers/confirm-login/", handlerV1.ConfirmCourierLogin)
 
 	//Vehicle endpoints
 	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)

@@ -73,7 +73,7 @@ func (h *handlerV1) CreateCO(c *gin.Context) {
 
 	cargoOwner.Id = cargoOwnerID.String()
 
-	token, err := jwt.GenerateJWT(cargoOwner.Id, config.RoleCargoOwner, newSigningKey)
+	token, err := jwt.GenerateJWT(cargoOwner.Id, config.RoleCargoOwner, signingKey)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while generating token") {
 		return
@@ -253,7 +253,7 @@ func (h *handlerV1) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	token, err := jwt.GenerateJWT(userInfo.ID, userInfo.Role, newSigningKey)
+	token, err := jwt.GenerateJWT(userInfo.ID, userInfo.Role, signingKey)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while generating token") {
 		return

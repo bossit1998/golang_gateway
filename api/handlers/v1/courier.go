@@ -12,6 +12,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
@@ -191,7 +192,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "courier", newSigningKey)
+	accessToken, err := jwt.GenerateJWT(id.String(), "courier", signingKey)
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
@@ -888,7 +889,7 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param check_login body models.CheckLoginRequest true "check login"
-// @Success 200 {object} models.ResponseOK
+// @Success 200 {object} models.CheckLoginResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
@@ -949,7 +950,82 @@ func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 		Phone: checkLoginModel.Login,
 	})
 }
-/*
-func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 
-}*/
+// @Router /v1/couriers/confirm-login/ [POST]
+// @Summary Confirm Courier Login
+// @Description API that checks whether courier entered
+// @Description valid token
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param confirm_login body models.ConfirmLoginRequest true "confirm login"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
+	var (
+		cm models.ConfirmLoginRequest
+	)
+
+	err := c.ShouldBindJSON(&cm)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	cm.Code = strings.TrimSpace(cm.Code)
+
+	//Getting code from redis
+	key := cm.Phone
+	s, err := redis.String(h.inMemoryStorage.Get(key))
+	if err != nil || s == "" {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Key does not exist", logger.Error(err))
+		return
+	}
+
+	//Checking whether received code is valid
+	if cm.Code != s {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInvalidCode,
+				Message: "Code is invalid",
+			},
+		})
+		h.log.Error("Code is invalid", logger.Error(err))
+		return
+	}
+
+	courier, err := h.grpcClient.CourierService().GetCourier(
+		context.Background(), &pbc.GetCourierRequest{
+			Id: cm.Phone,
+		},
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
+		return
+	}
+
+	access, err := jwt.GenerateJWT(courier.Courier.Id, "courier", signingKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
+		return
+	}
+
+	_, err = h.grpcClient.CourierService().UpdateToken(
+		context.Background(), &pbc.UpdateTokenRequest{
+			Id: courier.Courier.Id,
+			Access: access,
+		},
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating token") {
+		return
+	}
+
+	c.JSON(http.StatusOK, &models.ConfirmLoginResponse{
+		ID: courier.Courier.Id,
+		AccessToken: access,
+	})
+}
