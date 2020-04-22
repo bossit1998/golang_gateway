@@ -3,7 +3,7 @@ module bitbucket.org/alien_soft/api_getaway
 go 1.14
 
 require (
-	github.com/BillSJC/appleLogin v0.0.0-20190916123152-090c3039745d
+	github.com/BillSJC/appleLogin v0.0.0-20190916123152-090c3039745d // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/casbin/casbin/v2 v2.2.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -22,5 +22,4 @@ require (
 	go.uber.org/zap v1.14.1
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904
 	google.golang.org/grpc v1.28.1
-	gopkg.in/go-playground/validator.v8 v8.18.2
 )
