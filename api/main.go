@@ -116,6 +116,9 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
 	r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
 
+	//Login endpoints
+	r.POST("/v1/check_code/", )
+
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
