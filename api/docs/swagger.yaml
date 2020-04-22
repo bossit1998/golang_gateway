@@ -948,7 +948,7 @@ paths:
       summary: Blocking Courier
       tags:
       - courier
-  /v1/couriers/{courier_id}/courier_details:
+  /v1/couriers/{courier_id}/courier-details:
     get:
       consumes:
       - application/json
@@ -1099,7 +1099,7 @@ paths:
       summary: Confirm Courier Login
       tags:
       - courier
-  /v1/couriers/courier_details:
+  /v1/couriers/courier-details:
     post:
       consumes:
       - application/json

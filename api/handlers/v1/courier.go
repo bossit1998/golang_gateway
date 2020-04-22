@@ -65,7 +65,7 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/couriers/{courier_id}/courier_details [get]
+// @Router /v1/couriers/{courier_id}/courier-details [get]
 // @Summary Get Courier Details
 // @Description API for getting courier details
 // @Tags courier
@@ -216,7 +216,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/couriers/courier_details [post]
+// @Router /v1/couriers/courier-details [post]
 // @Summary Create Courier Details
 // @Description API for creating courier details
 // @Tags courier
@@ -349,7 +349,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/couriers/courier_details [put]
+// @Router /v1/couriers/courier-details [put]
 // @Summary Update Courier Details
 // @Description API for updating courier details
 // @Tags courier
