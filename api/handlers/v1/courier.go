@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	pbc "genproto/courier_service"
 
@@ -179,53 +180,32 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	jspbMarshal.OrigName = true
 
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &courier)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while unmarshalling data", logger.Error(err))
+	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
 
 	id, err := uuid.NewRandom()
-	if err != nil {
+	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
 		return
 	}
+
 	accessToken, err := jwt.GenerateJWT(id.String(), "courier", newSigningKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
+		return
+	}
 
 	courier.Id = id.String()
 	courier.AccessToken = accessToken
+	
 	res, err := h.grpcClient.CourierService().Create(
-		context.Background(),
-		&courier,
+		context.Background(), &courier,
 	)
-	st, ok := status.FromError(err)
-	if !ok || st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while creating courier", logger.Error(err))
-		return
-	}
-	if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while creating courier, service unavailable", logger.Error(err))
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating courier") {
 		return
 	}
 
 	js, err := jspbMarshal.MarshalToString(res.Courier)
-	if err != nil {
+	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
 	}
 
@@ -896,4 +876,44 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"answer": "success",
 	})
+}
+
+func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+		checkLoginModel models.CheckLoginRequest
+	)
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	err := c.ShouldBindJSON(&checkLoginModel)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	checkLoginModel.Login = strings.TrimSpace(checkLoginModel.Login)
+
+	resp, err := h.grpcClient.CourierService().ExistsCourier(
+		context.Background(), &pbc.ExistsCourierRequest{
+			PhoneNumber: checkLoginModel.Login,
+		},
+	)
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking courier") {
+		return
+	}
+
+	if !resp.Exists {
+		c.JSON(http.StatusNotFound, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Courier not found",
+			},
+		})
+		h.log.Error("Error while checking mail, Already exists", logger.Error(err))
+		return
+	}
+
+	
+
 }
