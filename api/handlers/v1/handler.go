@@ -77,6 +77,7 @@ var (
 func New(c *HandlerV1Config) *handlerV1 {
 	return &handlerV1{
 		storage:    c.Storage,
+		inMemoryStorage: c.InMemoryStorage,
 		log:        c.Logger,
 		grpcClient: c.GrpcClient,
 		cfg:        c.Cfg,

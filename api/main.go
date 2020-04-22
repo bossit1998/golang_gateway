@@ -72,6 +72,7 @@ func New(cnf Config) *gin.Engine {
 	r.PUT("/v1/couriers", handlerV1.UpdateCourier)
 	r.PUT("/v1/couriers/courier_details", handlerV1.UpdateCourierDetails)
 	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
+	r.POST("/v1/couriers/check-login/", handlerV1.CheckCourierLogin)
 
 	//Vehicle endpoints
 	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
@@ -80,13 +81,13 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
-	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
-	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
-	r.GET("/v1/distributors/:distributor_id/parks", handlerV1.GetAllDistributorParks)
-	r.POST("/v1/distributors", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:distributor_id/", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id/couriers/", handlerV1.GetAllDistributorCouriers)
+	r.GET("/v1/distributors/:distributor_id/parks/", handlerV1.GetAllDistributorParks)
+	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors/", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:distributor_id/", handlerV1.DeleteDistributor)
 
 	//Park endpoints
 	r.GET("/v1/parks/:park_id", handlerV1.GetPark)

@@ -19,14 +19,15 @@ type GetAllCouriersModel struct {
 
 //CreateCourierModel ...
 type CreateCourierModel struct {
-	Phone     string `json:"phone"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Phone     	  string `json:"phone"`
+	FirstName 	  string `json:"first_name"`
+	LastName  	  string `json:"last_name"`
+	DistributorID string `json:"distributor_id"`
 }
 
 //UpdateCourierModel ...
 type UpdateCourierModel struct {
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	Phone     string `json:"phone"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
@@ -34,7 +35,7 @@ type UpdateCourierModel struct {
 
 //CourierDetailsModel ...
 type CourierDetailsModel struct {
-	CourierId         string `json:"courier_id"`
+	CourierID         string `json:"courier_id"`
 	PassportNumber    string `json:"passport_number"`
 	Gender            string `json:"gender"`
 	BirthDate         string `json:"birth_date"`
@@ -53,7 +54,7 @@ type GetCourierVehicleModel struct {
 	CreatedAt     string `json:"created_at"`
 }
 
-//GetAllCourierVehicleModel ...
+//GetAllCourierVehiclesModel ...
 type GetAllCourierVehiclesModel struct {
 	Count           int                      `json:"count"`
 	CourierVehicles []GetCourierVehicleModel `json:"courier_vehicles"`
@@ -67,7 +68,7 @@ type CreateCourierVehicleModel struct {
 
 //UpdateCourierVehicleModel ...
 type UpdateCourierVehicleModel struct {
-	Id            string `json:"id"`
+	ID            string `json:"id"`
 	Model         string `json:"model"`
 	VehicleNumber string `json:"vehicle_number"`
 }

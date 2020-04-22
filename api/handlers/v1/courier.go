@@ -880,7 +880,7 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 	})
 }
 
-// @Router /v1/courier/check-login [POST]
+// @Router /v1/couriers/check-login/ [POST]
 // @Summary Check Courier Login
 // @Description API that checks whether courier exists
 // @Description and if exists sends sms to their number
