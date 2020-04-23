@@ -6,6 +6,7 @@ require (
 	github.com/BillSJC/appleLogin v0.0.0-20190916123152-090c3039745d // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/casbin/casbin/v2 v2.2.2
+	github.com/casbin/gorm-adapter/v2 v2.0.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.2
 	github.com/go-ozzo/ozzo-validation/v3 v3.8.1

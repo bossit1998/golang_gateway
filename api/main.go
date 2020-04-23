@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	//"github.com/casbin/casbin/v2"
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,7 +15,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
 
-	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
+	"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
 )
@@ -27,7 +27,7 @@ type Config struct {
 	InMemoryStorage repo.InMemoryStorageI
 	GrpcClient *grpc_client.GrpcClient
 	Cfg        config.Config
-	//CasbinEnforcer  *casbin.Enforcer
+	CasbinEnforcer  *casbin.Enforcer
 }
 
 // @securityDefinitions.apikey ApiKeyAuth
@@ -40,7 +40,7 @@ func New(cnf Config) *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
+	r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
 	r.Use(func(context *gin.Context) {
 		context.Header("Access-Control-Allow-Origin", "*")
