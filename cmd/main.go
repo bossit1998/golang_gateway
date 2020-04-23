@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/casbin/casbin/v2"
-	defaultrolemanager "github.com/casbin/casbin/v2/rbac/default-role-manager"
-	"github.com/casbin/casbin/v2/util"
-	gormadapter "github.com/casbin/gorm-adapter/v2"
+	//"github.com/casbin/casbin/v2"
+	//defaultrolemanager "github.com/casbin/casbin/v2/rbac/default-role-manager"
+	//"github.com/casbin/casbin/v2/util"
+	//gormadapter "github.com/casbin/gorm-adapter/v2"
 	"github.com/gomodule/redigo/redis"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -26,7 +26,7 @@ var (
 	strg       		storage.StorageI
 	inMemStrg      repo.InMemoryStorageI
 	grpcClient 		*grpc_client.GrpcClient
-	casbinEnforcer 	*casbin.Enforcer
+	//casbinEnforcer 	*casbin.Enforcer
 )
 
 func initDeps() {
@@ -49,6 +49,7 @@ func initDeps() {
 	connDB, err := sqlx.Connect("postgres", psqlString)
 	strg = storage.NewStoragePg(connDB)
 
+	/*
 	a, err := gormadapter.NewAdapter("postgres", psqlString, true)
 	if err != nil {
 		log.Error("new adapter error", logger.Error(err))
@@ -66,6 +67,7 @@ func initDeps() {
 		log.Error("casbin load policy error", logger.Error(err))
 		return
 	}
+	*/
 
 	pool := redis.Pool{
 		// Maximum number of idle connections in the pool.
@@ -94,15 +96,15 @@ func initDeps() {
 func main() {
 	initDeps()
 
-	casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("keyMatch", util.KeyMatch)
-	casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("KeyMatch3", util.KeyMatch3)
+	//casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("keyMatch", util.KeyMatch)
+	//casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("KeyMatch3", util.KeyMatch3)
 
 	server := api.New(api.Config{
 		Storage:    strg,
 		InMemoryStorage: inMemStrg,
 		Logger:     log,
 		GrpcClient: grpcClient,
-		CasbinEnforcer:  casbinEnforcer,
+	//	CasbinEnforcer:  casbinEnforcer,
 		Cfg:        cfg,
 	})
 
