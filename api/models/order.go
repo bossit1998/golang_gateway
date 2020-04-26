@@ -12,22 +12,28 @@ type productModel struct {
 }
 
 type orderModel struct {
-	BranchID string `json:"branch_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	FromLocation Location `json:"from_location"`
-	FromAddress string `json:"from_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
 	ToLocation Location `json:"to_location"`
 	ToAddress string `json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
-	PhoneNumber string `json:"phone_number" example:"998998765432"`
+	CustomerName string `json:"customer_name" example:"Oybek"`
+	CustomerPhoneNumber string `json:"customer_phone_number" example:"998998765432"`
 	FareID string `json:"fare_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	CoID string `json:"co_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	CreatorTypeID string `json:"creator_type_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	UserID string `json:"user_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	DeliverPrice float64 `json:"deliver_price" example:"10000"`
+	CoDeliveryPrice float64 `json:"co_delivery_price" example:"10000"`
+	Description string `json:"description"`
+}
+
+type stepModel struct {
+	BranchName string `json:"branch_name"`
+	Location Location `json:"location"`
+	Address string `json:"address"`
+	DestinationAddress string `json:"destination_address"`
+	PhoneNumber string `json:"phone_number"`
+	Description string `json:"description"`
+	Products []productModel `json:"products"`
 }
 
 type CreateOrder struct {
 	orderModel
-	Products []productModel `json:"products"`
+	Steps []stepModel `json:"steps"`
 }
 
 type getOrderProductModel struct {

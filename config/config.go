@@ -11,6 +11,7 @@ const (
 	RoleCargoOwner = "cargo_owner"
 	//RoleSuperAdmin ...
 	RoleSuperAdmin = "super_admin"
+	RoleCourier = "courier"
 )
 
 // Config ...

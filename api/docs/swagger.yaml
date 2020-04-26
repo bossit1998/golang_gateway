@@ -152,33 +152,23 @@ definitions:
     type: object
   models.CreateOrder:
     properties:
-      branch_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      co_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      creator_type_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      deliver_price:
+      co_delivery_price:
         example: 10000
         type: number
+      customer_name:
+        example: Oybek
+        type: string
+      customer_phone_number:
+        example: "998998765432"
+        type: string
+      description:
+        type: string
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
-      from_address:
-        example: Hamid Olimjon maydoni 10A dom 40-kvartira
-        type: string
-      from_location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      phone_number:
-        example: "998998765432"
-        type: string
-      products:
+      steps:
         items:
-          $ref: '#/definitions/models.productModel'
+          $ref: '#/definitions/models.stepModel'
         type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
@@ -186,9 +176,6 @@ definitions:
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      user_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
     type: object
   models.CreateParkModel:
     properties:
@@ -332,32 +319,22 @@ definitions:
     type: object
   models.GetOrder:
     properties:
-      branch_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      co_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      creator_type_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      deliver_price:
+      co_delivery_price:
         example: 10000
         type: number
+      customer_name:
+        example: Oybek
+        type: string
+      customer_phone_number:
+        example: "998998765432"
+        type: string
+      description:
+        type: string
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
-      from_address:
-        example: Hamid Olimjon maydoni 10A dom 40-kvartira
-        type: string
-      from_location:
-        $ref: '#/definitions/models.Location'
-        type: object
       id:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
-        type: string
-      phone_number:
-        example: "998998765432"
         type: string
       products:
         items:
@@ -372,9 +349,6 @@ definitions:
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      user_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
     type: object
   models.GetOrders:
     properties:
@@ -494,32 +468,22 @@ definitions:
     type: object
   models.getOrderModel:
     properties:
-      branch_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      co_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      creator_type_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      deliver_price:
+      co_delivery_price:
         example: 10000
         type: number
+      customer_name:
+        example: Oybek
+        type: string
+      customer_phone_number:
+        example: "998998765432"
+        type: string
+      description:
+        type: string
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
-      from_address:
-        example: Hamid Olimjon maydoni 10A dom 40-kvartira
-        type: string
-      from_location:
-        $ref: '#/definitions/models.Location'
-        type: object
       id:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
-        type: string
-      phone_number:
-        example: "998998765432"
         type: string
       status_id:
         example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
@@ -530,9 +494,6 @@ definitions:
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      user_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
     type: object
   models.getOrderProductModel:
     properties:
@@ -561,6 +522,26 @@ definitions:
       quantity:
         example: 2
         type: number
+    type: object
+  models.stepModel:
+    properties:
+      address:
+        type: string
+      branch_name:
+        type: string
+      description:
+        type: string
+      destination_address:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.productModel'
+        type: array
     type: object
 info:
   contact: {}
@@ -1598,6 +1579,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Order
       tags:
       - order

@@ -112,6 +112,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/order-statuses", handlerV1.GetStatuses)
 	r.PATCH("v1/order/:order_id/add-courier", handlerV1.AddCourier)
 	r.PATCH("v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
+	r.GET("/v1/courier/order", handlerV1.GetCourierOrders)
 
 	//Cargo owner
 	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
