@@ -136,19 +136,19 @@ definitions:
     type: object
   models.CreateOrder:
     properties:
+      co_delivery_price:
+        example: 10000
+        type: number
       customer_name:
         example: Oybek
         type: string
-      deliver_price:
-        example: 10000
-        type: number
+      customer_phone_number:
+        example: "998998765432"
+        type: string
       description:
         type: string
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      phone_number:
-        example: "998998765432"
         type: string
       steps:
         items:
@@ -303,12 +303,15 @@ definitions:
     type: object
   models.GetOrder:
     properties:
+      co_delivery_price:
+        example: 10000
+        type: number
       customer_name:
         example: Oybek
         type: string
-      deliver_price:
-        example: 10000
-        type: number
+      customer_phone_number:
+        example: "998998765432"
+        type: string
       description:
         type: string
       fare_id:
@@ -316,9 +319,6 @@ definitions:
         type: string
       id:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
-        type: string
-      phone_number:
-        example: "998998765432"
         type: string
       products:
         items:
@@ -452,12 +452,15 @@ definitions:
     type: object
   models.getOrderModel:
     properties:
+      co_delivery_price:
+        example: 10000
+        type: number
       customer_name:
         example: Oybek
         type: string
-      deliver_price:
-        example: 10000
-        type: number
+      customer_phone_number:
+        example: "998998765432"
+        type: string
       description:
         type: string
       fare_id:
@@ -465,9 +468,6 @@ definitions:
         type: string
       id:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
-        type: string
-      phone_number:
-        example: "998998765432"
         type: string
       status_id:
         example: 52f248b4-23a0-4350-80b7-1704eaff6c8c

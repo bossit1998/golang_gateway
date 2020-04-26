@@ -2174,13 +2174,17 @@
         "models.CreateOrder": {
             "type": "object",
             "properties": {
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
+                },
                 "customer_name": {
                     "type": "string",
                     "example": "Oybek"
                 },
-                "deliver_price": {
-                    "type": "number",
-                    "example": 10000
+                "customer_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
                 },
                 "description": {
                     "type": "string"
@@ -2188,10 +2192,6 @@
                 "fare_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
                 },
                 "steps": {
                     "type": "array",
@@ -2427,13 +2427,17 @@
         "models.GetOrder": {
             "type": "object",
             "properties": {
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
+                },
                 "customer_name": {
                     "type": "string",
                     "example": "Oybek"
                 },
-                "deliver_price": {
-                    "type": "number",
-                    "example": 10000
+                "customer_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
                 },
                 "description": {
                     "type": "string"
@@ -2445,10 +2449,6 @@
                 "id": {
                     "type": "string",
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
-                },
-                "phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
                 },
                 "products": {
                     "type": "array",
@@ -2652,13 +2652,17 @@
         "models.getOrderModel": {
             "type": "object",
             "properties": {
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
+                },
                 "customer_name": {
                     "type": "string",
                     "example": "Oybek"
                 },
-                "deliver_price": {
-                    "type": "number",
-                    "example": 10000
+                "customer_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
                 },
                 "description": {
                     "type": "string"
@@ -2670,10 +2674,6 @@
                 "id": {
                     "type": "string",
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
-                },
-                "phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
                 },
                 "status_id": {
                     "type": "string",
