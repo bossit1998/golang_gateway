@@ -9,6 +9,7 @@ import (
 const (
 	RoleCargoOwner = "cargo_owner"
 	RoleSuperAdmin = "super_admin"
+	RoleCourier = "courier"
 )
 
 // Config ...

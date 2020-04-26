@@ -1400,6 +1400,11 @@
         },
         "/v1/order/": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating order",
                 "consumes": [
                     "application/json"
@@ -2169,42 +2174,29 @@
         "models.CreateOrder": {
             "type": "object",
             "properties": {
-                "branch_id": {
+                "customer_name": {
                     "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "co_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "creator_type_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                    "example": "Oybek"
                 },
                 "deliver_price": {
                     "type": "number",
                     "example": 10000
                 },
+                "description": {
+                    "type": "string"
+                },
                 "fare_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "from_address": {
-                    "type": "string",
-                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
-                },
-                "from_location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
                 },
                 "phone_number": {
                     "type": "string",
                     "example": "998998765432"
                 },
-                "products": {
+                "steps": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.productModel"
+                        "$ref": "#/definitions/models.stepModel"
                     }
                 },
                 "to_address": {
@@ -2214,10 +2206,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 }
             }
         },
@@ -2439,33 +2427,20 @@
         "models.GetOrder": {
             "type": "object",
             "properties": {
-                "branch_id": {
+                "customer_name": {
                     "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "co_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "creator_type_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                    "example": "Oybek"
                 },
                 "deliver_price": {
                     "type": "number",
                     "example": 10000
                 },
+                "description": {
+                    "type": "string"
+                },
                 "fare_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "from_address": {
-                    "type": "string",
-                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
-                },
-                "from_location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
                 },
                 "id": {
                     "type": "string",
@@ -2492,10 +2467,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 }
             }
         },
@@ -2681,33 +2652,20 @@
         "models.getOrderModel": {
             "type": "object",
             "properties": {
-                "branch_id": {
+                "customer_name": {
                     "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "co_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "creator_type_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                    "example": "Oybek"
                 },
                 "deliver_price": {
                     "type": "number",
                     "example": 10000
                 },
+                "description": {
+                    "type": "string"
+                },
                 "fare_id": {
                     "type": "string",
                     "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "from_address": {
-                    "type": "string",
-                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
-                },
-                "from_location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
                 },
                 "id": {
                     "type": "string",
@@ -2728,10 +2686,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 }
             }
         },
@@ -2772,6 +2726,36 @@
                 "quantity": {
                     "type": "number",
                     "example": 2
+                }
+            }
+        },
+        "models.stepModel": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_address": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.productModel"
+                    }
                 }
             }
         }

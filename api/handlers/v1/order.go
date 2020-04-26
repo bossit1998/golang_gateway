@@ -2,15 +2,18 @@ package v1
 
 import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"fmt"
 	pbo "genproto/order_service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/google/uuid"
 	"net/http"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/order/ [post]
 // @Summary Create Order
 // @Description API for creating order
@@ -27,9 +30,14 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		order pbo.Order
 	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &order)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -38,21 +46,10 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
-	fromLocation := models.Location{
-		Long:float64(order.FromLocation.Long),
-		Lat:float64(order.FromLocation.Lat),
-	}
-	toLocation := models.Location{
-		Long:float64(order.ToLocation.Long),
-		Lat:float64(order.ToLocation.Lat),
-	}
-	deliveryTotalPrice, err := calcDeliveryPriceWithFare(c, h, order.FareId, fromLocation, toLocation)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while calculating delivery price by fare") {
-		return
-	}
-
-	order.DeliverTotalPrice = float32(deliveryTotalPrice)
+	order.DeliveryPrice = order.CoDeliveryPrice
+	order.CoId = userInfo.ID
+	order.UserId = userInfo.ID
+	order.CreatorTypeId = userInfo.ID
 
 	_, err = h.grpcClient.OrderService().Create(context.Background(), &order)
 
@@ -298,4 +295,108 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "courier removed successfully",
 	})
+}
+
+func (h *handlerV1) GetCourierOrders(c *gin.Context) {
+	var (
+		courierID string
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role == config.RoleCourier {
+		courierID = userInfo.ID
+	} else {
+		courierID = c.Query("courier_id")
+
+		_, err := uuid.Parse(courierID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error:"courier id is not valid",
+			})
+			return
+		}
+	}
+
+	page, err := ParsePageQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+		return
+	}
+
+	limit, err := ParseLimitQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
+		return
+	}
+
+	orders, err := h.grpcClient.OrderService().GetCourierOrders(
+		context.Background(),
+		&pbo.GetCourierOrdersRequest{
+			CourierId:courierID,
+			Page: page,
+			Limit: limit,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier orders") {
+		return
+	}
+
+	c.JSON(http.StatusOK, orders)
+}
+
+func (h *handlerV1) GetCOOrders(c *gin.Context) {
+	var (
+		coID string
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role == config.RoleCargoOwner {
+		coID = userInfo.ID
+	} else  {
+		coID = c.Query("co_id")
+
+		_, err := uuid.Parse(coID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error:"cargo owner id is not valid",
+			})
+			return
+		}
+	}
+
+	page, err := ParsePageQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+		return
+	}
+
+	limit, err := ParseLimitQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
+		return
+	}
+
+	orders, err := h.grpcClient.OrderService().GetCOOrders(
+		context.Background(),
+		&pbo.GetCOOrdersRequest{
+			CoId:coID,
+			Page: page,
+			Limit: limit,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier orders") {
+		return
+	}
+
+	c.JSON(http.StatusOK, orders)
 }
