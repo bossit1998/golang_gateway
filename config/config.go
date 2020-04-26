@@ -7,7 +7,9 @@ import (
 )
 
 const (
+	//RoleCargoOwner ...
 	RoleCargoOwner = "cargo_owner"
+	//RoleSuperAdmin ...
 	RoleSuperAdmin = "super_admin"
 	RoleCourier = "courier"
 )
@@ -21,6 +23,9 @@ type Config struct {
 	PostgresDatabase string
 	PostgresUser     string
 	PostgresPassword string
+
+	RedisHost string
+	RedisPort int
 
 	GeoServiceHost string
 	GeoServicePort int
@@ -37,6 +42,9 @@ type Config struct {
 	COServiceHost string
 	COServicePort int
 
+	SmsServiceHost string
+	SmsServicePort int
+
 	LogLevel string
 	HTTPPort string
 
@@ -48,13 +56,16 @@ type Config struct {
 func Load() Config {
 	c := Config{}
 
-	c.Environment = cast.ToString(getOrReturnDefault("ENVIRONMENT", "develop"))
+	c.Environment = cast.ToString(getOrReturnDefault("ENVIRONMENT", "prod"))
 
 	c.PostgresHost = cast.ToString(getOrReturnDefault("POSTGRES_HOST", "127.0.0.1"))
 	c.PostgresPort = cast.ToInt(getOrReturnDefault("POSTGRES_PORT", 5432))
-	c.PostgresDatabase = cast.ToString(getOrReturnDefault("POSTGRES_DATABASE", "courier_service"))
-	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "postgres"))
-	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "12345"))
+	c.PostgresDatabase = cast.ToString(getOrReturnDefault("POSTGRES_DATABASE", "deleverdb"))
+	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "delever"))
+	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "delever"))
+
+	c.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "redis"))
+	c.RedisPort = cast.ToInt(getOrReturnDefault("REDIS_PORT", 6379))
 
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
 	c.HTTPPort = cast.ToString(getOrReturnDefault("HTTP_PORT", ":1235"))
@@ -73,6 +84,10 @@ func Load() Config {
 
 	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
 	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
+
+	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "sms_service"))
+	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 80))
+
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

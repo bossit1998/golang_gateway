@@ -392,6 +392,56 @@ func (m *ExistsCourierResponse) GetExists() bool {
 	return false
 }
 
+<<<<<<< HEAD
+=======
+type UpdateTokenRequest struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Access               string   `protobuf:"bytes,2,opt,name=access,proto3" json:"access,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateTokenRequest) Reset()         { *m = UpdateTokenRequest{} }
+func (m *UpdateTokenRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateTokenRequest) ProtoMessage()    {}
+func (*UpdateTokenRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_902b1fc4851aa94a, []int{9}
+}
+
+func (m *UpdateTokenRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateTokenRequest.Unmarshal(m, b)
+}
+func (m *UpdateTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateTokenRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateTokenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateTokenRequest.Merge(m, src)
+}
+func (m *UpdateTokenRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateTokenRequest.Size(m)
+}
+func (m *UpdateTokenRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateTokenRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateTokenRequest proto.InternalMessageInfo
+
+func (m *UpdateTokenRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *UpdateTokenRequest) GetAccess() string {
+	if m != nil {
+		return m.Access
+	}
+	return ""
+}
+
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 type GetAllDistributorCouriersRequest struct {
 	DistributorId        string   `protobuf:"bytes,1,opt,name=distributor_id,json=distributorId,proto3" json:"distributor_id,omitempty"`
 	Limit                uint64   `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
@@ -405,7 +455,11 @@ func (m *GetAllDistributorCouriersRequest) Reset()         { *m = GetAllDistribu
 func (m *GetAllDistributorCouriersRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAllDistributorCouriersRequest) ProtoMessage()    {}
 func (*GetAllDistributorCouriersRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{9}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{10}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetAllDistributorCouriersRequest) XXX_Unmarshal(b []byte) error {
@@ -459,7 +513,11 @@ func (m *GetAllDistributorCouriersResponse) Reset()         { *m = GetAllDistrib
 func (m *GetAllDistributorCouriersResponse) String() string { return proto.CompactTextString(m) }
 func (*GetAllDistributorCouriersResponse) ProtoMessage()    {}
 func (*GetAllDistributorCouriersResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{10}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{11}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetAllDistributorCouriersResponse) XXX_Unmarshal(b []byte) error {
@@ -505,7 +563,11 @@ func (m *BlockCourierRequest) Reset()         { *m = BlockCourierRequest{} }
 func (m *BlockCourierRequest) String() string { return proto.CompactTextString(m) }
 func (*BlockCourierRequest) ProtoMessage()    {}
 func (*BlockCourierRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{11}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{12}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *BlockCourierRequest) XXX_Unmarshal(b []byte) error {
@@ -544,7 +606,11 @@ func (m *UnblockCourierRequest) Reset()         { *m = UnblockCourierRequest{} }
 func (m *UnblockCourierRequest) String() string { return proto.CompactTextString(m) }
 func (*UnblockCourierRequest) ProtoMessage()    {}
 func (*UnblockCourierRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{12}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{13}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *UnblockCourierRequest) XXX_Unmarshal(b []byte) error {
@@ -583,7 +649,11 @@ func (m *CreateCourierDetailsResponse) Reset()         { *m = CreateCourierDetai
 func (m *CreateCourierDetailsResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateCourierDetailsResponse) ProtoMessage()    {}
 func (*CreateCourierDetailsResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{13}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{14}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *CreateCourierDetailsResponse) XXX_Unmarshal(b []byte) error {
@@ -622,7 +692,11 @@ func (m *UpdateCourierDetailsResponse) Reset()         { *m = UpdateCourierDetai
 func (m *UpdateCourierDetailsResponse) String() string { return proto.CompactTextString(m) }
 func (*UpdateCourierDetailsResponse) ProtoMessage()    {}
 func (*UpdateCourierDetailsResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{14}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{15}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *UpdateCourierDetailsResponse) XXX_Unmarshal(b []byte) error {
@@ -661,7 +735,11 @@ func (m *GetCourierDetailsRequest) Reset()         { *m = GetCourierDetailsReque
 func (m *GetCourierDetailsRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCourierDetailsRequest) ProtoMessage()    {}
 func (*GetCourierDetailsRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{15}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{16}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetCourierDetailsRequest) XXX_Unmarshal(b []byte) error {
@@ -700,7 +778,11 @@ func (m *GetCourierDetailsResponse) Reset()         { *m = GetCourierDetailsResp
 func (m *GetCourierDetailsResponse) String() string { return proto.CompactTextString(m) }
 func (*GetCourierDetailsResponse) ProtoMessage()    {}
 func (*GetCourierDetailsResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{16}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{17}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetCourierDetailsResponse) XXX_Unmarshal(b []byte) error {
@@ -739,7 +821,11 @@ func (m *CreateCourierVehicleResponse) Reset()         { *m = CreateCourierVehic
 func (m *CreateCourierVehicleResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateCourierVehicleResponse) ProtoMessage()    {}
 func (*CreateCourierVehicleResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{17}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{18}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *CreateCourierVehicleResponse) XXX_Unmarshal(b []byte) error {
@@ -778,7 +864,11 @@ func (m *UpdateCourierVehicleResponse) Reset()         { *m = UpdateCourierVehic
 func (m *UpdateCourierVehicleResponse) String() string { return proto.CompactTextString(m) }
 func (*UpdateCourierVehicleResponse) ProtoMessage()    {}
 func (*UpdateCourierVehicleResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{18}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{19}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *UpdateCourierVehicleResponse) XXX_Unmarshal(b []byte) error {
@@ -817,7 +907,11 @@ func (m *GetCourierVehicleRequest) Reset()         { *m = GetCourierVehicleReque
 func (m *GetCourierVehicleRequest) String() string { return proto.CompactTextString(m) }
 func (*GetCourierVehicleRequest) ProtoMessage()    {}
 func (*GetCourierVehicleRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{19}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{20}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetCourierVehicleRequest) XXX_Unmarshal(b []byte) error {
@@ -856,7 +950,11 @@ func (m *GetCourierVehicleResponse) Reset()         { *m = GetCourierVehicleResp
 func (m *GetCourierVehicleResponse) String() string { return proto.CompactTextString(m) }
 func (*GetCourierVehicleResponse) ProtoMessage()    {}
 func (*GetCourierVehicleResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{20}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{21}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetCourierVehicleResponse) XXX_Unmarshal(b []byte) error {
@@ -895,7 +993,11 @@ func (m *GetAllCourierVehiclesRequest) Reset()         { *m = GetAllCourierVehic
 func (m *GetAllCourierVehiclesRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAllCourierVehiclesRequest) ProtoMessage()    {}
 func (*GetAllCourierVehiclesRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{21}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{22}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetAllCourierVehiclesRequest) XXX_Unmarshal(b []byte) error {
@@ -934,7 +1036,11 @@ func (m *GetAllCourierVehiclesResponse) Reset()         { *m = GetAllCourierVehi
 func (m *GetAllCourierVehiclesResponse) String() string { return proto.CompactTextString(m) }
 func (*GetAllCourierVehiclesResponse) ProtoMessage()    {}
 func (*GetAllCourierVehiclesResponse) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{22}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{23}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *GetAllCourierVehiclesResponse) XXX_Unmarshal(b []byte) error {
@@ -973,7 +1079,11 @@ func (m *DeleteCourierVehicleRequest) Reset()         { *m = DeleteCourierVehicl
 func (m *DeleteCourierVehicleRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteCourierVehicleRequest) ProtoMessage()    {}
 func (*DeleteCourierVehicleRequest) Descriptor() ([]byte, []int) {
+<<<<<<< HEAD
 	return fileDescriptor_902b1fc4851aa94a, []int{23}
+=======
+	return fileDescriptor_902b1fc4851aa94a, []int{24}
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 func (m *DeleteCourierVehicleRequest) XXX_Unmarshal(b []byte) error {
@@ -1011,6 +1121,10 @@ func init() {
 	proto.RegisterType((*GetAllCouriersResponse)(nil), "genproto.GetAllCouriersResponse")
 	proto.RegisterType((*ExistsCourierRequest)(nil), "genproto.ExistsCourierRequest")
 	proto.RegisterType((*ExistsCourierResponse)(nil), "genproto.ExistsCourierResponse")
+<<<<<<< HEAD
+=======
+	proto.RegisterType((*UpdateTokenRequest)(nil), "genproto.UpdateTokenRequest")
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 	proto.RegisterType((*GetAllDistributorCouriersRequest)(nil), "genproto.GetAllDistributorCouriersRequest")
 	proto.RegisterType((*GetAllDistributorCouriersResponse)(nil), "genproto.GetAllDistributorCouriersResponse")
 	proto.RegisterType((*BlockCourierRequest)(nil), "genproto.BlockCourierRequest")
@@ -1031,6 +1145,7 @@ func init() {
 func init() { proto.RegisterFile("courier_service.proto", fileDescriptor_902b1fc4851aa94a) }
 
 var fileDescriptor_902b1fc4851aa94a = []byte{
+<<<<<<< HEAD
 	// 790 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0x6f, 0x4f, 0x1a, 0x4f,
 	0x10, 0x46, 0xf4, 0xc7, 0x4f, 0x47, 0xc5, 0xba, 0x05, 0x43, 0x4f, 0xad, 0xb8, 0x46, 0x6d, 0x34,
@@ -1082,6 +1197,61 @@ var fileDescriptor_902b1fc4851aa94a = []byte{
 	0xbc, 0x28, 0x67, 0xd7, 0x72, 0x07, 0xb5, 0x8a, 0xac, 0x4d, 0x7f, 0xea, 0x5c, 0x57, 0x04, 0x42,
 	0x5d, 0xfb, 0x1f, 0xd4, 0x29, 0xd0, 0xed, 0xd7, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc6, 0x93,
 	0x57, 0x32, 0x21, 0x0d, 0x00, 0x00,
+=======
+	// 825 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0x51, 0x4f, 0xdb, 0x30,
+	0x10, 0x2e, 0x85, 0x75, 0xf4, 0x80, 0x32, 0xbc, 0x16, 0x75, 0xa1, 0x8c, 0x62, 0x04, 0x4c, 0x20,
+	0x5a, 0x89, 0x3d, 0x21, 0x6d, 0x93, 0x0a, 0x45, 0x08, 0x4d, 0xda, 0x43, 0x37, 0x36, 0x09, 0x69,
+	0xa0, 0x36, 0xf1, 0x4a, 0x46, 0x48, 0xba, 0x24, 0x45, 0xdb, 0xff, 0xd8, 0x0f, 0x9e, 0x1a, 0xdb,
+	0x89, 0xed, 0x3a, 0x69, 0xb7, 0xc1, 0x5b, 0x7d, 0xbe, 0xfb, 0xee, 0xfc, 0xe5, 0x7c, 0x9f, 0x0b,
+	0x15, 0xd3, 0x1b, 0xfa, 0x36, 0xf1, 0xaf, 0x03, 0xe2, 0xdf, 0xdb, 0x26, 0x69, 0x0c, 0x7c, 0x2f,
+	0xf4, 0xd0, 0x7c, 0x9f, 0xb8, 0xd1, 0x2f, 0x63, 0xad, 0xef, 0x79, 0x7d, 0x87, 0x34, 0xa3, 0x55,
+	0x6f, 0xf8, 0xad, 0x49, 0xee, 0x06, 0xe1, 0x2f, 0xea, 0x66, 0x2c, 0xb1, 0x68, 0xba, 0xc4, 0x6d,
+	0xa8, 0x9c, 0xf8, 0xa4, 0x1b, 0x92, 0x13, 0x6a, 0xee, 0x90, 0x60, 0xe0, 0xb9, 0x01, 0x41, 0xfb,
+	0xf0, 0x94, 0x79, 0x56, 0x67, 0xea, 0x33, 0xaf, 0x16, 0x0e, 0x57, 0x1a, 0x3c, 0x41, 0x83, 0xfb,
+	0x72, 0x8f, 0x11, 0xca, 0xc5, 0xc0, 0xfa, 0x5f, 0x94, 0x1d, 0x28, 0xb7, 0x89, 0x43, 0x04, 0x94,
+	0x1f, 0x43, 0x12, 0x84, 0xa8, 0x04, 0x79, 0xdb, 0x8a, 0xe2, 0x8b, 0x9d, 0xbc, 0x6d, 0xe1, 0x2d,
+	0x58, 0x39, 0x23, 0xe1, 0x04, 0xa7, 0x16, 0x20, 0xd1, 0xe9, 0x5f, 0xea, 0x69, 0x41, 0xe5, 0x8c,
+	0x84, 0x2d, 0xc7, 0x61, 0x3b, 0x01, 0xcf, 0x55, 0x86, 0x27, 0x8e, 0x7d, 0x67, 0x87, 0x11, 0xc6,
+	0x5c, 0x87, 0x2e, 0x10, 0x82, 0xb9, 0x41, 0xb7, 0x4f, 0xaa, 0xf9, 0xc8, 0x18, 0xfd, 0xc6, 0x5f,
+	0x61, 0x55, 0x85, 0x60, 0x95, 0x1c, 0xc0, 0x3c, 0xcb, 0x13, 0x54, 0x67, 0xea, 0xb3, 0xfa, 0x52,
+	0x62, 0x97, 0x51, 0x4a, 0xd3, 0x1b, 0xba, 0x21, 0x43, 0xa7, 0x0b, 0x7c, 0x04, 0xe5, 0xd3, 0x9f,
+	0x76, 0x10, 0x06, 0x0a, 0x19, 0x9b, 0xb0, 0x38, 0xb8, 0xf1, 0x5c, 0x72, 0xed, 0x0e, 0xef, 0x7a,
+	0xec, 0xac, 0xc5, 0xce, 0x42, 0x64, 0xfb, 0x10, 0x99, 0x70, 0x13, 0x2a, 0x4a, 0x28, 0x2b, 0x6c,
+	0x15, 0x0a, 0x24, 0xda, 0x88, 0xa2, 0xe6, 0x3b, 0x6c, 0x85, 0xdf, 0x00, 0xa2, 0xdf, 0xf8, 0x93,
+	0x77, 0x4b, 0xdc, 0x14, 0xda, 0x47, 0xd1, 0x5d, 0xd3, 0x24, 0x41, 0x10, 0x15, 0x5a, 0xec, 0xb0,
+	0x15, 0x0e, 0xa0, 0x4e, 0x89, 0x68, 0xdb, 0x41, 0xe8, 0xdb, 0xbd, 0x61, 0xe8, 0xf9, 0x2a, 0xad,
+	0xdb, 0x50, 0xb2, 0x92, 0xdd, 0xeb, 0x18, 0x77, 0x49, 0xb0, 0x9e, 0x5b, 0x09, 0xfb, 0x79, 0x1d,
+	0xfb, 0xb3, 0x02, 0xfb, 0x37, 0xb0, 0x99, 0x91, 0xf4, 0x21, 0x3f, 0xc4, 0x36, 0x3c, 0x3f, 0x76,
+	0x3c, 0xf3, 0x76, 0x42, 0x53, 0xee, 0x42, 0xe5, 0xc2, 0xed, 0x4d, 0xe1, 0xd8, 0x85, 0x9a, 0x74,
+	0x2d, 0xdb, 0x24, 0xec, 0xda, 0x4e, 0x52, 0x74, 0x0b, 0x96, 0xf9, 0x14, 0xb0, 0xe8, 0x16, 0xeb,
+	0xe7, 0xea, 0x58, 0xed, 0x3c, 0xb4, 0x64, 0x4a, 0xeb, 0x51, 0x0a, 0xe9, 0xce, 0x3e, 0x42, 0x8a,
+	0x23, 0xa8, 0x26, 0x77, 0x30, 0xc6, 0xa7, 0x27, 0x5e, 0x07, 0xe0, 0xf0, 0xf1, 0xc9, 0x8b, 0xcc,
+	0x72, 0x6e, 0xe1, 0x2b, 0x78, 0xa1, 0x09, 0x7d, 0xd0, 0xd3, 0x4b, 0x04, 0x7f, 0x26, 0x37, 0xb6,
+	0xe9, 0x10, 0x5d, 0x8a, 0x7b, 0xba, 0x95, 0x9a, 0x82, 0x87, 0xf2, 0x14, 0x6c, 0x3d, 0x46, 0xf0,
+	0x23, 0xa4, 0xd8, 0x13, 0x09, 0x8e, 0xf1, 0xf5, 0x2d, 0x25, 0x31, 0xfa, 0x08, 0xb5, 0xbc, 0x85,
+	0x9a, 0x34, 0xea, 0x98, 0x7d, 0xda, 0x0f, 0x6e, 0xc1, 0x7a, 0x4a, 0x38, 0x2b, 0xf1, 0x04, 0x9e,
+	0x29, 0x25, 0xf2, 0xfb, 0x9a, 0x5e, 0xe3, 0xb2, 0x5c, 0x63, 0x80, 0x0f, 0x60, 0x4d, 0x92, 0x98,
+	0x6c, 0xce, 0x0e, 0x7f, 0x2f, 0x42, 0x89, 0x79, 0x7e, 0xa4, 0x62, 0x8b, 0xde, 0x41, 0x81, 0x36,
+	0x0e, 0x1a, 0x1f, 0x13, 0xc6, 0x86, 0x60, 0xd2, 0xa9, 0x2a, 0xce, 0x8d, 0xe2, 0x69, 0x57, 0x4c,
+	0x88, 0xd7, 0xea, 0x29, 0xce, 0xa1, 0x73, 0x80, 0xe4, 0x33, 0xa2, 0xb5, 0x24, 0x60, 0x4c, 0x12,
+	0x8d, 0x9a, 0x7e, 0x33, 0x86, 0xba, 0x80, 0x92, 0x2c, 0x4e, 0x68, 0x43, 0x8a, 0x18, 0x57, 0x3e,
+	0xa3, 0x9e, 0xee, 0x10, 0xc3, 0x76, 0x60, 0x49, 0x52, 0x16, 0xf4, 0x32, 0x09, 0xd2, 0xa9, 0x95,
+	0x78, 0x6a, 0xad, 0x24, 0xe1, 0x1c, 0xba, 0x8f, 0x9a, 0x57, 0x3f, 0xc9, 0xd1, 0x9e, 0x5a, 0x54,
+	0xba, 0xc6, 0x18, 0xfb, 0x53, 0xf9, 0xc6, 0x79, 0x8f, 0xa1, 0x40, 0xfb, 0x45, 0x3c, 0x84, 0xee,
+	0x91, 0x62, 0xac, 0x36, 0xe8, 0xab, 0xab, 0xc1, 0x5f, 0x5d, 0x8d, 0xd3, 0xd1, 0xab, 0x0b, 0xe7,
+	0xd0, 0x19, 0x2c, 0x8a, 0xda, 0x80, 0xd6, 0x13, 0x24, 0x8d, 0x66, 0x64, 0x00, 0xbd, 0x87, 0x92,
+	0xac, 0x1e, 0xe2, 0xf7, 0xd2, 0xea, 0x4a, 0x06, 0xd8, 0x29, 0x2c, 0x08, 0x72, 0x8e, 0x6a, 0x6a,
+	0xe7, 0x89, 0x2a, 0x9f, 0x01, 0x73, 0x09, 0x65, 0x9d, 0x50, 0xa1, 0xd4, 0x49, 0x6c, 0xec, 0xa4,
+	0xdc, 0x11, 0x65, 0xc8, 0x53, 0x6c, 0x9d, 0x42, 0x4d, 0x87, 0x9d, 0xa5, 0x6d, 0x38, 0x87, 0xae,
+	0xc4, 0x37, 0x24, 0x07, 0xc6, 0xba, 0x0b, 0x23, 0xeb, 0x96, 0xb1, 0x95, 0xe9, 0x23, 0xd6, 0xae,
+	0xd3, 0x17, 0x94, 0x3a, 0xab, 0x52, 0x79, 0x51, 0x46, 0xb5, 0x86, 0x97, 0xbf, 0xc2, 0xce, 0x92,
+	0x24, 0x95, 0x17, 0x0e, 0xac, 0xe5, 0x45, 0x1e, 0x9d, 0x7a, 0x5e, 0xc6, 0xf1, 0xbf, 0x2b, 0x6f,
+	0x6a, 0x3e, 0x99, 0xd1, 0x4e, 0xca, 0x64, 0x51, 0x64, 0xc4, 0xd8, 0x9d, 0xe8, 0x17, 0xe7, 0xfa,
+	0xa2, 0xfc, 0x9f, 0xe0, 0xc7, 0xd9, 0x4e, 0xb9, 0xca, 0xca, 0x89, 0x52, 0x9b, 0xfe, 0xd8, 0xb8,
+	0xac, 0x72, 0x84, 0xa6, 0xf2, 0x67, 0xac, 0x57, 0x88, 0xcc, 0xaf, 0xff, 0x04, 0x00, 0x00, 0xff,
+	0xff, 0xdd, 0x33, 0x1d, 0x80, 0xa6, 0x0d, 0x00, 0x00,
+>>>>>>> b7ac5739e104c6c933085e012003d9108844ba8d
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1105,6 +1275,7 @@ type CourierServiceClient interface {
 	Delete(ctx context.Context, in *DeleteCourierRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	BlockCourier(ctx context.Context, in *BlockCourierRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	UnblockCourier(ctx context.Context, in *UnblockCourierRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	UpdateToken(ctx context.Context, in *UpdateTokenRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	CreateCourierDetails(ctx context.Context, in *CourierDetails, opts ...grpc.CallOption) (*CreateCourierDetailsResponse, error)
 	UpdateCourierDetails(ctx context.Context, in *CourierDetails, opts ...grpc.CallOption) (*UpdateCourierDetailsResponse, error)
 	GetCourierDetails(ctx context.Context, in *GetCourierDetailsRequest, opts ...grpc.CallOption) (*GetCourierDetailsResponse, error)
@@ -1204,6 +1375,15 @@ func (c *courierServiceClient) UnblockCourier(ctx context.Context, in *UnblockCo
 	return out, nil
 }
 
+func (c *courierServiceClient) UpdateToken(ctx context.Context, in *UpdateTokenRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/genproto.CourierService/UpdateToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *courierServiceClient) CreateCourierDetails(ctx context.Context, in *CourierDetails, opts ...grpc.CallOption) (*CreateCourierDetailsResponse, error) {
 	out := new(CreateCourierDetailsResponse)
 	err := c.cc.Invoke(ctx, "/genproto.CourierService/CreateCourierDetails", in, out, opts...)
@@ -1287,6 +1467,7 @@ type CourierServiceServer interface {
 	Delete(context.Context, *DeleteCourierRequest) (*empty.Empty, error)
 	BlockCourier(context.Context, *BlockCourierRequest) (*empty.Empty, error)
 	UnblockCourier(context.Context, *UnblockCourierRequest) (*empty.Empty, error)
+	UpdateToken(context.Context, *UpdateTokenRequest) (*empty.Empty, error)
 	CreateCourierDetails(context.Context, *CourierDetails) (*CreateCourierDetailsResponse, error)
 	UpdateCourierDetails(context.Context, *CourierDetails) (*UpdateCourierDetailsResponse, error)
 	GetCourierDetails(context.Context, *GetCourierDetailsRequest) (*GetCourierDetailsResponse, error)
@@ -1327,6 +1508,9 @@ func (*UnimplementedCourierServiceServer) BlockCourier(ctx context.Context, req 
 }
 func (*UnimplementedCourierServiceServer) UnblockCourier(ctx context.Context, req *UnblockCourierRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnblockCourier not implemented")
+}
+func (*UnimplementedCourierServiceServer) UpdateToken(ctx context.Context, req *UpdateTokenRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateToken not implemented")
 }
 func (*UnimplementedCourierServiceServer) CreateCourierDetails(ctx context.Context, req *CourierDetails) (*CreateCourierDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCourierDetails not implemented")
@@ -1519,6 +1703,24 @@ func _CourierService_UnblockCourier_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CourierService_UpdateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourierServiceServer).UpdateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/genproto.CourierService/UpdateToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourierServiceServer).UpdateToken(ctx, req.(*UpdateTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CourierService_CreateCourierDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CourierDetails)
 	if err := dec(in); err != nil {
@@ -1702,6 +1904,10 @@ var _CourierService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnblockCourier",
 			Handler:    _CourierService_UnblockCourier_Handler,
+		},
+		{
+			MethodName: "UpdateToken",
+			Handler:    _CourierService_UpdateToken_Handler,
 		},
 		{
 			MethodName: "CreateCourierDetails",

@@ -1,4 +1,4 @@
-  package v1
+package v1
 
 import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
@@ -27,6 +27,7 @@ import (
 type handlerV1 struct {
 	storage    storage.StorageI
 	log        logger.Logger
+	inMemoryStorage repo.InMemoryStorageI
 	grpcClient *grpc_client.GrpcClient
 	cfg        config.Config
 }
@@ -35,6 +36,7 @@ type handlerV1 struct {
 type HandlerV1Config struct {
 	Storage    storage.StorageI
 	Logger     logger.Logger
+	InMemoryStorage repo.InMemoryStorageI
 	GrpcClient *grpc_client.GrpcClient
 	Cfg        config.Config
 }
@@ -67,14 +69,14 @@ const (
 )
 
 var (
-	mySigningKey  = []byte("secretphrase")
-	newSigningKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
+	signingKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
 )
 
 //New ...
 func New(c *HandlerV1Config) *handlerV1 {
 	return &handlerV1{
 		storage:    c.Storage,
+		inMemoryStorage: c.InMemoryStorage,
 		log:        c.Logger,
 		grpcClient: c.GrpcClient,
 		cfg:        c.Cfg,
@@ -341,16 +343,14 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 		return nil, ErrUnauthorized
 	}
 
-	claims, err = jwt.ExtractClaims(authorization.Token, mySigningKey)
+	claims, err = jwt.ExtractClaims(authorization.Token, signingKey)
 	if err != nil {
-		claims, err = jwt.ExtractClaims(authorization.Token, newSigningKey)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, models.ResponseError{
-				Error: ErrorCodeUnauthorized,
-			})
-			h.log.Error("Unauthorized request: ", logger.Error(err))
-			return nil, ErrUnauthorized
-		}
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: ", logger.Error(err))
+		return nil, ErrUnauthorized
 	}
+	
 	return claims, nil
   }

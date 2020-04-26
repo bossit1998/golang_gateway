@@ -9,6 +9,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 
 	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_getaway/config"
@@ -23,6 +24,7 @@ import (
 type Config struct {
 	Storage    storage.StorageI
 	Logger     logger.Logger
+	InMemoryStorage repo.InMemoryStorageI
 	GrpcClient *grpc_client.GrpcClient
 	Cfg        config.Config
 	//CasbinEnforcer  *casbin.Enforcer
@@ -48,6 +50,7 @@ func New(cnf Config) *gin.Engine {
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:    cnf.Storage,
+		InMemoryStorage: cnf.InMemoryStorage,
 		Logger:     cnf.Logger,
 		GrpcClient: cnf.GrpcClient,
 		Cfg:        cnf.Cfg,
@@ -60,15 +63,17 @@ func New(cnf Config) *gin.Engine {
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
 	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
-	r.GET("/v1/couriers/:courier_id/courier_details", handlerV1.GetCourierDetails)
+	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
-	r.POST("/v1/couriers/courier_details", handlerV1.CreateCourierDetails)
+	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)
 	r.PATCH("/v1/couriers/:courier_id/block", handlerV1.BlockCourier)
 	r.PATCH("/v1/couriers/:courier_id/unblock", handlerV1.UnblockCourier)
 	r.PUT("/v1/couriers", handlerV1.UpdateCourier)
-	r.PUT("/v1/couriers/courier_details", handlerV1.UpdateCourierDetails)
+	r.PUT("/v1/couriers/courier-details", handlerV1.UpdateCourierDetails)
 	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
+	r.POST("/v1/couriers/check-login/", handlerV1.CheckCourierLogin)
+	r.POST("/v1/couriers/confirm-login/", handlerV1.ConfirmCourierLogin)
 
 	//Vehicle endpoints
 	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
@@ -77,13 +82,13 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
-	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
-	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
-	r.GET("/v1/distributors/:distributor_id/parks", handlerV1.GetAllDistributorParks)
-	r.POST("/v1/distributors", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
+	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:distributor_id/", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id/couriers/", handlerV1.GetAllDistributorCouriers)
+	r.GET("/v1/distributors/:distributor_id/parks/", handlerV1.GetAllDistributorParks)
+	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors/", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:distributor_id/", handlerV1.DeleteDistributor)
 
 	//Park endpoints
 	r.GET("/v1/parks/:park_id", handlerV1.GetPark)
@@ -116,6 +121,9 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
 	r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
 	r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
+
+	//Login endpoints
+	r.POST("/v1/check_code/", )
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

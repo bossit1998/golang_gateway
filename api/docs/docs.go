@@ -484,7 +484,99 @@ var doc = `{
                 }
             }
         },
-        "/v1/couriers/courier_details": {
+        "/v1/couriers/check-login/": {
+            "post": {
+                "description": "API that checks whether courier exists\nand if exists sends sms to their number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Check Courier Login",
+                "parameters": [
+                    {
+                        "description": "check login",
+                        "name": "check_login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckLoginResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers/confirm-login/": {
+            "post": {
+                "description": "API that checks whether courier entered\nvalid token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Confirm Courier Login",
+                "parameters": [
+                    {
+                        "description": "confirm login",
+                        "name": "confirm_login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ConfirmLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers/courier-details": {
             "put": {
                 "description": "API for updating courier details",
                 "consumes": [
@@ -704,7 +796,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/couriers/{courier_id}/courier_details": {
+        "/v1/couriers/{courier_id}/courier-details": {
             "get": {
                 "description": "API for getting courier details",
                 "consumes": [
@@ -1002,6 +1094,52 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetAllDistributorsModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/distributors/": {
+            "post": {
+                "description": "API for creating distributor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "distributor"
+                ],
+                "summary": "Create Distributor",
+                "parameters": [
+                    {
+                        "description": "distributor",
+                        "name": "distirbutor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateDistributorModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetDistributorModel"
                         }
                     },
                     "404": {
@@ -2064,6 +2202,17 @@ var doc = `{
                 }
             }
         },
+        "models.CheckLoginResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CheckNameRequest": {
             "type": "object",
             "required": [
@@ -2071,6 +2220,17 @@ var doc = `{
             ],
             "properties": {
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ConfirmLoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }
@@ -2139,6 +2299,9 @@ var doc = `{
         "models.CreateCourierModel": {
             "type": "object",
             "properties": {
+                "distributor_id": {
+                    "type": "string"
+                },
                 "first_name": {
                     "type": "string"
                 },

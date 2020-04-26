@@ -172,7 +172,7 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributor [post]
+// @Router /v1/distributors/ [post]
 // @Summary Create Distributor
 // @Description API for creating distributor
 // @Tags distributor
@@ -208,7 +208,7 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "distributor", newSigningKey)
+	accessToken, err := jwt.GenerateJWT(id.String(), "distributor", signingKey)
 
 	distributor.Id = id.String()
 	distributor.AccessToken = accessToken
