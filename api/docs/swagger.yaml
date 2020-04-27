@@ -1497,6 +1497,38 @@ paths:
       summary: Get Fare
       tags:
       - fare
+  /v1/new-order:
+    get:
+      consumes:
+      - application/json
+      description: API for getting new orders
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrders'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get New Orders
+      tags:
+      - order
   /v1/order:
     get:
       consumes:

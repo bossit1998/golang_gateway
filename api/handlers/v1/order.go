@@ -130,7 +130,7 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		return
 	}
 
-	order, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.GetAllRequest{
+	order, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 		Page:page,
 		Limit:limit,
 	})
@@ -399,4 +399,53 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, orders)
+}
+
+// @Router /v1/new-order [get]
+// @Summary Get New Orders
+// @Description API for getting new orders
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetOrders
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) NewOrders(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+	)
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	page, err := ParsePageQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+		return
+	}
+
+	limit, err := ParseLimitQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
+		return
+	}
+
+	order, err := h.grpcClient.OrderService().GetNewOrders(context.Background(), &pbo.OrdersRequest{
+		Page:page,
+		Limit:limit,
+	})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting new orders") {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
