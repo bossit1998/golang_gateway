@@ -753,6 +753,36 @@ paths:
       summary: Refresh Cargo Owner Token
       tags:
       - cargo-owner
+  /v1/courier/order:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier orders
+      parameters:
+      - description: courier_id
+        in: query
+        name: courier_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetOrders'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Courier Orders
+      tags:
+      - order
   /v1/couriers:
     get:
       consumes:

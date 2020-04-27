@@ -22,11 +22,11 @@ import (
 
 //Config ...
 type Config struct {
-	Storage    storage.StorageI
-	Logger     logger.Logger
+	Storage         storage.StorageI
+	Logger          logger.Logger
 	InMemoryStorage repo.InMemoryStorageI
-	GrpcClient *grpc_client.GrpcClient
-	Cfg        config.Config
+	GrpcClient      *grpc_client.GrpcClient
+	Cfg             config.Config
 	//CasbinEnforcer  *casbin.Enforcer
 }
 
@@ -49,11 +49,11 @@ func New(cnf Config) *gin.Engine {
 	})
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
-		Storage:    cnf.Storage,
+		Storage:         cnf.Storage,
 		InMemoryStorage: cnf.InMemoryStorage,
-		Logger:     cnf.Logger,
-		GrpcClient: cnf.GrpcClient,
-		Cfg:        cnf.Cfg,
+		Logger:          cnf.Logger,
+		GrpcClient:      cnf.GrpcClient,
+		Cfg:             cnf.Cfg,
 	})
 
 	r.GET("/", func(c *gin.Context) {
@@ -124,7 +124,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
 
 	//Login endpoints
-	r.POST("/v1/check_code/", )
+	r.POST("/v1/check_code/")
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

@@ -1,16 +1,17 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/config"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"fmt"
 	pbo "genproto/order_service"
+	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/config"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 // @Security ApiKeyAuth
@@ -26,9 +27,9 @@ import (
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateOrder(c *gin.Context) {
 	var (
-		jspbMarshal jsonpb.Marshaler
+		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		order pbo.Order
+		order         pbo.Order
 	)
 	userInfo, err := userInfo(h, c)
 
@@ -41,7 +42,7 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error:ErrorBadRequest,
+			Error: ErrorBadRequest,
 		})
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
@@ -75,7 +76,7 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 func (h *handlerV1) GetOrder(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		orderID string
+		orderID     string
 	)
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -131,8 +132,8 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	}
 
 	order, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-		Page:page,
-		Limit:limit,
+		Page:  page,
+		Limit: limit,
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
@@ -162,14 +163,14 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 	var (
-		orderID string
+		orderID           string
 		changeStatusModel models.ChangeStatusRequest
 	)
 	orderID = c.Param("order_id")
 
 	err := c.ShouldBindJSON(&changeStatusModel)
 
-	if handleBadRequestErrWithMessage(c, h.log, err,"error while binding to json") {
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
 	fmt.Println(changeStatusModel)
@@ -177,7 +178,7 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().ChangeStatus(
 		context.Background(),
 		&pbo.ChangeStatusRequest{
-			Id: orderID,
+			Id:       orderID,
 			StatusId: changeStatusModel.StatusID,
 		})
 	fmt.Println(err)
@@ -202,7 +203,7 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetStatuses(c *gin.Context) {
 	var (
-		model models.GetStatuses
+		model  models.GetStatuses
 		status models.Status
 	)
 
@@ -240,7 +241,7 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) AddCourier(c *gin.Context) {
 	var (
-		orderID string
+		orderID         string
 		addCourierModel models.AddCourierRequest
 	)
 	orderID = c.Param("order_id")
@@ -253,7 +254,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().AddCourier(
 		context.Background(),
 		&pbo.AddCourierRequest{
-			OrderId: orderID,
+			OrderId:   orderID,
 			CourierId: addCourierModel.CourierID,
 		})
 
@@ -297,6 +298,17 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
+// @Router /v1/courier/order [get]
+// @Summary Get Courier Orders
+// @Description API for getting courier orders
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param courier_id query string false "courier_id"
+// @Success 200 {object} models.GetOrders
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	var (
 		courierID string
@@ -316,19 +328,19 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error:"courier id is not valid",
+				Error: "courier id is not valid",
 			})
 			return
 		}
 	}
 
-	page, err := ParsePageQueryParam(c)
+	// page, err := ParsePageQueryParam(c)
 
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
-		return
-	}
+	// if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+	// 	return
+	// }
 
-	limit, err := ParseLimitQueryParam(c)
+	// limit, err := ParseLimitQueryParam(c)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
 		return
@@ -337,9 +349,9 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	orders, err := h.grpcClient.OrderService().GetCourierOrders(
 		context.Background(),
 		&pbo.GetCourierOrdersRequest{
-			CourierId:courierID,
-			Page: page,
-			Limit: limit,
+			CourierId: courierID,
+			Page:      1,
+			Limit:     100,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier orders") {
@@ -361,14 +373,14 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 
 	if userInfo.Role == config.RoleCargoOwner {
 		coID = userInfo.ID
-	} else  {
+	} else {
 		coID = c.Query("co_id")
 
 		_, err := uuid.Parse(coID)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error:"cargo owner id is not valid",
+				Error: "cargo owner id is not valid",
 			})
 			return
 		}
@@ -389,8 +401,8 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 	orders, err := h.grpcClient.OrderService().GetCOOrders(
 		context.Background(),
 		&pbo.GetCOOrdersRequest{
-			CoId:coID,
-			Page: page,
+			CoId:  coID,
+			Page:  page,
 			Limit: limit,
 		})
 
@@ -432,8 +444,8 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	}
 
 	order, err := h.grpcClient.OrderService().GetNewOrders(context.Background(), &pbo.OrdersRequest{
-		Page:page,
-		Limit:limit,
+		Page:  page,
+		Limit: limit,
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting new orders") {
