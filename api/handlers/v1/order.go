@@ -51,6 +51,7 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 	order.CoId = userInfo.ID
 	order.UserId = userInfo.ID
 	order.CreatorTypeId = userInfo.ID
+	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	_, err = h.grpcClient.OrderService().Create(context.Background(), &order)
 
