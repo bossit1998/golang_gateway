@@ -1,15 +1,16 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
-	jwtg "github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
+	jwtg "github.com/dgrijalva/jwt-go"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
@@ -25,20 +26,20 @@ import (
 )
 
 type handlerV1 struct {
-	storage    storage.StorageI
-	log        logger.Logger
+	storage         storage.StorageI
+	log             logger.Logger
 	inMemoryStorage repo.InMemoryStorageI
-	grpcClient *grpc_client.GrpcClient
-	cfg        config.Config
+	grpcClient      *grpc_client.GrpcClient
+	cfg             config.Config
 }
 
 //HandlerV1Config ...
 type HandlerV1Config struct {
-	Storage    storage.StorageI
-	Logger     logger.Logger
+	Storage         storage.StorageI
+	Logger          logger.Logger
 	InMemoryStorage repo.InMemoryStorageI
-	GrpcClient *grpc_client.GrpcClient
-	Cfg        config.Config
+	GrpcClient      *grpc_client.GrpcClient
+	Cfg             config.Config
 }
 
 const (
@@ -75,11 +76,11 @@ var (
 //New ...
 func New(c *HandlerV1Config) *handlerV1 {
 	return &handlerV1{
-		storage:    c.Storage,
+		storage:         c.Storage,
 		inMemoryStorage: c.InMemoryStorage,
-		log:        c.Logger,
-		grpcClient: c.GrpcClient,
-		cfg:        c.Cfg,
+		log:             c.Logger,
+		grpcClient:      c.GrpcClient,
+		cfg:             c.Cfg,
 	}
 }
 
@@ -221,8 +222,16 @@ func handleGrpcErrWithMessage(c *gin.Context, l logger.Logger, err error, messag
 		})
 		l.Error(message+", invalid field", logger.Error(err))
 		return true
+	} else if st.Code() == codes.Code(20) {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorBadRequest,
+				Message: st.Message(),
+			},
+		})
+		l.Error(message+", invalid field", logger.Error(err))
+		return true
 	}
-
 	return false
 }
 
@@ -291,7 +300,7 @@ func handleStorageErrWithMessage(c *gin.Context, l logger.Logger, err error, mes
 
 func getDistance(fromLocation models.Location, toLocation models.Location, cfg config.Config) float64 {
 	coordinates := fmt.Sprintf("%f,%f;%f,%f", fromLocation.Long, fromLocation.Lat, toLocation.Long, toLocation.Lat)
-	url := "https://api.mapbox.com/directions/v5/mapbox/driving/"+ coordinates +"/?approaches=unrestricted;curb&access_token="+ cfg.MapboxToken + ""
+	url := "https://api.mapbox.com/directions/v5/mapbox/driving/" + coordinates + "/?approaches=unrestricted;curb&access_token=" + cfg.MapboxToken + ""
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -321,7 +330,7 @@ func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
 	userRole := claims["role"].(string)
 
 	return models.UserInfo{
-		ID: userID,
+		ID:   userID,
 		Role: userRole,
 	}, nil
 }
@@ -337,7 +346,7 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 	authorization.Token = c.GetHeader("Authorization")
 	if c.Request.Header.Get("Authorization") == "" {
 		c.JSON(http.StatusUnauthorized, models.ResponseError{
-			Error:ErrorCodeUnauthorized,
+			Error: ErrorCodeUnauthorized,
 		})
 		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
 		return nil, ErrUnauthorized
@@ -351,6 +360,6 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 		h.log.Error("Unauthorized request: ", logger.Error(err))
 		return nil, ErrUnauthorized
 	}
-	
+
 	return claims, nil
-  }
+}

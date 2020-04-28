@@ -64,6 +64,60 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
+// @Router /v1/order/{order_id} [put]
+// @Summary Update Order
+// @Description API for updating order
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "order_id"
+// @Param order body models.UpdateOrder true "order"
+// @Success 200 {object} models.ResponseOK
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) UpdateOrder(c *gin.Context) {
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		order         pbo.Order
+	)
+	userInfo, err := userInfo(h, c)
+	orderID := c.Param("order_id")
+
+	if err != nil {
+		return
+	}
+	jspbMarshal.OrigName = true
+
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("error while unmarshal", logger.Error(err))
+		return
+	}
+	order.Id = orderID
+	order.DeliveryPrice = order.CoDeliveryPrice
+	order.CoId = userInfo.ID
+	order.UserId = userInfo.ID
+	order.CreatorTypeId = userInfo.ID
+	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
+
+	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
+	fmt.Println(err)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
+		return
+	}
+
+	c.JSON(200, models.ResponseOK{
+		Message: "order successfully updated",
+	})
+}
+
 // @Router /v1/order/{order_id} [get]
 // @Summary Get Order
 // @Description API for getting order
