@@ -21,11 +21,11 @@ import (
 )
 
 var (
-	log        		logger.Logger
-	cfg        		config.Config
-	strg       		storage.StorageI
-	inMemStrg      repo.InMemoryStorageI
-	grpcClient 		*grpc_client.GrpcClient
+	log        logger.Logger
+	cfg        config.Config
+	strg       storage.StorageI
+	inMemStrg  repo.InMemoryStorageI
+	grpcClient *grpc_client.GrpcClient
 	//casbinEnforcer 	*casbin.Enforcer
 )
 
@@ -50,23 +50,23 @@ func initDeps() {
 	strg = storage.NewStoragePg(connDB)
 
 	/*
-	a, err := gormadapter.NewAdapter("postgres", psqlString, true)
-	if err != nil {
-		log.Error("new adapter error", logger.Error(err))
-		return
-	}
+		a, err := gormadapter.NewAdapter("postgres", psqlString, true)
+		if err != nil {
+			log.Error("new adapter error", logger.Error(err))
+			return
+		}
 
-	casbinEnforcer, err = casbin.NewEnforcer(cfg.CasbinConfigPath, a)
-	if err != nil {
-		log.Error("new enforcer error", logger.Error(err))
-		return
-	}
+		casbinEnforcer, err = casbin.NewEnforcer(cfg.CasbinConfigPath, a)
+		if err != nil {
+			log.Error("new enforcer error", logger.Error(err))
+			return
+		}
 
-	err = casbinEnforcer.LoadPolicy()
-	if err != nil {
-		log.Error("casbin load policy error", logger.Error(err))
-		return
-	}
+		err = casbinEnforcer.LoadPolicy()
+		if err != nil {
+			log.Error("casbin load policy error", logger.Error(err))
+			return
+		}
 	*/
 
 	pool := redis.Pool{
@@ -95,17 +95,16 @@ func initDeps() {
 
 func main() {
 	initDeps()
-
 	//casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("keyMatch", util.KeyMatch)
 	//casbinEnforcer.GetRoleManager().(*defaultrolemanager.RoleManager).AddMatchingFunc("KeyMatch3", util.KeyMatch3)
 
 	server := api.New(api.Config{
-		Storage:    strg,
+		Storage:         strg,
 		InMemoryStorage: inMemStrg,
-		Logger:     log,
-		GrpcClient: grpcClient,
-	//	CasbinEnforcer:  casbinEnforcer,
-		Cfg:        cfg,
+		Logger:          log,
+		GrpcClient:      grpcClient,
+		//	CasbinEnforcer:  casbinEnforcer,
+		Cfg: cfg,
 	})
 
 	server.Run(cfg.HTTPPort)

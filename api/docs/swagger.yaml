@@ -466,6 +466,35 @@ definitions:
       price_per_km:
         type: number
     type: object
+  models.UpdateOrder:
+    properties:
+      co_delivery_price:
+        example: 10000
+        type: number
+      customer_name:
+        example: Oybek
+        type: string
+      customer_phone_number:
+        example: "998998765432"
+        type: string
+      description:
+        type: string
+      fare_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      id:
+        type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.updateStepModel'
+        type: array
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+    type: object
   models.getOrderModel:
     properties:
       co_delivery_price:
@@ -541,6 +570,42 @@ definitions:
       products:
         items:
           $ref: '#/definitions/models.productModel'
+        type: array
+    type: object
+  models.updateProduct:
+    properties:
+      id:
+        type: string
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
+    type: object
+  models.updateStepModel:
+    properties:
+      address:
+        type: string
+      branch_name:
+        type: string
+      description:
+        type: string
+      destination_address:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
 info:
@@ -1673,6 +1738,42 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Order
+      tags:
+      - order
+    put:
+      consumes:
+      - application/json
+      description: API for updating order
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Order
       tags:
       - order
   /v1/order/{order_id}/add-courier:

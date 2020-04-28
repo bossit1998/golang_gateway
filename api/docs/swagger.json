@@ -1726,6 +1726,62 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for updating order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Update Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "order",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateOrder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/v1/order/{order_id}/add-courier": {
@@ -2909,6 +2965,47 @@
                 }
             }
         },
+        "models.UpdateOrder": {
+            "type": "object",
+            "properties": {
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
+                },
+                "customer_name": {
+                    "type": "string",
+                    "example": "Oybek"
+                },
+                "customer_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "fare_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.updateStepModel"
+                    }
+                },
+                "to_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "to_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                }
+            }
+        },
         "models.getOrderModel": {
             "type": "object",
             "properties": {
@@ -3015,6 +3112,59 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.productModel"
+                    }
+                }
+            }
+        },
+        "models.updateProduct": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Choyxona Osh"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 25000
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 2
+                }
+            }
+        },
+        "models.updateStepModel": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_address": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.updateProduct"
                     }
                 }
             }
