@@ -426,7 +426,7 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 		return
 	}
 
-	if userInfo.Role == config.RoleCargoOwner {
+	if userInfo.Role == config.RoleCargoOwnerAdmin {
 		coID = userInfo.ID
 	} else {
 		coID = c.Query("co_id")

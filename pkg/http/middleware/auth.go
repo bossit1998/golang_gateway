@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bitbucket.org/alien_soft/api_getaway/config"
 	"net/http"
 	s "strings"
 
@@ -64,18 +65,18 @@ func (a *JWTRoleAuthorizer) GetRole(r *http.Request) (string, error) {
 	}
 
 
-	if claims["role"].(string) == "cargo_owner_admin" {
+	if claims["role"].(string) == config.RoleCargoOwnerAdmin {
 		role = "cargo_owner_admin"
-	} else if claims["role"].(string) == "cargo_api" {
+	} else if claims["role"].(string) == config.RoleCargoAPI {
 		role = "cargo_api"
-	} else if claims["role"].(string) == "distributor_admin" {
+	} else if claims["role"].(string) == config.RoleDistributorAdmin {
 		role = "distributor_admin"
-	} else if claims["role"].(string) == "courier" {
+	} else if claims["role"].(string) == config.RoleCourier {
 		role = "courier"
-	} else if claims["role"].(string) == "admin" {
+	} else if claims["role"].(string) == config.RoleAdmin {
 		role = "admin"
 	} else {
-		role = "unknown"
+		role = config.RoleUnknown
 	}
 
 	return role, nil

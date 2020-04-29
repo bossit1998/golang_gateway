@@ -73,7 +73,7 @@ func (h *handlerV1) CreateCO(c *gin.Context) {
 
 	cargoOwner.Id = cargoOwnerID.String()
 
-	token, err := jwt.GenerateJWT(cargoOwner.Id, config.RoleCargoOwner, signingKey)
+	token, err := jwt.GenerateJWT(cargoOwner.Id, config.RoleCargoOwnerAdmin, signingKey)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while generating token") {
 		return
@@ -117,9 +117,9 @@ func (h *handlerV1) GetCO(c *gin.Context) {
 		return
 	}
 
-	if userInfo.Role == config.RoleCargoOwner {
+	if userInfo.Role == config.RoleCargoOwnerAdmin {
 		coID = userInfo.ID
-	} else if userInfo.Role == config.RoleSuperAdmin {
+	} else if userInfo.Role == config.RoleAdmin {
 		coID = c.Query("co_id")
 	}
 
