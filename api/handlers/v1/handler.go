@@ -1,12 +1,10 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
-	jwtg "github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -14,9 +12,11 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
+	jwtg "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -25,20 +25,20 @@ import (
 )
 
 type handlerV1 struct {
-	storage    storage.StorageI
-	log        logger.Logger
+	storage         storage.StorageI
+	log             logger.Logger
 	inMemoryStorage repo.InMemoryStorageI
-	grpcClient *grpc_client.GrpcClient
-	cfg        config.Config
+	grpcClient      *grpc_client.GrpcClient
+	cfg             config.Config
 }
 
 //HandlerV1Config ...
 type HandlerV1Config struct {
-	Storage    storage.StorageI
-	Logger     logger.Logger
+	Storage         storage.StorageI
+	Logger          logger.Logger
 	InMemoryStorage repo.InMemoryStorageI
-	GrpcClient *grpc_client.GrpcClient
-	Cfg        config.Config
+	GrpcClient      *grpc_client.GrpcClient
+	Cfg             config.Config
 }
 
 const (
@@ -75,11 +75,11 @@ var (
 //New ...
 func New(c *HandlerV1Config) *handlerV1 {
 	return &handlerV1{
-		storage:    c.Storage,
+		storage:         c.Storage,
 		inMemoryStorage: c.InMemoryStorage,
-		log:        c.Logger,
-		grpcClient: c.GrpcClient,
-		cfg:        c.Cfg,
+		log:             c.Logger,
+		grpcClient:      c.GrpcClient,
+		cfg:             c.Cfg,
 	}
 }
 
@@ -252,7 +252,6 @@ func handleBadRequestErrWithMessage(c *gin.Context, l logger.Logger, err error, 
 		l.Error(message, logger.Error(err))
 		return true
 	}
-
 	return false
 }
 
@@ -291,7 +290,7 @@ func handleStorageErrWithMessage(c *gin.Context, l logger.Logger, err error, mes
 
 func getDistance(fromLocation models.Location, toLocation models.Location, cfg config.Config) float64 {
 	coordinates := fmt.Sprintf("%f,%f;%f,%f", fromLocation.Long, fromLocation.Lat, toLocation.Long, toLocation.Lat)
-	url := "https://api.mapbox.com/directions/v5/mapbox/driving/"+ coordinates +"/?approaches=unrestricted;curb&access_token="+ cfg.MapboxToken + ""
+	url := "https://api.mapbox.com/directions/v5/mapbox/driving/" + coordinates + "/?approaches=unrestricted;curb&access_token=" + cfg.MapboxToken + ""
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -310,6 +309,43 @@ func getDistance(fromLocation models.Location, toLocation models.Location, cfg c
 	return dist
 }
 
+func getOptimizedTrip(tripData models.TripsDataModel, cfg config.Config) models.OptimizedTrips {
+
+	var tripCoordinates string
+	tripCoordinates = fmt.Sprintf("%f,%f;", tripData.CurrentLocation.Long, tripData.CurrentLocation.Lat)
+
+	if len(tripData.Origins) < 10 {
+		for j := 0; j < len(tripData.Origins); j++ {
+			tripCoordinates += fmt.Sprintf("%f,%f;", tripData.Origins[j].Long, tripData.Origins[j].Lat)
+		}
+	} else {
+		fmt.Println("Too many origins")
+	}
+
+	tripCoordinates += fmt.Sprintf("%f,%f", tripData.Destination.Long, tripData.Destination.Lat)
+
+	fmt.Println(tripCoordinates)
+
+	url := "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/" + tripCoordinates + "?source=first&destination=last&roundtrip=true&access_token=" + cfg.MapboxToken + ""
+
+	resp, err := http.Get(url)
+
+	fmt.Println(url)
+	if err != nil {
+		fmt.Println("to many origins | InvalidInput")
+		//return 0
+		// handle error
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	optimizedTrip := models.OptimizedTrips{}
+	json.Unmarshal(body, &optimizedTrip)
+
+	return optimizedTrip
+}
+
 func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
 	claims, err := GetClaims(h, c)
 
@@ -321,7 +357,7 @@ func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
 	userRole := claims["role"].(string)
 
 	return models.UserInfo{
-		ID: userID,
+		ID:   userID,
 		Role: userRole,
 	}, nil
 }
@@ -337,7 +373,7 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 	authorization.Token = c.GetHeader("Authorization")
 	if c.Request.Header.Get("Authorization") == "" {
 		c.JSON(http.StatusUnauthorized, models.ResponseError{
-			Error:ErrorCodeUnauthorized,
+			Error: ErrorCodeUnauthorized,
 		})
 		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
 		return nil, ErrUnauthorized
@@ -351,6 +387,6 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 		h.log.Error("Unauthorized request: ", logger.Error(err))
 		return nil, ErrUnauthorized
 	}
-	
+
 	return claims, nil
-  }
+}

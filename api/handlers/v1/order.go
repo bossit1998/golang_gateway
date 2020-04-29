@@ -1,17 +1,16 @@
 package v1
 
 import (
-	"context"
-	"fmt"
-	pbo "genproto/order_service"
-	"net/http"
-
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"context"
+	"fmt"
+	pbo "genproto/order_service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
+	"net/http"
 )
 
 // @Security ApiKeyAuth
