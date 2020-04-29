@@ -1549,6 +1549,61 @@
                 }
             }
         },
+        "/v1/optimized-trip": {
+            "post": {
+                "description": "API for getting optimized trip",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "geo"
+                ],
+                "summary": "Get Optimized Trip location with index",
+                "parameters": [
+                    {
+                        "description": "Current location",
+                        "name": "tripdata",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TripsDataModel"
+                        }
+                    },
+                    {
+                        "description": "Current location",
+                        "name": "tripdata",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TripsDataModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OptimizedTrips"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/order": {
             "get": {
                 "description": "API for getting orders",
@@ -2267,10 +2322,6 @@
         "models.CalcDeliveryCostRequest": {
             "type": "object",
             "properties": {
-                "from_location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
                 "min_distance": {
                     "type": "number"
                 },
@@ -2280,9 +2331,9 @@
                 "per_km_price": {
                     "type": "number"
                 },
-                "to_location": {
+                "tripsDataModel": {
                     "type": "object",
-                    "$ref": "#/definitions/models.Location"
+                    "$ref": "#/definitions/models.TripsDataModel"
                 }
             }
         },
@@ -2540,6 +2591,29 @@
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "models.GeoDrivingLegs": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
                 }
             }
         },
@@ -2862,6 +2936,26 @@
                 }
             }
         },
+        "models.OptimizedTrips": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "trips": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Trips"
+                    }
+                },
+                "waypoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.TripsWaypoint"
+                    }
+                }
+            }
+        },
         "models.RefreshTokenResponse": {
             "type": "object",
             "properties": {
@@ -2894,6 +2988,74 @@
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "models.Trips": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number"
+                },
+                "duration": {
+                    "type": "number"
+                },
+                "geometry": {
+                    "type": "string"
+                },
+                "legs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GeoDrivingLegs"
+                    }
+                },
+                "weight": {
+                    "type": "string"
+                },
+                "weight_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.TripsDataModel": {
+            "type": "object",
+            "properties": {
+                "current_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "destination": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "origins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Location"
+                    }
+                }
+            }
+        },
+        "models.TripsWaypoint": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "trip_index": {
+                    "type": "integer"
+                },
+                "waypoint_index": {
+                    "type": "integer"
                 }
             }
         },

@@ -96,6 +96,8 @@ func New(cnf Config) *gin.Engine {
 
 	//GetDistanse
 	r.POST("/v1/calc-delivery-cost", handlerV1.CalcDeliveryCost)
+	//GetOptimizedTrips
+	r.POST("/v1/optimized-trip", handlerV1.OptimizedTrip)
 
 	//Fare endpoints
 	r.GET("/v1/fares/:fare_id", handlerV1.GetFare)

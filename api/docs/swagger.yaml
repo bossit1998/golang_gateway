@@ -6,17 +6,14 @@ definitions:
     type: object
   models.CalcDeliveryCostRequest:
     properties:
-      from_location:
-        $ref: '#/definitions/models.Location'
-        type: object
       min_distance:
         type: number
       min_price:
         type: number
       per_km_price:
         type: number
-      to_location:
-        $ref: '#/definitions/models.Location'
+      tripsDataModel:
+        $ref: '#/definitions/models.TripsDataModel'
         type: object
     type: object
   models.CalcDeliveryCostResponse:
@@ -188,6 +185,21 @@ definitions:
         type: string
       phone:
         type: string
+    type: object
+  models.GeoDrivingLegs:
+    properties:
+      distance:
+        type: number
+      duration:
+        type: number
+      steps:
+        items:
+          type: string
+        type: array
+      summary:
+        type: string
+      weight:
+        type: number
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -400,6 +412,19 @@ definitions:
       phone:
         type: number
     type: object
+  models.OptimizedTrips:
+    properties:
+      code:
+        type: string
+      trips:
+        items:
+          $ref: '#/definitions/models.Trips'
+        type: array
+      waypoints:
+        items:
+          $ref: '#/definitions/models.TripsWaypoint'
+        type: array
+    type: object
   models.RefreshTokenResponse:
     properties:
       token:
@@ -421,6 +446,51 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  models.Trips:
+    properties:
+      distance:
+        type: number
+      duration:
+        type: number
+      geometry:
+        type: string
+      legs:
+        items:
+          $ref: '#/definitions/models.GeoDrivingLegs'
+        type: array
+      weight:
+        type: string
+      weight_name:
+        type: string
+    type: object
+  models.TripsDataModel:
+    properties:
+      current_location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      destination:
+        $ref: '#/definitions/models.Location'
+        type: object
+      origins:
+        items:
+          $ref: '#/definitions/models.Location'
+        type: array
+    type: object
+  models.TripsWaypoint:
+    properties:
+      distance:
+        type: string
+      location:
+        items:
+          type: number
+        type: array
+      name:
+        type: string
+      trip_index:
+        type: integer
+      waypoint_index:
+        type: integer
     type: object
   models.UpdateCourierModel:
     properties:
@@ -1624,6 +1694,42 @@ paths:
       summary: Get New Orders
       tags:
       - order
+  /v1/optimized-trip:
+    post:
+      consumes:
+      - application/json
+      description: API for getting optimized trip
+      parameters:
+      - description: Current location
+        in: body
+        name: tripdata
+        required: true
+        schema:
+          $ref: '#/definitions/models.TripsDataModel'
+      - description: Current location
+        in: body
+        name: tripdata
+        required: true
+        schema:
+          $ref: '#/definitions/models.TripsDataModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OptimizedTrips'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Optimized Trip location with index
+      tags:
+      - geo
   /v1/order:
     get:
       consumes:

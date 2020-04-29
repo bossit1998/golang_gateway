@@ -1,10 +1,10 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"context"
-	"fmt"
 	pbf "genproto/fare_service"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +20,8 @@ import (
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CalcDeliveryCost(c *gin.Context) {
 	var (
-		calcCostModel models.CalcDeliveryCostRequest
+		// tripDataModel = models.TripsDataModel{}
+		calcCostModel = models.CalcDeliveryCostRequest{}
 	)
 	err := c.ShouldBindJSON(&calcCostModel)
 
@@ -28,25 +29,25 @@ func (h *handlerV1) CalcDeliveryCost(c *gin.Context) {
 		return
 	}
 
-	distance := getDistance(calcCostModel.FromLocation, calcCostModel.ToLocation, h.cfg)
+	optimizedTrip := getOptimizedTrip(calcCostModel.TripsDataModel, h.cfg)
+	distance := optimizedTrip.Trips[0].Distance
 
 	totalDeliveryCost := calcDeliveryCost(calcCostModel.MinDistance, calcCostModel.MinPrice, calcCostModel.PerKmPrice, distance)
 
 	c.JSON(200, models.CalcDeliveryCostResponse{
 		Distance: distance,
-		Price: totalDeliveryCost,
+		Price:    totalDeliveryCost,
 	})
 }
 
-func calcDeliveryCost(limitDistance float64, initialPrice float64, unitPrice float64, distance float64) float64{
+func calcDeliveryCost(limitDistance float64, initialPrice float64, unitPrice float64, distance float64) float64 {
 	totalDeliveryCost := 0.0
-	fmt.Println(distance, limitDistance)
 
 	if distance < limitDistance {
 		totalDeliveryCost = initialPrice
 	} else {
 		price := int((distance - limitDistance) * unitPrice / 1000)
-		price = (price/100) * 100
+		price = (price / 100) * 100
 		totalDeliveryCost = initialPrice + float64(price)
 	}
 	return totalDeliveryCost
@@ -55,7 +56,7 @@ func calcDeliveryCost(limitDistance float64, initialPrice float64, unitPrice flo
 func calcDeliveryPriceWithFare(c *gin.Context, h *handlerV1, fareID string, fromLocation, toLocation models.Location) (float64, error) {
 	fare, err := h.grpcClient.FareService().GetFare(context.Background(),
 		&pbf.GetFareRequest{
-			Id:fareID,
+			Id: fareID,
 		})
 
 	if err != nil {
@@ -68,4 +69,3 @@ func calcDeliveryPriceWithFare(c *gin.Context, h *handlerV1, fareID string, from
 
 	return price, nil
 }
-

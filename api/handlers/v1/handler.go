@@ -15,9 +15,11 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
+	jwtg "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -261,7 +263,6 @@ func handleBadRequestErrWithMessage(c *gin.Context, l logger.Logger, err error, 
 		l.Error(message, logger.Error(err))
 		return true
 	}
-
 	return false
 }
 
@@ -317,6 +318,43 @@ func getDistance(fromLocation models.Location, toLocation models.Location, cfg c
 	dist := geodriving.RoutesList[0].LegsList[0].Distance
 
 	return dist
+}
+
+func getOptimizedTrip(tripData models.TripsDataModel, cfg config.Config) models.OptimizedTrips {
+
+	var tripCoordinates string
+	tripCoordinates = fmt.Sprintf("%f,%f;", tripData.CurrentLocation.Long, tripData.CurrentLocation.Lat)
+
+	if len(tripData.Origins) < 10 {
+		for j := 0; j < len(tripData.Origins); j++ {
+			tripCoordinates += fmt.Sprintf("%f,%f;", tripData.Origins[j].Long, tripData.Origins[j].Lat)
+		}
+	} else {
+		fmt.Println("Too many origins")
+	}
+
+	tripCoordinates += fmt.Sprintf("%f,%f", tripData.Destination.Long, tripData.Destination.Lat)
+
+	fmt.Println(tripCoordinates)
+
+	url := "https://api.mapbox.com/optimized-trips/v1/mapbox/driving/" + tripCoordinates + "?source=first&destination=last&roundtrip=true&access_token=" + cfg.MapboxToken + ""
+
+	resp, err := http.Get(url)
+
+	fmt.Println(url)
+	if err != nil {
+		fmt.Println("to many origins | InvalidInput")
+		//return 0
+		// handle error
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	optimizedTrip := models.OptimizedTrips{}
+	json.Unmarshal(body, &optimizedTrip)
+
+	return optimizedTrip
 }
 
 func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
