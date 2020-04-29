@@ -9,6 +9,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
+	jwtg "github.com/dgrijalva/jwt-go"
+
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
@@ -221,8 +224,16 @@ func handleGrpcErrWithMessage(c *gin.Context, l logger.Logger, err error, messag
 		})
 		l.Error(message+", invalid field", logger.Error(err))
 		return true
+	} else if st.Code() == codes.Code(20) {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorBadRequest,
+				Message: st.Message(),
+			},
+		})
+		l.Error(message+", invalid field", logger.Error(err))
+		return true
 	}
-
 	return false
 }
 
