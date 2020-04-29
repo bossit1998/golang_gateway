@@ -7,11 +7,12 @@ import (
 )
 
 const (
-	//RoleCargoOwner ...
-	RoleCargoOwner = "cargo_owner"
-	//RoleSuperAdmin ...
-	RoleSuperAdmin = "super_admin"
+	RoleCargoOwnerAdmin = "cargo_owner_admin"
+	RoleAdmin = "admin"
+	RoleDistributorAdmin = "distributor_admin"
+	RoleCargoAPI = "cargo_api"
 	RoleCourier = "courier"
+	RoleUnknown = "unknown"
 )
 
 // Config ...
