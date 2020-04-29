@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"net/http"
 
 	//"github.com/casbin/casbin/v2"
@@ -41,7 +40,7 @@ func New(cnf Config) *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
+	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
 	r.Use(func(context *gin.Context) {
 		context.Header("Access-Control-Allow-Origin", "*")
