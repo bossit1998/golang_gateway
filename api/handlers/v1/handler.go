@@ -9,9 +9,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
-	jwtg "github.com/dgrijalva/jwt-go"
-
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
