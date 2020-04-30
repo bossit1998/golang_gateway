@@ -515,3 +515,51 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
+
+// @Security ApiKeyAuth
+// @Router /v1/order-step/{step_id}/take [patch]
+// @Summary Take Order Steps
+// @Description API for taking order step
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param step_id path string true "step_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) TakeOrderStep(c *gin.Context) {
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role != config.RoleCourier {
+		c.JSON(http.StatusForbidden, "")
+		return
+	}
+
+	stepID := c.Param("step_id")
+
+	_, err = uuid.Parse(stepID)
+
+	if err != nil {
+		c.JSON(http.StatusOK, models.ResponseError{
+			Error:"invalid uuid format in param",
+		})
+	}
+
+	_, err = h.grpcClient.OrderService().ChangeStatusStep(
+		context.Background(),
+		&pbo.ChangeStatusStepRequest{
+			StepId: stepID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while taking order step") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "order step took",
+	})
+}

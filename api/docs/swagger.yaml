@@ -1785,6 +1785,37 @@ paths:
       summary: Get All Possible Order Statuses
       tags:
       - order
+  /v1/order-step/{step_id}/take:
+    patch:
+      consumes:
+      - application/json
+      description: API for taking order step
+      parameters:
+      - description: step_id
+        in: path
+        name: step_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Take Order Steps
+      tags:
+      - order
   /v1/order/:
     post:
       consumes:
