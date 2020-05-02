@@ -279,6 +279,9 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	status = models.Status{"e665273d-5415-4243-a329-aee410e39465", "Finished"}
 	model.Statuses = append(model.Statuses, status)
 
+	var a int
+	fmt.Scan(a)
+
 	c.JSON(http.StatusOK, model)
 }
 
