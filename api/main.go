@@ -43,7 +43,11 @@ func New(cnf Config) *gin.Engine {
 
 	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
+
+	r.Use(cors.New(config))
 
 	//r.Use(func(context *gin.Context) {
 	//	context.Header("Access-Control-Allow-Origin", "*")
