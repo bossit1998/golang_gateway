@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/gin-contrib/cors"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
@@ -42,12 +43,14 @@ func New(cnf Config) *gin.Engine {
 
 	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
-	r.Use(func(context *gin.Context) {
-		context.Header("Access-Control-Allow-Origin", "*")
-		context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH")
-		context.Header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-		context.Header("Access-Control-Allow-Credentials", "true")
-	})
+	r.Use(cors.Default())
+
+	//r.Use(func(context *gin.Context) {
+	//	context.Header("Access-Control-Allow-Origin", "*")
+	//	context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH")
+	//	context.Header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	//	context.Header("Access-Control-Allow-Credentials", "true")
+	//})
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:         cnf.Storage,
