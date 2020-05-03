@@ -45,7 +45,8 @@ func New(cnf Config) *gin.Engine {
 	r.Use(func(context *gin.Context) {
 		context.Header("Access-Control-Allow-Origin", "*")
 		context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH")
-		context.Header("Access-Control-Allow-Headers", "Content-Type,Authorization")
+		context.Header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+		context.Header("Access-Control-Allow-Credentials", "true")
 	})
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
