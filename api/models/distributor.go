@@ -45,8 +45,8 @@ type CreateParkModel struct {
 }
 
 type LocationModel struct {
-	Long float64 `json:"phone"`
-	Lat  float64 `json:"name"`
+	Long float64 `json:"long"`
+	Lat  float64 `json:"lat"`
 }
 
 type GetAllParksModel struct {

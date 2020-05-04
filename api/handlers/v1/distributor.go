@@ -412,7 +412,7 @@ func (h *handlerV1) GetPark(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/parks/{distributor_id}/parks [get]
+// @Router /v1/distributors/{distributor_id}/parks [get]
 // @Summary Get All Distributor Parks
 // @Description API for getting all distributor parks
 // @Tags distributor
@@ -467,7 +467,7 @@ func (h *handlerV1) GetAllDistributorParks(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributor [post]
+// @Router /v1/parks [post]
 // @Summary Create Park
 // @Description API for creating park
 // @Tags park
