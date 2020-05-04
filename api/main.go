@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	//"github.com/casbin/casbin/v2"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/gin-contrib/cors"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
@@ -65,7 +65,7 @@ func New(cnf Config) *gin.Engine {
 	})
 
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "bratan api getaway bu"})
+		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
 
 	//Courier endpoints
@@ -80,8 +80,8 @@ func New(cnf Config) *gin.Engine {
 	r.PUT("/v1/couriers", handlerV1.UpdateCourier)
 	r.PUT("/v1/couriers/courier-details", handlerV1.UpdateCourierDetails)
 	r.DELETE("/v1/couriers/:courier_id", handlerV1.DeleteCourier)
-	r.POST("/v1/couriers/check-login/", handlerV1.CheckCourierLogin)
-	r.POST("/v1/couriers/confirm-login/", handlerV1.ConfirmCourierLogin)
+	r.POST("/v1/couriers/check-login", handlerV1.CheckCourierLogin)
+	r.POST("/v1/couriers/confirm-login", handlerV1.ConfirmCourierLogin)
 
 	//Vehicle endpoints
 	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
@@ -90,13 +90,13 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
 	//Distributor endpoints
-	r.GET("/v1/distributors/", handlerV1.GetAllDistributors)
-	r.GET("/v1/distributors/:distributor_id/", handlerV1.GetDistributor)
-	r.GET("/v1/distributors/:distributor_id/couriers/", handlerV1.GetAllDistributorCouriers)
-	r.GET("/v1/distributors/:distributor_id/parks/", handlerV1.GetAllDistributorParks)
-	r.POST("/v1/distributors/", handlerV1.CreateDistributor)
-	r.PUT("/v1/distributors/", handlerV1.UpdateDistributor)
-	r.DELETE("/v1/distributors/:distributor_id/", handlerV1.DeleteDistributor)
+	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
+	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
+	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
+	r.GET("/v1/distributors/:distributor_id/parks", handlerV1.GetAllDistributorParks)
+	r.POST("/v1/distributors", handlerV1.CreateDistributor)
+	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
+	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
 
 	//Park endpoints
 	r.GET("/v1/parks/:park_id", handlerV1.GetPark)
