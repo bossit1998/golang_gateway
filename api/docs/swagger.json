@@ -1046,9 +1046,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/v1/distributors/": {
+            },
             "post": {
                 "description": "API for creating distributor",
                 "consumes": [
@@ -2040,6 +2038,50 @@
             }
         },
         "/v1/parks": {
+            "put": {
+                "description": "API for updating park",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "park"
+                ],
+                "summary": "Update Park",
+                "parameters": [
+                    {
+                        "description": "park",
+                        "name": "distirbutor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateParkModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetParkModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "API for creating park",
                 "consumes": [
@@ -2112,6 +2154,48 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetParkModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API for deleting park",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "park"
+                ],
+                "summary": "Delete Park",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "park_id",
+                        "name": "park_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "404": {
@@ -2627,6 +2711,9 @@
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "distributor_id": {
                     "type": "string"
                 },
                 "location": {
@@ -3212,6 +3299,27 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
+                }
+            }
+        },
+        "models.UpdateParkModel": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.LocationModel"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 }
             }
         },

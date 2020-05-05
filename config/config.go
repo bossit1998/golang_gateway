@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	RoleCargoOwnerAdmin = "cargo_owner_admin"
-	RoleAdmin = "admin"
+	RoleCargoOwnerAdmin  = "cargo_owner_admin"
+	RoleAdmin            = "admin"
 	RoleDistributorAdmin = "distributor_admin"
-	RoleCargoAPI = "cargo_api"
-	RoleCourier = "courier"
-	RoleUnknown = "unknown"
+	RoleCargoAPI         = "cargo_api"
+	RoleCourier          = "courier"
+	RoleUnknown          = "unknown"
 )
 
 // Config ...
@@ -50,7 +50,7 @@ type Config struct {
 	HTTPPort string
 
 	CasbinConfigPath string
-	MapboxToken string
+	MapboxToken      string
 }
 
 // Load loads environment vars and inflates Config
@@ -88,7 +88,6 @@ func Load() Config {
 
 	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "sms_service"))
 	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 80))
-
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

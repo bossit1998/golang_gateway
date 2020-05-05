@@ -172,7 +172,7 @@ func (h *handlerV1) GetAllDistributors(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributors/ [post]
+// @Router /v1/distributors [post]
 // @Summary Create Distributor
 // @Description API for creating distributor
 // @Tags distributor
@@ -531,4 +531,125 @@ func (h *handlerV1) CreatePark(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/parks [put]
+// @Summary Update Park
+// @Description API for updating park
+// @Tags park
+// @Accept  json
+// @Produce  json
+// @Param distirbutor body models.UpdateParkModel true "park"
+// @Success 200 {object} models.GetParkModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) UpdatePark(c *gin.Context) {
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		park          pbc.Park
+	)
+
+	jspbMarshal.OrigName = true
+
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &park)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while unmarshalling data", logger.Error(err))
+		return
+	}
+
+	res, err := h.grpcClient.DistributorService().UpdatePark(
+		context.Background(),
+		&park,
+	)
+
+	st, ok := status.FromError(err)
+	if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while update park", logger.Error(err))
+		return
+	}
+	if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while update park, service unavailable", logger.Error(err))
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(res.GetPark())
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/parks/{park_id} [delete]
+// @Summary Delete Park
+// @Description API for deleting park
+// @Tags park
+// @Accept  json
+// @Produce  json
+// @Param park_id path string true "park_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) DeletePark(c *gin.Context) {
+
+	_, err := h.grpcClient.DistributorService().DeletePark(
+		context.Background(),
+		&pbc.DeleteParkRequest{
+			Id: c.Param("park_id"),
+		},
+	)
+	st, ok := status.FromError(err)
+	if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting park", logger.Error(err))
+		return
+	}
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Not found",
+			},
+		})
+		h.log.Error("Error while deleting park, not found", logger.Error(err))
+		return
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while deleting park, service unavailable", logger.Error(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": "success",
+	})
 }

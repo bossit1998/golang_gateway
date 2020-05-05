@@ -101,6 +101,8 @@ func New(cnf Config) *gin.Engine {
 	//Park endpoints
 	r.GET("/v1/parks/:park_id", handlerV1.GetPark)
 	r.POST("/v1/parks", handlerV1.CreatePark)
+	r.PUT("/v1/parks", handlerV1.UpdatePark)
+	r.DELETE("/v1/parks/:park_id", handlerV1.DeletePark)
 
 	//GetDistanse
 	r.POST("/v1/calc-delivery-cost", handlerV1.CalcDeliveryCost)
