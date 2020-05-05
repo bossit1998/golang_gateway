@@ -1618,6 +1618,12 @@
                 "summary": "Get Orders",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "status_id",
+                        "name": "status_id",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "page",
                         "name": "page",
