@@ -282,32 +282,43 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetStatuses(c *gin.Context) {
 	var (
-		model  models.GetStatuses
-		status models.Status
 	)
+	m := make(map[string]string)
+	m["new"] = config.NEW_STATUS_ID
+	m["accepted"] = config.ACCEPTED_STATUS_ID
+	m["picked_up"] = config.PICKED_UP_STATUS_ID
+	m["delivered"] = config.DELIVERED_STATUS_ID
+	m["finished"] = config.FINISHED_STATUS_ID
+	m["cancelled"] = config.CANCELLED_STATUS_ID
+	m[config.NEW_STATUS_ID] = "New"
+	m[config.ACCEPTED_STATUS_ID] = "Accepted"
+	m[config.PICKED_UP_STATUS_ID] = "Picked up"
+	m[config.DELIVERED_STATUS_ID] = "Delivered"
+	m[config.FINISHED_STATUS_ID] = "Finished"
+	m[config.CANCELLED_STATUS_ID] = "Cancelled"
 
-	status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
-	model.Statuses = append(model.Statuses, status)
+	//status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//status = models.Status{ID: config.CANCELLED_STATUS_ID, Name: "Cancelled"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//status = models.Status{ID: config.ACCEPTED_STATUS_ID, Name: "Accepted"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//status = models.Status{ID: "84be5a2f-3a92-4469-8283-220ca34a0de4", Name: "Picked up"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//status = models.Status{ID: config.DELIVERED_STATUS_ID, Name: "Delivered"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//status = models.Status{ID: config.FINISHED_STATUS_ID, Name: "Finished"}
+	//model.Statuses = append(model.Statuses, status)
+	//
+	//var a int
+	//fmt.Scan(a)
 
-	status = models.Status{ID: config.CANCELLED_STATUS_ID, Name: "Cancelled"}
-	model.Statuses = append(model.Statuses, status)
-
-	status = models.Status{ID: config.ACCEPTED_STATUS_ID, Name: "Accepted"}
-	model.Statuses = append(model.Statuses, status)
-
-	status = models.Status{ID: "84be5a2f-3a92-4469-8283-220ca34a0de4", Name: "Picked up"}
-	model.Statuses = append(model.Statuses, status)
-
-	status = models.Status{ID: config.DELIVERED_STATUS_ID, Name: "Delivered"}
-	model.Statuses = append(model.Statuses, status)
-
-	status = models.Status{ID: config.FINISHED_STATUS_ID, Name: "Finished"}
-	model.Statuses = append(model.Statuses, status)
-
-	var a int
-	fmt.Scan(a)
-
-	c.JSON(http.StatusOK, model)
+	c.JSON(http.StatusOK, m)
 }
 
 // @Router /v1/order/{order_id}/add-courier [patch]
