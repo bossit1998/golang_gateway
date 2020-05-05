@@ -247,7 +247,7 @@ func (h *handlerV1) CreateDistributor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributor [put]
+// @Router /v1/distributors [put]
 // @Summary Update Distributor
 // @Description API for updating distributor
 // @Tags distributor
@@ -313,7 +313,7 @@ func (h *handlerV1) UpdateDistributor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/distributor/{distributor_id} [delete]
+// @Router /v1/distributors/{distributor_id} [delete]
 // @Summary Delete Distributor
 // @Description API for deleting distributor
 // @Tags distributor

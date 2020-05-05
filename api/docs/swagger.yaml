@@ -407,9 +407,9 @@ definitions:
     type: object
   models.LocationModel:
     properties:
-      name:
+      lat:
         type: number
-      phone:
+      long:
         type: number
     type: object
   models.OptimizedTrips:
@@ -1304,94 +1304,6 @@ paths:
       summary: Update Courier Details
       tags:
       - courier
-  /v1/distributor:
-    post:
-      consumes:
-      - application/json
-      description: API for creating park
-      parameters:
-      - description: park
-        in: body
-        name: distirbutor
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateParkModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetParkModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Create Park
-      tags:
-      - park
-    put:
-      consumes:
-      - application/json
-      description: API for updating distributor
-      parameters:
-      - description: distributor
-        in: body
-        name: distributor
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateDistributorModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetDistributorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Update Distributor
-      tags:
-      - distributor
-  /v1/distributor/{distributor_id}:
-    delete:
-      consumes:
-      - application/json
-      description: API for deleting distributor
-      parameters:
-      - description: distributor_id
-        in: path
-        name: distributor_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Delete Distributor
-      tags:
-      - distributor
   /v1/distributors:
     get:
       consumes:
@@ -1422,6 +1334,35 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All Distributors
+      tags:
+      - distributor
+    put:
+      consumes:
+      - application/json
+      description: API for updating distributor
+      parameters:
+      - description: distributor
+        in: body
+        name: distributor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateDistributorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistributorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Distributor
       tags:
       - distributor
   /v1/distributors/:
@@ -1455,6 +1396,34 @@ paths:
       tags:
       - distributor
   /v1/distributors/{distributor_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting distributor
+      parameters:
+      - description: distributor_id
+        in: path
+        name: distributor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Distributor
+      tags:
+      - distributor
     get:
       consumes:
       - application/json
@@ -1513,6 +1482,38 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Distributor Couriers
+      tags:
+      - distributor
+  /v1/distributors/{distributor_id}/parks:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all distributor parks
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllParksModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Distributor Parks
       tags:
       - distributor
   /v1/fares:
@@ -2012,27 +2013,25 @@ paths:
       summary: Remove Order Courier
       tags:
       - order
-  /v1/parks/{distributor_id}/parks:
-    get:
+  /v1/parks:
+    post:
       consumes:
       - application/json
-      description: API for getting all distributor parks
+      description: API for creating park
       parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
+      - description: park
+        in: body
+        name: distirbutor
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateParkModel'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetAllParksModel'
+            $ref: '#/definitions/models.GetParkModel'
         "404":
           description: Not Found
           schema:
@@ -2041,9 +2040,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      summary: Get All Distributor Parks
+      summary: Create Park
       tags:
-      - distributor
+      - park
   /v1/parks/{park_id}:
     get:
       consumes:

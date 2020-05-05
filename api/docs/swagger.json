@@ -955,140 +955,6 @@
                 }
             }
         },
-        "/v1/distributor": {
-            "put": {
-                "description": "API for updating distributor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "distributor"
-                ],
-                "summary": "Update Distributor",
-                "parameters": [
-                    {
-                        "description": "distributor",
-                        "name": "distributor",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateDistributorModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetDistributorModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "API for creating park",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "park"
-                ],
-                "summary": "Create Park",
-                "parameters": [
-                    {
-                        "description": "park",
-                        "name": "distirbutor",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateParkModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetParkModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/distributor/{distributor_id}": {
-            "delete": {
-                "description": "API for deleting distributor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "distributor"
-                ],
-                "summary": "Delete Distributor",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "distributor_id",
-                        "name": "distributor_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/distributors": {
             "get": {
                 "description": "API for getting all distributors",
@@ -1121,6 +987,50 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetAllDistributorsModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "API for updating distributor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "distributor"
+                ],
+                "summary": "Update Distributor",
+                "parameters": [
+                    {
+                        "description": "distributor",
+                        "name": "distributor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateDistributorModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetDistributorModel"
                         }
                     },
                     "404": {
@@ -1226,6 +1136,48 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "API for deleting distributor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "distributor"
+                ],
+                "summary": "Delete Distributor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "distributor_id",
+                        "name": "distributor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/v1/distributors/{distributor_id}/couriers": {
@@ -1260,6 +1212,55 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetAllCouriersModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/distributors/{distributor_id}/parks": {
+            "get": {
+                "description": "API for getting all distributor parks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "distributor"
+                ],
+                "summary": "Get All Distributor Parks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllParksModel"
                         }
                     },
                     "404": {
@@ -2038,9 +2039,9 @@
                 }
             }
         },
-        "/v1/parks/{distributor_id}/parks": {
-            "get": {
-                "description": "API for getting all distributor parks",
+        "/v1/parks": {
+            "post": {
+                "description": "API for creating park",
                 "consumes": [
                     "application/json"
                 ],
@@ -2048,28 +2049,25 @@
                     "application/json"
                 ],
                 "tags": [
-                    "distributor"
+                    "park"
                 ],
-                "summary": "Get All Distributor Parks",
+                "summary": "Create Park",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
+                        "description": "park",
+                        "name": "distirbutor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateParkModel"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetAllParksModel"
+                            "$ref": "#/definitions/models.GetParkModel"
                         }
                     },
                     "404": {
@@ -2977,10 +2975,10 @@
         "models.LocationModel": {
             "type": "object",
             "properties": {
-                "name": {
+                "lat": {
                     "type": "number"
                 },
-                "phone": {
+                "long": {
                     "type": "number"
                 }
             }
