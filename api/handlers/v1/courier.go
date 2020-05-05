@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -187,6 +188,9 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		return
 	}
 
+	fmt.Print(courier.FirstName)
+	fmt.Print(courier.LastName)
+
 	id, err := uuid.NewRandom()
 	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
 		return
@@ -199,7 +203,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 
 	courier.Id = id.String()
 	courier.AccessToken = accessToken
-	
+
 	res, err := h.grpcClient.CourierService().Create(
 		context.Background(), &courier,
 	)
@@ -895,7 +899,7 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 	var (
 		checkLoginModel models.CheckLoginRequest
-		code string
+		code            string
 	)
 
 	err := c.ShouldBindJSON(&checkLoginModel)
@@ -931,7 +935,7 @@ func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 		code = etc.GenerateCode(6)
 		_, err = h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
-				Text: code,
+				Text:       code,
 				Recipients: []string{checkLoginModel.Login},
 			},
 		)
@@ -946,7 +950,7 @@ func (h *handlerV1) CheckCourierLogin(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.CheckLoginResponse{
-		Code: code,
+		Code:  code,
 		Phone: checkLoginModel.Login,
 	})
 }
@@ -1016,7 +1020,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 
 	_, err = h.grpcClient.CourierService().UpdateToken(
 		context.Background(), &pbc.UpdateTokenRequest{
-			Id: courier.Courier.Id,
+			Id:     courier.Courier.Id,
 			Access: access,
 		},
 	)
@@ -1025,7 +1029,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &models.ConfirmLoginResponse{
-		ID: courier.Courier.Id,
+		ID:          courier.Courier.Id,
 		AccessToken: access,
 	})
 }
