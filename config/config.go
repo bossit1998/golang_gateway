@@ -13,6 +13,12 @@ const (
 	RoleCargoAPI         = "cargo_api"
 	RoleCourier          = "courier"
 	RoleUnknown          = "unknown"
+	NEW_STATUS_ID 		= "986a0d09-7b4d-4ca9-8567-aa1c6d770505"
+	CANCELLED_STATUS_ID = "6ba783a3-1c2e-479c-9626-25526b3d9d36"
+	ACCEPTED_STATUS_ID 	= "8781af8e-f74d-4fb6-ae23-fd997f4a2ee0"
+	PICKED_UP_STATUS_ID = "84be5a2f-3a92-4469-8283-220ca34a0de4"
+	DELIVERED_STATUS_ID = "79413606-a56f-45ed-97c3-f3f18e645972"
+	FINISHED_STATUS_ID 	= "e665273d-5415-4243-a329-aee410e39465"
 )
 
 // Config ...

@@ -161,6 +161,7 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 // @Tags order
 // @Accept  json
 // @Produce  json
+// @Param status_id query string false "status_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetOrders
@@ -169,26 +170,50 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 func (h *handlerV1) GetOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
+		order *pbo.OrdersResponse
+		statusID string
+		err error
+		page uint64
+		limit uint64
 	)
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
-	page, err := ParsePageQueryParam(c)
+	statusID = c.Query("status_id")
+
+	page, err = ParsePageQueryParam(c)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
 		return
 	}
 
-	limit, err := ParseLimitQueryParam(c)
+	limit, err = ParseLimitQueryParam(c)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
 		return
 	}
 
-	order, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-		Page:  page,
-		Limit: limit,
-	})
+	if statusID == "" {
+		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
+			Page:  page,
+			Limit: limit,
+		})
+	} else {
+		_, err = uuid.Parse(statusID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "status_id is invalid",
+			})
+			return
+		}
+
+		order, err = h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
+			StatusId: statusID,
+			Page: page,
+			Limit: limit,
+		})
+	}
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
 		return
@@ -261,22 +286,22 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 		status models.Status
 	)
 
-	status = models.Status{"986a0d09-7b4d-4ca9-8567-aa1c6d770505", "New"}
+	status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
 	model.Statuses = append(model.Statuses, status)
 
-	status = models.Status{"6ba783a3-1c2e-479c-9626-25526b3d9d36", "Cancelled"}
+	status = models.Status{ID: config.CANCELLED_STATUS_ID, Name: "Cancelled"}
 	model.Statuses = append(model.Statuses, status)
 
-	status = models.Status{"8781af8e-f74d-4fb6-ae23-fd997f4a2ee0", "Accepted"}
+	status = models.Status{ID: config.ACCEPTED_STATUS_ID, Name: "Accepted"}
 	model.Statuses = append(model.Statuses, status)
 
-	status = models.Status{"84be5a2f-3a92-4469-8283-220ca34a0de4", "Picked up"}
+	status = models.Status{ID: "84be5a2f-3a92-4469-8283-220ca34a0de4", Name: "Picked up"}
 	model.Statuses = append(model.Statuses, status)
 
-	status = models.Status{"79413606-a56f-45ed-97c3-f3f18e645972", "Delivered"}
+	status = models.Status{ID: config.DELIVERED_STATUS_ID, Name: "Delivered"}
 	model.Statuses = append(model.Statuses, status)
 
-	status = models.Status{"e665273d-5415-4243-a329-aee410e39465", "Finished"}
+	status = models.Status{ID: config.FINISHED_STATUS_ID, Name: "Finished"}
 	model.Statuses = append(model.Statuses, status)
 
 	var a int
@@ -500,7 +525,8 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 		return
 	}
 
-	order, err := h.grpcClient.OrderService().GetNewOrders(context.Background(), &pbo.OrdersRequest{
+	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
+		StatusId: config.NEW_STATUS_ID,
 		Page:  page,
 		Limit: limit,
 	})

@@ -1752,6 +1752,10 @@ paths:
       - application/json
       description: API for getting orders
       parameters:
+      - description: status_id
+        in: query
+        name: status_id
+        type: string
       - description: page
         in: query
         name: page
