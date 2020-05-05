@@ -178,6 +178,8 @@ definitions:
     properties:
       address:
         type: string
+      distributor_id:
+        type: string
       location:
         $ref: '#/definitions/models.LocationModel'
         type: object
@@ -564,6 +566,20 @@ definitions:
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
+    type: object
+  models.UpdateParkModel:
+    properties:
+      address:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.LocationModel'
+        type: object
+      name:
+        type: string
+      phone:
+        type: string
     type: object
   models.getOrderModel:
     properties:
@@ -1336,36 +1352,6 @@ paths:
       summary: Get All Distributors
       tags:
       - distributor
-    put:
-      consumes:
-      - application/json
-      description: API for updating distributor
-      parameters:
-      - description: distributor
-        in: body
-        name: distributor
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateDistributorModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetDistributorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Update Distributor
-      tags:
-      - distributor
-  /v1/distributors/:
     post:
       consumes:
       - application/json
@@ -1393,6 +1379,35 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Create Distributor
+      tags:
+      - distributor
+    put:
+      consumes:
+      - application/json
+      description: API for updating distributor
+      parameters:
+      - description: distributor
+        in: body
+        name: distributor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateDistributorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetDistributorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Distributor
       tags:
       - distributor
   /v1/distributors/{distributor_id}:
@@ -2043,7 +2058,64 @@ paths:
       summary: Create Park
       tags:
       - park
+    put:
+      consumes:
+      - application/json
+      description: API for updating park
+      parameters:
+      - description: park
+        in: body
+        name: distirbutor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateParkModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetParkModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Park
+      tags:
+      - park
   /v1/parks/{park_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting park
+      parameters:
+      - description: park_id
+        in: path
+        name: park_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Park
+      tags:
+      - park
     get:
       consumes:
       - application/json
