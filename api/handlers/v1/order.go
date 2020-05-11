@@ -52,15 +52,13 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 	order.CreatorTypeId = userInfo.ID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
-	_, err = h.grpcClient.OrderService().Create(context.Background(), &order)
+	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
 		return
 	}
 
-	c.JSON(200, models.ResponseOK{
-		Message: "order successfully created",
-	})
+	c.JSON(200, resp)
 }
 
 // @Security ApiKeyAuth

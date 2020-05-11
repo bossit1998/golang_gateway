@@ -19,6 +19,7 @@ type orderModel struct {
 	FareID              string   `json:"fare_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
 	CoDeliveryPrice     float64  `json:"co_delivery_price" example:"10000"`
 	Description         string   `json:"description"`
+	ExternalOrderID 	int64	 `json:"external_order_id"`
 }
 
 type updateProduct struct {
