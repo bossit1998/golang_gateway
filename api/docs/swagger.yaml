@@ -160,6 +160,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: integer
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -344,6 +346,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: integer
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -551,6 +555,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: integer
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -594,6 +600,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: integer
       fare_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
