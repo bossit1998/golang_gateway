@@ -324,11 +324,11 @@ var fileDescriptor_af09dd6fd8c48e77 = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConnInterface
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion4
 
 // COBranchClient is the client API for COBranch service.
 //
@@ -342,10 +342,10 @@ type COBranchClient interface {
 }
 
 type cOBranchClient struct {
-	cc grpc.ClientConnInterface
+	cc *grpc.ClientConn
 }
 
-func NewCOBranchClient(cc grpc.ClientConnInterface) COBranchClient {
+func NewCOBranchClient(cc *grpc.ClientConn) COBranchClient {
 	return &cOBranchClient{cc}
 }
 
