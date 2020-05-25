@@ -37,6 +37,9 @@ type Config struct {
 	GeoServiceHost string
 	GeoServicePort int
 
+	UserServiceHost string
+	UserServicePort int
+
 	CourierServiceHost string
 	CourierServicePort int
 
@@ -79,6 +82,9 @@ func Load() Config {
 
 	c.GeoServiceHost = cast.ToString(getOrReturnDefault("GEO_SERVICE_HOST", "geo_service"))
 	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 80))
+
+	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "localhost"))
+	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 9003))
 
 	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
 	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))

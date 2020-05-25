@@ -562,10 +562,6 @@ definitions:
         type: string
       id:
         type: string
-      steps:
-        items:
-          $ref: '#/definitions/models.updateStepModel'
-        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
@@ -664,42 +660,6 @@ definitions:
       products:
         items:
           $ref: '#/definitions/models.productModel'
-        type: array
-    type: object
-  models.updateProduct:
-    properties:
-      id:
-        type: string
-      name:
-        example: Choyxona Osh
-        type: string
-      price:
-        example: 25000
-        type: number
-      quantity:
-        example: 2
-        type: number
-    type: object
-  models.updateStepModel:
-    properties:
-      address:
-        type: string
-      branch_name:
-        type: string
-      description:
-        type: string
-      destination_address:
-        type: string
-      id:
-        type: string
-      location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      phone_number:
-        type: string
-      products:
-        items:
-          $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
 info:

@@ -10,12 +10,10 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
-	"bitbucket.org/alien_soft/api_getaway/storage/repo"
-
 	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
-
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
@@ -67,6 +65,13 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
+
+	//User endpoints
+	r.POST("/v1/users", handlerV1.CreateClient)
+	r.PUT("/v1/users", handlerV1.UpdateClient)
+	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
+	r.GET("/v1/users/:user_id", handlerV1.GetClient)
+	r.GET("/v1/users", handlerV1.GetAllClients)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
