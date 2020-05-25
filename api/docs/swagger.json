@@ -2393,6 +2393,93 @@
                 }
             }
         },
+        "/v1/product": {
+            "get": {
+                "description": "API for getting all product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Get All Product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllProductsModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "API for creating product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Create Product",
+                "parameters": [
+                    {
+                        "description": "product",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateProductModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/product-kind": {
             "get": {
                 "description": "API for getting all product kind",
@@ -3141,6 +3228,44 @@
                 }
             }
         },
+        "models.CreateProductModel": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "measure_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_no": {
+                    "type": "integer"
+                },
+                "preview_text": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "product_kind_id": {
+                    "type": "string"
+                },
+                "short_name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.GeoDrivingLegs": {
             "type": "object",
             "properties": {
@@ -3272,6 +3397,20 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.GetProductKindModel"
+                    }
+                }
+            }
+        },
+        "models.GetAllProductsModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetProductModel"
                     }
                 }
             }
@@ -3546,6 +3685,47 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetProductModel": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "measure_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preview_text": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "product_kind_id": {
+                    "type": "string"
+                },
+                "short_name": {
                     "type": "string"
                 },
                 "slug": {
