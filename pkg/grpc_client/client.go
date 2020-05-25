@@ -2,13 +2,13 @@ package grpc_client
 
 import (
 	"fmt"
+	pb "genproto/catalog_service"
 	pbco "genproto/co_service"
 	pbc "genproto/courier_service"
 	pbf "genproto/fare_service"
 	pbo "genproto/order_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
-	pb "genproto/catalog_service"
 
 	"google.golang.org/grpc"
 
@@ -38,17 +38,6 @@ type GrpcClient struct {
 
 //New ...
 func New(cfg config.Config) (*GrpcClient, error) {
-
-	connUser, err := grpc.Dial(
-		fmt.Sprintf("%s:%d", cfg.UserServiceHost, cfg.UserServicePort),
-		grpc.WithInsecure())
-	fmt.Println(connUser)
-
-	if err != nil {
-		fmt.Println("error in connUser")
-		return nil, fmt.Errorf("user service dial host: %s port:%d err: %s",
-			cfg.CourierServiceHost, cfg.CourierServicePort, err)
-	}
 
 	connCourier, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", cfg.CourierServiceHost, cfg.CourierServicePort),
@@ -118,25 +107,20 @@ func New(cfg config.Config) (*GrpcClient, error) {
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
-			"courier_service":     		pbc.NewCourierServiceClient(connCourier),
-			"distributor_service": 		pbc.NewDistributorServiceClient(connCourier),
-			"fare_service":        	 	pbf.NewFareServiceClient(connFare),
-			"order_service":       		pbo.NewOrderServiceClient(connOrder),
-			"co_service":          		pbco.NewCOServiceClient(connCO),
-			"sms_service":		   		pbs.NewSmsServiceClient(connSms),
-			"user_service":		   		pbu.NewUserServiceClient(connUser),
-			"specification_service":	pb.NewSpecificationServiceClient(connCatalog),
-			"product_kind_service":		pb.NewProductKindServiceClient(connCatalog),
-			"measure_service":			pb.NewMeasureServiceClient(connCatalog),
-			"category_service":			pb.NewCategoryServiceClient(connCatalog),
-			"product_service": 			pb.NewProductServiceClient(connCatalog),
+			"courier_service":       pbc.NewCourierServiceClient(connCourier),
+			"distributor_service":   pbc.NewDistributorServiceClient(connCourier),
+			"fare_service":          pbf.NewFareServiceClient(connFare),
+			"order_service":         pbo.NewOrderServiceClient(connOrder),
+			"co_service":            pbco.NewCOServiceClient(connCO),
+			"sms_service":           pbs.NewSmsServiceClient(connSms),
+			"user_service":          pbu.NewUserServiceClient(connUser),
+			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
+			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
+			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
+			"category_service":      pb.NewCategoryServiceClient(connCatalog),
+			"product_service":       pb.NewProductServiceClient(connCatalog),
 		},
 	}, nil
-}
-
-//UserService ...
-func (g *GrpcClient) UserService() pbu.UserServiceClient {
-	return g.connections["user_service"].(pbu.UserServiceClient)
 }
 
 //CourierService ...
