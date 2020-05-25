@@ -200,6 +200,21 @@ definitions:
         example: "0"
         type: string
     type: object
+  models.CreateUserModel:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -433,6 +448,21 @@ definitions:
           $ref: '#/definitions/models.Status'
         type: array
     type: object
+  models.GetUserModel:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
   models.Location:
     properties:
       lat:
@@ -629,6 +659,17 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateUserModel:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
         type: string
       phone:
         type: string
@@ -1069,34 +1110,6 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete Courier
-      tags:
-      - courier
-    get:
-      consumes:
-      - application/json
-      description: API for getting courier
-      parameters:
-      - description: courier_id
-        in: path
-        name: courier_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCourierModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Courier
       tags:
       - courier
   /v1/couriers/{courier_id}/block:
@@ -2282,6 +2295,94 @@ paths:
       summary: Register confirm
       tags:
       - register
+  /v1/users:
+    post:
+      consumes:
+      - application/json
+      description: API for creating user
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Client
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: API for updating user
+      parameters:
+      - description: user
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update User
+      tags:
+      - user
+  /v1/users/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting user
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete User
+      tags:
+      - user
   /v1/vehicle:
     post:
       consumes:

@@ -6,7 +6,7 @@ type CreateUserModel struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Phone     string `json:"phone"`
-	IsActive  string `json:"is_active"`
+	IsActive  bool   `json:"is_active"`
 	CreatedAt string `json:"created_at"`
 }
 
@@ -24,7 +24,7 @@ type GetUserModel struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Phone     string `json:"phone"`
-	IsActive  string `json:"is_active"`
+	IsActive  bool   `json:"is_active"`
 	CreatedAt string `json:"created_at"`
 }
 

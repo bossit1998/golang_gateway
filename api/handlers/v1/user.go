@@ -16,7 +16,7 @@ import (
 )
 
 // @Router /v1/users [post]
-// @Summary Create User
+// @Summary Create Client
 // @Description API for creating user
 // @Tags user
 // @Accept  json
@@ -25,7 +25,6 @@ import (
 // @Success 200 {object} models.GetUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-
 func (h *handlerV1) CreateClient(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
@@ -41,7 +40,7 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 	}
 
 	id, err := uuid.NewRandom()
-	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID in CreateClient") {
+	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
 		return
 	}
 
@@ -50,13 +49,12 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 	res, err := h.grpcClient.UserService().CreateClient(
 		context.Background(), &client,
 	)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating client") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating user") {
 		return
 	}
 
 	js, err := jspbMarshal.MarshalToString(res.Client)
-	if handleInternalWithMessage(c, h.log, err, "Error while marshalling in CreateClient") {
+	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
 	}
 
@@ -74,7 +72,6 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 // @Success 200 {object} models.GetUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-
 func (h *handlerV1) UpdateClient(c *gin.Context) {
 
 	var (
@@ -119,7 +116,7 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating courier, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating user, service unavailable", logger.Error(err))
 		return
 	}
 
@@ -132,17 +129,16 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Tags user
 // @Router /v1/users/{user_id} [delete]
 // @Summary Delete User
 // @Description API for deleting user
-// @Tags user
 // @Accept  json
 // @Produce  json
 // @Param user_id path string true "user_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-
 func (h *handlerV1) DeleteClient(c *gin.Context) {
 
 	_, err := h.grpcClient.UserService().DeleteClient(
@@ -187,12 +183,12 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 	})
 }
 
-// @Router /v1/users/{user_id} [get]
-// @Summary Get User
-// @Description API for getting user
 // @Tags user
+// @Router /v1/user/{user_id} [get]
+// @Summary Get User
+// @Description API for getting user info
 // @Accept  json
-// @Produce  json
+// @Produce json
 // @Param user_id path string true "user_id"
 // @Success 200 {object} models.GetUserModel
 // @Failure 404 {object} models.ResponseError
@@ -224,60 +220,6 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 		return
 	}
 	js, err := jspbMarshal.MarshalToString(res.GetClient())
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling in UserService") {
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
-}
-
-// @Router /v1/users [get]
-// @Summary Get Users
-// @Description API for getting users
-// @Tags user
-// @Accept  json
-// @Produce  json
-// @Param page query integer false "page"
-// @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllUsersModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-
-func (h *handlerV1) GetAllClients(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
-
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
-
-	page, err := ParsePageQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
-
-	pageSize, err := ParsePageSizeQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
-
-	res, err := h.grpcClient.UserService().GetAllClients(
-		context.Background(),
-		&pbu.GetAllClientsRequest{
-			Page:  uint64(page),
-			Limit: uint64(pageSize),
-		},
-	)
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-	js, err := jspbMarshal.MarshalToString(res)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return

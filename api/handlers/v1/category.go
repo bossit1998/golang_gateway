@@ -1,29 +1,31 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"encoding/json"
 	"fmt"
 	pb "genproto/catalog_service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
-	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 func (h *handlerV1) CreateCategory(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
-		category pb.Category
+		category  pb.Category
 	)
 	err := unmarshal.Unmarshal(c.Request.Body, &category)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error:models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing json to proto",
+			Error: models.InternalServerError{
+				Code:    ErrorBadRequest,
+				Message: "error while parsing json to proto",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
@@ -33,7 +35,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 	resp, err := h.grpcClient.CategortService().Create(
 		context.Background(),
 		&category,
-		)
+	)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating category") {
 		return
@@ -45,7 +47,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	var (
 		marshaler jsonpb.Marshaler
-		model models.GetAllCategory
+		model     models.GetAllCategory
 	)
 	page, err := ParsePageQueryParam(c)
 

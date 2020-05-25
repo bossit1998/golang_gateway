@@ -65,13 +65,16 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
+	//Register endpoints
+	// r.POST("/v1/users/register", handlerV1.Register)
+	// r.POST("/v1/users/register_confirm", handlerV1.RegisterConfirm)
 
 	//User endpoints
-	r.POST("/v1/users", handlerV1.CreateClient)
-	r.PUT("/v1/users", handlerV1.UpdateClient)
-	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
-	r.GET("/v1/users/:user_id", handlerV1.GetClient)
-	r.GET("/v1/users", handlerV1.GetAllClients)
+	// r.POST("/v1/users", handlerV1.CreateClient)
+	// r.PUT("/v1/users", handlerV1.UpdateClient)
+	// r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
+	// r.GET("/v1/users/:user_id", handlerV1.GetClient)
+	// r.GET("/v1/users", handlerV1.GetAllClients)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
