@@ -145,6 +145,22 @@ func New(cnf Config) *gin.Engine {
 	//Login endpoints
 	r.POST("/v1/check_code/")
 
+	//Specification endpoints
+	r.POST("/v1/specification", handlerV1.CreateSpecification)
+	r.GET("/v1/specification", handlerV1.GetAllSpecification)
+
+	//Product kind endpoints
+	r.POST("/v1/product-kind", handlerV1.CreateProductKind)
+	r.GET("/v1/product-kind", handlerV1.GetAllProductKind)
+
+	//Measure endpoints
+	r.POST("/v1/measure", handlerV1.CreateMeasure)
+	r.GET("/v1/measure", handlerV1.GetAllMeasure)
+
+	//Category endpoints
+	r.POST("/v1/category", handlerV1.CreateCategory)
+	r.GET("/v1/category", handlerV1.GetAllCategory)
+
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
