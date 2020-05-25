@@ -27,3 +27,7 @@ type ValidationError struct {
 type ResponseOK struct {
 	Message interface{}
 }
+
+type Response struct {
+	ID interface{} `json:"id"`
+} 

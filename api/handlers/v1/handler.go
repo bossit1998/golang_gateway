@@ -230,6 +230,15 @@ func handleGrpcErrWithMessage(c *gin.Context, l logger.Logger, err error, messag
 		})
 		l.Error(message+", invalid field", logger.Error(err))
 		return true
+	} else if st.Err() != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorBadRequest,
+				Message: st.Message(),
+			},
+		})
+		l.Error(message+", invalid field", logger.Error(err))
+		return true
 	}
 	return false
 }
