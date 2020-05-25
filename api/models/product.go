@@ -9,7 +9,6 @@ type CreateProductModel struct {
 	ProductKindID string `json:"product_kind_id"`
 	CategoryID string `json:"category_id"`
 	Description string `json:"description"`
-	IsActive bool `json:"is_active"`
 	OrderNo int64 `json:"order_no,string"`
 	Price int64 `json:"price,string"`
 }
@@ -25,7 +24,6 @@ type GetProductModel struct {
 	ProductKindID string `json:"product_kind_id"`
 	CategoryID string `json:"category_id"`
 	Description string `json:"description"`
-	IsActive bool `json:"is_active"`
 	Price int64 `json:"price,string"`
 }
 

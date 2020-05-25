@@ -223,6 +223,31 @@ definitions:
       order_no:
         type: integer
     type: object
+  models.CreateProductModel:
+    properties:
+      category_id:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      is_active:
+        type: boolean
+      measure_id:
+        type: string
+      name:
+        type: string
+      order_no:
+        type: integer
+      preview_text:
+        type: string
+      price:
+        type: integer
+      product_kind_id:
+        type: string
+      short_name:
+        type: string
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -308,6 +333,15 @@ definitions:
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
+        type: array
+    type: object
+  models.GetAllProductsModel:
+    properties:
+      count:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/models.GetProductModel'
         type: array
     type: object
   models.GetCO:
@@ -490,6 +524,33 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      slug:
+        type: string
+    type: object
+  models.GetProductModel:
+    properties:
+      category_id:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      measure_id:
+        type: string
+      name:
+        type: string
+      preview_text:
+        type: string
+      price:
+        type: integer
+      product_kind_id:
+        type: string
+      short_name:
         type: string
       slug:
         type: string
@@ -2388,6 +2449,63 @@ paths:
       summary: Get Park
       tags:
       - park
+  /v1/product:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all product
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllProductsModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Product
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: API for creating product
+      parameters:
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Product
+      tags:
+      - product
   /v1/product-kind:
     get:
       consumes:

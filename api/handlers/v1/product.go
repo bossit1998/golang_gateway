@@ -11,6 +11,16 @@ import (
 	"net/http"
 )
 
+// @Router /v1/product [post]
+// @Summary Create Product
+// @Description API for creating product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product body models.CreateProductModel true "product"
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
@@ -41,6 +51,16 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+// @Router /v1/product [get]
+// @Summary Get All Product
+// @Description API for getting all product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Success 200 {object} models.GetAllProductsModel
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
