@@ -91,7 +91,17 @@ func New(cfg config.Config) (*GrpcClient, error) {
 
 	if err != nil {
 		return nil, fmt.Errorf("sms service dial host: %s port:%d err: %s",
-			cfg.COServiceHost, cfg.COServicePort, err)
+			cfg.SmsServiceHost, cfg.SmsServicePort, err)
+	}
+
+	connUser, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.UserServiceHost, cfg.UserServicePort),
+		grpc.WithInsecure(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("user service dial host: %s port:%d err: %s",
+			cfg.UserServiceHost, cfg.UserServicePort, err)
 	}
 
 	return &GrpcClient{
@@ -104,6 +114,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"order_service":       pbo.NewOrderServiceClient(connOrder),
 			"co_service":          pbco.NewCOServiceClient(connCO),
 			"sms_service":         pbs.NewSmsServiceClient(connSms),
+			"user_service":        pbu.NewUserServiceClient(connUser),
 		},
 	}, nil
 }
@@ -141,4 +152,9 @@ func (g *GrpcClient) COService() pbco.COServiceClient {
 //SmsService ...
 func (g *GrpcClient) SmsService() pbs.SmsServiceClient {
 	return g.connections["sms_service"].(pbs.SmsServiceClient)
+}
+
+//UserService ...
+func (g *GrpcClient) UserService() pbu.UserServiceClient {
+	return g.connections["user_service"].(pbu.UserServiceClient)
 }
