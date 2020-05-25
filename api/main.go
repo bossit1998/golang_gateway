@@ -164,6 +164,10 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/category", handlerV1.CreateCategory)
 	r.GET("/v1/category", handlerV1.GetAllCategory)
 
+	//Product Service
+	r.POST("/v1/product", handlerV1.CreateProduct)
+	r.GET("/v1/product", handlerV1.GetAllProducts)
+
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 

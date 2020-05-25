@@ -109,6 +109,18 @@ definitions:
     - name
     - password
     type: object
+  models.CreateCategoryModel:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      order_no:
+        example: "0"
+        type: string
+      parent_id:
+        type: string
+    type: object
   models.CreateCourierModel:
     properties:
       distributor_id:
@@ -146,6 +158,20 @@ definitions:
         type: string
       price_per_km:
         type: number
+    type: object
+  models.CreateMeasureModel:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      order_no:
+        example: "0"
+        type: string
+      product_kind_id:
+        type: string
+      short_name:
+        type: string
     type: object
   models.CreateOrder:
     properties:
@@ -200,6 +226,31 @@ definitions:
         example: "0"
         type: string
     type: object
+  models.CreateProductModel:
+    properties:
+      category_id:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      measure_id:
+        type: string
+      name:
+        type: string
+      order_no:
+        example: "0"
+        type: string
+      preview_text:
+        type: string
+      price:
+        example: "0"
+        type: string
+      product_kind_id:
+        type: string
+      short_name:
+        type: string
+    type: object
   models.CreateUserModel:
     properties:
       created_at:
@@ -229,6 +280,16 @@ definitions:
         type: string
       weight:
         type: number
+    type: object
+  models.GetAllCategoriesModel:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/models.GetCategoryModel'
+        type: array
+      count:
+        example: "0"
+        type: string
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -266,6 +327,16 @@ definitions:
           $ref: '#/definitions/models.GetFareModel'
         type: array
     type: object
+  models.GetAllMeasuresModel:
+    properties:
+      count:
+        example: "0"
+        type: string
+      measures:
+        items:
+          $ref: '#/definitions/models.GetMeasureModel'
+        type: array
+    type: object
   models.GetAllParksModel:
     properties:
       count:
@@ -285,6 +356,16 @@ definitions:
           $ref: '#/definitions/models.GetProductKindModel'
         type: array
     type: object
+  models.GetAllProductsModel:
+    properties:
+      count:
+        example: "0"
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.GetProductModel'
+        type: array
+    type: object
   models.GetCO:
     properties:
       description:
@@ -302,6 +383,19 @@ definitions:
       phone_number:
         type: string
       token:
+        type: string
+    type: object
+  models.GetCategoryModel:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      parent_id:
+        type: string
+      slug:
         type: string
     type: object
   models.GetCourierModel:
@@ -366,6 +460,21 @@ definitions:
       price_per_km:
         type: number
       updated_at:
+        type: string
+    type: object
+  models.GetMeasureModel:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      product_kind_id:
+        type: string
+      short_name:
+        type: string
+      slug:
         type: string
     type: object
   models.GetOrder:
@@ -437,6 +546,32 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      slug:
+        type: string
+    type: object
+  models.GetProductModel:
+    properties:
+      category_id:
+        type: string
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      measure_id:
+        type: string
+      name:
+        type: string
+      preview_text:
+        type: string
+      price:
+        example: "0"
+        type: string
+      product_kind_id:
+        type: string
+      short_name:
         type: string
       slug:
         type: string
@@ -963,6 +1098,63 @@ paths:
       summary: Refresh Cargo Owner Token
       tags:
       - cargo-owner
+  /v1/category:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all category
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCategoriesModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Category
+      tags:
+      - category
+    post:
+      consumes:
+      - application/json
+      description: API for creating category
+      parameters:
+      - description: category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCategoryModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Category
+      tags:
+      - category
   /v1/courier/order:
     get:
       consumes:
@@ -1709,6 +1901,63 @@ paths:
       summary: Get Fare
       tags:
       - fare
+  /v1/measure:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all measure
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllMeasuresModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Measure
+      tags:
+      - measure
+    post:
+      consumes:
+      - application/json
+      description: API for creating measure
+      parameters:
+      - description: measure
+        in: body
+        name: measure
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateMeasureModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Measure
+      tags:
+      - measure
   /v1/new-order:
     get:
       consumes:
@@ -2179,6 +2428,63 @@ paths:
       summary: Get Park
       tags:
       - park
+  /v1/product:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all product
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllProductsModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Product
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: API for creating product
+      parameters:
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Product
+      tags:
+      - product
   /v1/product-kind:
     get:
       consumes:

@@ -11,60 +11,60 @@ import (
 	"net/http"
 )
 
-// @Router /v1/measure [post]
-// @Summary Create Measure
-// @Description API for creating measure
-// @Tags measure
+// @Router /v1/product [post]
+// @Summary Create Product
+// @Description API for creating product
+// @Tags product
 // @Accept  json
 // @Produce  json
-// @Param measure body models.CreateMeasureModel true "measure"
-// @Success 201 {object} models.Response
+// @Param product body models.CreateProductModel true "product"
+// @Success 200 {object} models.Response
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateMeasure(c *gin.Context) {
+func (h *handlerV1) CreateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
-		measure pb.Measure
+		product pb.Product
 	)
-	err := unmarshal.Unmarshal(c.Request.Body, &measure)
+	err := unmarshal.Unmarshal(c.Request.Body, &product)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error:models.InternalServerError{
+			Error: models.InternalServerError{
 				Code:ErrorBadRequest,
-				Message:"error while creating measure",
+				Message:"error while parsing json to proto",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
 		return
 	}
 
-	resp, err := h.grpcClient.MeasureService().Create(
+	resp, err := h.grpcClient.ProductService().Create(
 		context.Background(),
-		&measure,
+		&product,
 		)
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while creating measure") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while creating product") {
 		return
 	}
 
 	c.JSON(http.StatusCreated, resp)
 }
 
-// @Router /v1/measure [get]
-// @Summary Get All Measure
-// @Description API for getting all measure
-// @Tags measure
+// @Router /v1/product [get]
+// @Summary Get All Product
+// @Description API for getting all product
+// @Tags product
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
-// @Success 200 {object} models.GetAllMeasuresModel
+// @Success 200 {object} models.GetAllProductsModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllMeasure(c *gin.Context) {
+func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		model models.GetAllMeasuresModel
+		model models.GetAllProductsModel
 	)
 	marshaller.OrigName = true
 
@@ -81,13 +81,13 @@ func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.MeasureService().GetAll(
+	resp, err := h.grpcClient.ProductService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
 			Page:int64(page),
 		})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all measures") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all products") {
 		return
 	}
 
