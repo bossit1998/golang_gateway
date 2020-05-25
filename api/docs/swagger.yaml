@@ -231,8 +231,6 @@ definitions:
         type: string
       description:
         type: string
-      is_active:
-        type: boolean
       measure_id:
         type: string
       name:
@@ -538,8 +536,6 @@ definitions:
         type: string
       id:
         type: string
-      is_active:
-        type: boolean
       measure_id:
         type: string
       name:
