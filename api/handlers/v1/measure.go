@@ -4,13 +4,23 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
-	"fmt"
+	"encoding/json"
 	pb "genproto/catalog_service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"net/http"
 )
 
+// @Router /v1/measure [post]
+// @Summary Create Measure
+// @Description API for creating measure
+// @Tags measure
+// @Accept  json
+// @Produce  json
+// @Param measure body models.CreateMeasureModel true "measure"
+// @Success 201 {object} models.Response
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CreateMeasure(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
@@ -41,7 +51,23 @@ func (h *handlerV1) CreateMeasure(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+// @Router /v1/measure [get]
+// @Summary Get All Measure
+// @Description API for getting all measure
+// @Tags measure
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Success 200 {object} models.GetAllMeasuresModel
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllMeasure(c *gin.Context) {
+	var (
+		marshaller jsonpb.Marshaler
+		model models.GetAllMeasuresModel
+	)
+	marshaller.OrigName = true
+
 	page, err := ParsePageQueryParam(c)
 
 	if err != nil {
@@ -64,7 +90,21 @@ func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all measures") {
 		return
 	}
-	fmt.Println(resp)
 
-	c.JSON(http.StatusOK, resp)
+	js, _ := marshaller.MarshalToString(resp)
+
+	err = json.Unmarshal([]byte(js), &model)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError {
+				Code:ErrorCodeInternal,
+				Message:"error while parsing proto to struct",
+			},
+		})
+		h.log.Error("error while parsing proto to struct", logger.Error(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
