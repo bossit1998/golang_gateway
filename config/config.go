@@ -55,6 +55,9 @@ type Config struct {
 	UserServiceHost string
 	UserServicePort int
 
+	CatalogServiceHost string
+	CatalogServicePort int
+
 	LogLevel string
 	HTTPPort string
 
@@ -100,6 +103,9 @@ func Load() Config {
 
 	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "user_service"))
 	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 80))
+
+	c.CatalogServiceHost = cast.ToString(getOrReturnDefault("CATALOG_SERVICE_PORT", "localhost"))
+	c.CatalogServicePort = cast.ToInt(getOrReturnDefault("CATALOG_SERVICE_PORT", 7000))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

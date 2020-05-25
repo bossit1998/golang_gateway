@@ -190,6 +190,15 @@ definitions:
       phone:
         type: string
     type: object
+  models.CreateProductKindModel:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      order_no:
+        type: integer
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -248,6 +257,15 @@ definitions:
       parks:
         items:
           $ref: '#/definitions/models.GetParkModel'
+        type: array
+    type: object
+  models.GetAllProductKindsModel:
+    properties:
+      count:
+        type: integer
+      product_kinds:
+        items:
+          $ref: '#/definitions/models.GetProductKindModel'
         type: array
     type: object
   models.GetCO:
@@ -395,6 +413,17 @@ definitions:
       name:
         type: string
     type: object
+  models.GetProductKindModel:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   models.GetStatuses:
     properties:
       statuses:
@@ -435,6 +464,25 @@ definitions:
     properties:
       token:
         type: string
+    type: object
+  models.RegisterConfirmModel:
+    properties:
+      activation_code:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.RegisterModel:
+    properties:
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      id:
+        type: object
     type: object
   models.ResponseError:
     properties:
@@ -2156,6 +2204,122 @@ paths:
       summary: Get Park
       tags:
       - park
+  /v1/product-kind:
+    get:
+      consumes:
+      - application/json
+      description: API for getting all product kind
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllProductKindsModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Product Kind
+      tags:
+      - product-kind
+    post:
+      consumes:
+      - application/json
+      description: API for creating product kind
+      parameters:
+      - description: product_kind
+        in: body
+        name: product_kind
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductKindModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Product Kind
+      tags:
+      - product-kind
+  /v1/register/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for registering users
+      parameters:
+      - description: register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterModel'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Register
+      tags:
+      - register
+  /v1/register_confirm/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for confirming and inserting user to DB
+      parameters:
+      - description: register_confirm
+        in: body
+        name: register_confirm
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterConfirmModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RegisterConfirmModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Register confirm
+      tags:
+      - register
   /v1/vehicle:
     post:
       consumes:
