@@ -3240,9 +3240,6 @@
                 "description": {
                     "type": "string"
                 },
-                "is_active": {
-                    "type": "boolean"
-                },
                 "measure_id": {
                     "type": "string"
                 },
@@ -3706,9 +3703,6 @@
                 },
                 "id": {
                     "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
                 },
                 "measure_id": {
                     "type": "string"
