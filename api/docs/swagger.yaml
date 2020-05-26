@@ -116,7 +116,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       parent_id:
         type: string
     type: object
@@ -165,7 +166,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
@@ -221,7 +223,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
     type: object
   models.CreateProductModel:
     properties:
@@ -236,14 +239,50 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       preview_text:
         type: string
       price:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
+        type: string
+    type: object
+  models.CreateUserModel:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.CreateVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      user_name:
         type: string
     type: object
   models.GeoDrivingLegs:
@@ -268,7 +307,8 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        type: integer
+        example: "0"
+        type: string
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -309,7 +349,8 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -327,7 +368,8 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -336,10 +378,29 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
+        type: array
+    type: object
+  models.GetAllUsersModel:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/models.GetUserModel'
+        type: array
+    type: object
+  models.GetAllVendorsModel:
+    properties:
+      count:
+        type: integer
+      vendors:
+        items:
+          $ref: '#/definitions/models.GetVendorModel'
         type: array
     type: object
   models.GetCO:
@@ -543,7 +604,8 @@ definitions:
       preview_text:
         type: string
       price:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
@@ -557,6 +619,40 @@ definitions:
         items:
           $ref: '#/definitions/models.Status'
         type: array
+    type: object
+  models.GetUserModel:
+    properties:
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.GetVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
     type: object
   models.Location:
     properties:
@@ -737,10 +833,6 @@ definitions:
         type: string
       id:
         type: string
-      steps:
-        items:
-          $ref: '#/definitions/models.updateStepModel'
-        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
@@ -758,6 +850,34 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateUserModel:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      password:
         type: string
       phone:
         type: string
@@ -839,42 +959,6 @@ definitions:
       products:
         items:
           $ref: '#/definitions/models.productModel'
-        type: array
-    type: object
-  models.updateProduct:
-    properties:
-      id:
-        type: string
-      name:
-        example: Choyxona Osh
-        type: string
-      price:
-        example: 25000
-        type: number
-      quantity:
-        example: 2
-        type: number
-    type: object
-  models.updateStepModel:
-    properties:
-      address:
-        type: string
-      branch_name:
-        type: string
-      description:
-        type: string
-      destination_address:
-        type: string
-      id:
-        type: string
-      location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      phone_number:
-        type: string
-      products:
-        items:
-          $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
 info:
@@ -1291,34 +1375,6 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete Courier
-      tags:
-      - courier
-    get:
-      consumes:
-      - application/json
-      description: API for getting courier
-      parameters:
-      - description: courier_id
-        in: path
-        name: courier_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCourierModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Courier
       tags:
       - courier
   /v1/couriers/{courier_id}/block:
@@ -2618,6 +2674,154 @@ paths:
       summary: Register confirm
       tags:
       - register
+  /v1/user/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting user info
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get User
+      tags:
+      - user
+  /v1/users:
+    get:
+      consumes:
+      - application/json
+      description: API for getting users
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllUsersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Users
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: API for creating user
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create User
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: API for updating user
+      parameters:
+      - description: user
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update User
+      tags:
+      - user
+  /v1/users/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting user
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete User
+      tags:
+      - user
   /v1/vehicle:
     post:
       consumes:
@@ -2767,6 +2971,153 @@ paths:
       summary: Delete Courier Vehicle
       tags:
       - vehicle
+  /v1/vendor/{vendor_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting vendor
+      parameters:
+      - description: vendor_id
+        in: path
+        name: vendor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Vendor
+      tags:
+      - vendor
+    get:
+      consumes:
+      - application/json
+      description: API for getting vendor info
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Vendor
+      tags:
+      - vendor
+  /v1/vendors:
+    get:
+      consumes:
+      - application/json
+      description: API for getting vendors
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllVendorsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Vendors
+      tags:
+      - vendor
+    post:
+      consumes:
+      - application/json
+      description: API for creating vendor
+      parameters:
+      - description: vendor
+        in: body
+        name: vendor
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateVendorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Vendor
+      tags:
+      - vendor
+    put:
+      consumes:
+      - application/json
+      description: API for updating vendor
+      parameters:
+      - description: vendor
+        in: body
+        name: vendor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateVendorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Vendor
+      tags:
+      - vendor
 securityDefinitions:
   ApiKeyAuth:
     in: header

@@ -3,22 +3,22 @@ package v1
 import (
 	"context"
 	"fmt"
+	pbc "genproto/courier_service"
+	pbs "genproto/sms_service"
 	"net/http"
 	"strings"
 
-	pbc "genproto/courier_service"
-	pbs "genproto/sms_service"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/protobuf/jsonpb"
+	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
-	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/google/uuid"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // @Router /v1/couriers/{courier_id} [get]
@@ -31,6 +31,7 @@ import (
 // @Success 200 {object} models.GetCourierModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
+
 func (h *handlerV1) GetCourier(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 

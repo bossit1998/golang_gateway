@@ -1,19 +1,22 @@
 package v1
 
 import (
-	"github.com/google/uuid"
-	"github.com/gomodule/redigo/redis"
-	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"context"
+	"fmt"
+	pbs "genproto/sms_service"
+	pbu "genproto/user_service"
 	"net/http"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"context"
-	"strings"
+
 	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"github.com/gin-gonic/gin"
-	pbu "genproto/user_service"
-	pbs "genproto/sms_service"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Summary Register
@@ -45,7 +48,10 @@ func (h *handlerV1) Register(c *gin.Context) {
 			Id: reg.Phone,
 		},
 	)
+	fmt.Println(err)
 	st, ok := status.FromError(err)
+	fmt.Println(st.Code())
+	fmt.Println(ok)
 	if st.Code() != codes.NotFound {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
@@ -64,7 +70,9 @@ func (h *handlerV1) Register(c *gin.Context) {
 		})
 		h.log.Error("Error while checking phone", logger.Error(err))
 		return
+		
 	} else if st.Code() == codes.Unavailable {
+	
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
@@ -74,15 +82,13 @@ func (h *handlerV1) Register(c *gin.Context) {
 		h.log.Error("Error while checking phone, unavailable", logger.Error(err))
 		return
 	}
-
-
 	if h.cfg.Environment == "develop" {
 		code = etc.GenerateCode(6, true)
 	} else {
 		code = etc.GenerateCode(6)
 		_, err := h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
-				Text: "Your code for delever is " + code,
+				Text:       "Your code for delever is " + code,
 				Recipients: []string{reg.Phone},
 			},
 		)
@@ -174,14 +180,14 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 
 	_, err = h.grpcClient.UserService().CreateClient(
 		context.Background(), &pbu.Client{
-			Id: id.String(),
+			Id:        id.String(),
 			FirstName: name,
-			Phone: rc.Phone,
+			Phone:     rc.Phone,
 		},
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a client") {
 		return
 	}
 
-	
+	c.Status(http.StatusOK)
 }

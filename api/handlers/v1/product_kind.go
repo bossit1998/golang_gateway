@@ -1,15 +1,17 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"encoding/json"
 	"fmt"
-	pb "genproto/catalog_service"
+	  pb "genproto/catalog_service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
-	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Router /v1/product-kind [post]
@@ -33,8 +35,8 @@ func (h *handlerV1) CreateProductKind(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing json to proto",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing json to proto",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
@@ -63,7 +65,7 @@ func (h *handlerV1) CreateProductKind(c *gin.Context) {
 func (h *handlerV1) GetAllProductKind(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		model models.GetAllProductKindsModel
+		model      models.GetAllProductKindsModel
 	)
 	marshaller.OrigName = true
 	marshaller.EmitDefaults = true
@@ -72,8 +74,8 @@ func (h *handlerV1) GetAllProductKind(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing page",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing page",
 			},
 		})
 		h.log.Error("error while parsing page", logger.Error(err))
@@ -83,8 +85,8 @@ func (h *handlerV1) GetAllProductKind(c *gin.Context) {
 	resp, err := h.grpcClient.ProductKindService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
-			Page:int64(page),
-	})
+			Page: int64(page),
+		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all product kind") {
 		return
@@ -97,9 +99,9 @@ func (h *handlerV1) GetAllProductKind(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError {
-				Code:ErrorCodeInternal,
-				Message:"error while parsing proto to struct",
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "error while parsing proto to struct",
 			},
 		})
 		h.log.Error("error while parsing proto to struct", logger.Error(err))

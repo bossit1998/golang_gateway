@@ -2,20 +2,18 @@ package v1
 
 import (
 	"context"
-
-	"net/http"
-
 	pbc "genproto/courier_service"
-
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Router /v1/distributors/{distributor_id} [get]

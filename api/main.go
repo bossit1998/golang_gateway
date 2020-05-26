@@ -10,11 +10,10 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "bitbucket.org/alien_soft/api_getaway/api/docs" //for swagger
-	"bitbucket.org/alien_soft/api_getaway/storage/repo"
-
 	v1 "bitbucket.org/alien_soft/api_getaway/api/handlers/v1"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
+	"bitbucket.org/alien_soft/api_getaway/storage/repo"
 
 	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
@@ -67,6 +66,23 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
+	// Register endpoints
+	r.POST("/v1/users/register", handlerV1.Register)
+	r.POST("/v1/users/register-confirm", handlerV1.RegisterConfirm)
+
+	//User endpoints
+	r.POST("/v1/users", handlerV1.CreateClient)
+	r.PUT("/v1/users", handlerV1.UpdateClient)
+	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
+	r.GET("/v1/users/:user_id", handlerV1.GetClient)
+	r.GET("/v1/users", handlerV1.GetAllClients)
+
+	//Vendor endpoints
+	r.POST("/v1/vendors", handlerV1.CreateVendor)
+	r.PUT("/v1/vendors", handlerV1.UpdateVendor)
+	r.DELETE("/v1/vendors/:vendor_id", handlerV1.DeleteVendor)
+	r.GET("/v1/vendors/:vendor_id", handlerV1.GetVendor)
+	r.GET("/v1/vendors", handlerV1.GetAllVendors)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
