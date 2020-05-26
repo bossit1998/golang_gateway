@@ -28,7 +28,7 @@ import (
 // @Success 200
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/register/ [post]
+// @Router /v1/users/register/ [post]
 func (h *handlerV1) Register(c *gin.Context) {
 	var (
 		reg  models.RegisterModel
@@ -121,7 +121,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Success 200 {object} models.RegisterConfirmModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/register_confirm/ [post]
+// @Router /v1/users/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var rc models.RegisterConfirmModel
 
