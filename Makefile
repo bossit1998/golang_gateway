@@ -65,10 +65,10 @@ build-image:
 
 push-image:
 	docker push ${REGISTRY}/${IMG_NAME}:${TAG}
-	docker push ${REGISTRY}/${IMG_NAME}:${ENV_TAG}
+	docker push ${REGISTRY}/${IMG_NAME}:${ENV_TAG}gss
 
 swag_init:
-	swag init --parseDependency api/main.go -o api/docs
+	swag init -g api/main.go -o api/docs
 
 .PHONY: proto
 
