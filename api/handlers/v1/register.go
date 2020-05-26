@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -43,16 +42,14 @@ func (h *handlerV1) Register(c *gin.Context) {
 	reg.Phone = strings.TrimSpace(reg.Phone)
 	reg.Name = strings.TrimSpace(reg.Name)
 
-	_, err = h.grpcClient.UserService().GetClient(
-		context.Background(), &pbu.GetClientRequest{
-			Id: reg.Phone,
-		},
-	)
-	fmt.Println(err)
+	_, err = h.grpcClient.UserService().ExistsClient(
+		context.Background(), &pbu.ExistsClientRequest{
+			Phone:reg.Phone,
+		})
+
 	st, ok := status.FromError(err)
-	fmt.Println(st.Code())
-	fmt.Println(ok)
-	if st.Code() != codes.NotFound {
+
+	if st.Code() == codes.NotFound {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeAlreadyExists,
