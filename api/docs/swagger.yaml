@@ -2654,65 +2654,6 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
-  /v1/register/:
-    post:
-      consumes:
-      - application/json
-      description: Register - API for registering users
-      parameters:
-      - description: register
-        in: body
-        name: register
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterModel'
-      produces:
-      - application/json
-      responses:
-        "200": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Register
-      tags:
-      - register
-  /v1/register_confirm/:
-    post:
-      consumes:
-      - application/json
-      description: Register - API for confirming and inserting user to DB
-      parameters:
-      - description: register_confirm
-        in: body
-        name: register_confirm
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterConfirmModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.RegisterConfirmModel'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Register confirm
-      tags:
-      - register
   /v1/user/{user_id}:
     get:
       consumes:
@@ -2861,6 +2802,65 @@ paths:
       summary: Delete User
       tags:
       - user
+  /v1/users/register-confirm/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for confirming and inserting user to DB
+      parameters:
+      - description: register_confirm
+        in: body
+        name: register_confirm
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterConfirmModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RegisterConfirmModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Register confirm
+      tags:
+      - register
+  /v1/users/register/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for registering users
+      parameters:
+      - description: register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterModel'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Register
+      tags:
+      - register
   /v1/vehicle:
     post:
       consumes:
