@@ -1,14 +1,16 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"encoding/json"
-	pb "genproto/catalog_service"
+	 pb "genproto/catalog_service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
-	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Router /v1/product [post]

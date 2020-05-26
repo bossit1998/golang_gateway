@@ -101,8 +101,8 @@ func Load() Config {
 	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
 	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
 
-	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "sms_service"))
-	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 80))
+	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "localhost"))
+	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 2323))
 
 	c.CatalogServiceHost = cast.ToString(getOrReturnDefault("CATALOG_SERVICE_PORT", "catalog_service"))
 	c.CatalogServicePort = cast.ToInt(getOrReturnDefault("CATALOG_SERVICE_PORT", 80))

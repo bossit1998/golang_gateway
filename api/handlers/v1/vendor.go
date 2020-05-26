@@ -15,21 +15,21 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
-// @Router /v1/users [post]
-// @Summary Create User
-// @Description API for creating user
-// @Tags user
+// @Router /v1/vendors [post]
+// @Summary Create Vendor
+// @Description API for creating vendor
+// @Tags vendor
 // @Accept  json
 // @Produce  json
-// @Param user body models.CreateUserModel true "user"
-// @Success 200 {object} models.GetUserModel
+// @Param vendor body models.CreateVendorModel true "vendor"
+// @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateClient(c *gin.Context) {
+func (h *handlerV1) CreateVendor(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		client        pbu.Client
+		vendor        pbu.Vendor
 	)
 
 	jspbMarshal.OrigName = true
@@ -44,10 +44,10 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 		return
 	}
 
-	client.Id = id.String()
+	vendor.Id = id.String()
 
-	res, err := h.grpcClient.UserService().CreateClient(
-		context.Background(), &client,
+	res, err := h.grpcClient.VendorService().CreateVendor(
+		context.Background(), &vendor,
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating user") {
 		return
@@ -62,22 +62,22 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/users [put]
-// @Summary Update User
-// @Description API for updating user
-// @Tags user
+// @Router /v1/vendors [put]
+// @Summary Update Vendor
+// @Description API for updating vendor
+// @Tags vendor
 // @Accept  json
 // @Produce  json
-// @Param courier body models.UpdateUserModel true "user"
-// @Success 200 {object} models.GetUserModel
+// @Param vendor body models.UpdateVendorModel true "vendor"
+// @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) UpdateClient(c *gin.Context) {
+func (h *handlerV1) UpdateVendor(c *gin.Context) {
 
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		client        pbu.Client
+		vendor        pbu.Vendor
 	)
 
 	jspbMarshal.OrigName = true
@@ -94,9 +94,9 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.UserService().UpdateClient(
+	res, err := h.grpcClient.VendorService().UpdateVendor(
 		context.Background(),
-		&client,
+		&vendor,
 	)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
@@ -106,7 +106,7 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating user", logger.Error(err))
+		h.log.Error("Error while updating vendor", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -116,7 +116,7 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating user, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating vendor, service unavailable", logger.Error(err))
 		return
 	}
 
@@ -129,22 +129,22 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Tags user
-// @Router /v1/users/{user_id} [delete]
-// @Summary Delete User
-// @Description API for deleting user
+// @Tags vendor
+// @Router /v1/vendor/{vendor_id} [delete]
+// @Summary Delete Vendor
+// @Description API for deleting vendor
 // @Accept  json
 // @Produce  json
-// @Param user_id path string true "user_id"
+// @Param vendor_id path string true "vendor_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) DeleteClient(c *gin.Context) {
+func (h *handlerV1) DeleteVendor(c *gin.Context) {
 
-	_, err := h.grpcClient.UserService().DeleteClient(
+	_, err := h.grpcClient.VendorService().DeleteVendor(
 		context.Background(),
-		&pbu.DeleteClientRequest{
-			Id: c.Param("user_id"),
+		&pbu.DeleteVendorRequest{
+			Id: c.Param("vendor_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -155,7 +155,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting user", logger.Error(err))
+		h.log.Error("Error while deleting vendor", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.NotFound {
@@ -165,7 +165,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 				Message: "Not found",
 			},
 		})
-		h.log.Error("Error while deleting user, not found", logger.Error(err))
+		h.log.Error("Error while deleting vendor, not found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -174,7 +174,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting user, service unavailable", logger.Error(err))
+		h.log.Error("Error while deleting vendor, service unavailable", logger.Error(err))
 		return
 	}
 
@@ -183,14 +183,14 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 	})
 }
 
-// @Tags user
-// @Router /v1/user/{user_id} [get]
-// @Summary Get User
-// @Description API for getting user info
+// @Tags vendor
+// @Router /v1/vendor/{vendor_id} [get]
+// @Summary Get Vendor
+// @Description API for getting vendor info
 // @Accept  json
 // @Produce json
 // @Param user_id path string true "user_id"
-// @Success 200 {object} models.GetUserModel
+// @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetClient(c *gin.Context) {
@@ -199,9 +199,9 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
-	res, err := h.grpcClient.UserService().GetClient(
-		context.Background(), &pbu.GetClientRequest{
-			Id: c.Param("user_id"),
+	res, err := h.grpcClient.VendorService().GetVendor(
+		context.Background(), &pbu.GetVendorRequest{
+			Id: c.Param("vendor_id"),
 		},
 	)
 
@@ -228,18 +228,18 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/users [get]
-// @Summary Get All Users
-// @Description API for getting users
-// @Tags user
+// @Router /v1/vendors [get]
+// @Summary Get All Vendors
+// @Description API for getting vendors
+// @Tags vendor
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllUsersModel
+// @Success 200 {object} models.GetAllVendorsModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllClients(c *gin.Context) {
+func (h *handlerV1) GetAllVendors(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -261,9 +261,9 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.UserService().GetAllClients(
+	res, err := h.grpcClient.VendorService().GetAllVendors(
 		context.Background(),
-		&pbu.GetAllClientsRequest{
+		&pbu.GetAllVendorsRequest{
 			Page:  uint64(page),
 			Limit: uint64(pageSize),
 		},

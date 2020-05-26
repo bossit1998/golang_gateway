@@ -22,7 +22,8 @@ type GrpcClientI interface {
 	FareService() pbf.FareServiceClient
 	OrderService() pbo.OrderServiceClient
 	SmsService() pbs.SmsServiceClient
-	UserSerivice() pbu.UserServiceClient
+	UserService() pbu.UserServiceClient
+	VendorService() pbu.VendorServiceClient 
 	SpecificationService() pb.SpecificationServiceClient
 	ProductKindService() pb.ProductKindServiceClient
 	MeasureService() pb.MeasureServiceClient
@@ -99,6 +100,11 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.UserServiceHost, cfg.UserServicePort, err)
 	}
 
+	connVendor, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.UserServiceHost, cfg.UserServicePort),
+		grpc.WithInsecure(),
+	)
+
 	connCatalog, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", cfg.CatalogServiceHost, cfg.CatalogServicePort),
 		grpc.WithInsecure(),
@@ -114,6 +120,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"co_service":            pbco.NewCOServiceClient(connCO),
 			"sms_service":           pbs.NewSmsServiceClient(connSms),
 			"user_service":          pbu.NewUserServiceClient(connUser),
+			"vendor_service0:"       pbu.NewUserServiceClient(connVendor),
 			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
 			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
@@ -156,6 +163,16 @@ func (g *GrpcClient) SmsService() pbs.SmsServiceClient {
 //UserService ...
 func (g *GrpcClient) UserService() pbu.UserServiceClient {
 	return g.connections["user_service"].(pbu.UserServiceClient)
+}
+
+//VendorService ...
+func (g *GrpcClient) UserService() pbu.VendorServiceClient {
+	return g.connections["vendor_service"].(pbu.VendorServiceClient)
+}
+
+//VendorService ...
+func (g *GrpcClient) VendorService() pbu.VendorServiceClient {
+	return g.connections["Vendor_service"].(pbu.VendorServiceClient)
 }
 
 //SpecificationService ...

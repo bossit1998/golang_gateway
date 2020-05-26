@@ -366,6 +366,15 @@ definitions:
           $ref: '#/definitions/models.GetProductModel'
         type: array
     type: object
+  models.GetAllUsersModel:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/models.GetUserModel'
+        type: array
+    type: object
   models.GetCO:
     properties:
       description:
@@ -2601,7 +2610,67 @@ paths:
       summary: Register confirm
       tags:
       - register
+  /v1/user/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: API for getting user info
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get User
+      tags:
+      - user
   /v1/users:
+    get:
+      consumes:
+      - application/json
+      description: API for getting users
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllUsersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Users
+      tags:
+      - user
     post:
       consumes:
       - application/json
@@ -2628,7 +2697,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      summary: Create Client
+      summary: Create User
       tags:
       - user
     put:

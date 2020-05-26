@@ -1,14 +1,16 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"encoding/json"
 	pb "genproto/catalog_service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
-	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Router /v1/measure [post]
@@ -24,15 +26,15 @@ import (
 func (h *handlerV1) CreateMeasure(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
-		measure pb.Measure
+		measure   pb.Measure
 	)
 	err := unmarshal.Unmarshal(c.Request.Body, &measure)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error:models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while creating measure",
+			Error: models.InternalServerError{
+				Code:    ErrorBadRequest,
+				Message: "error while creating measure",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
@@ -42,7 +44,7 @@ func (h *handlerV1) CreateMeasure(c *gin.Context) {
 	resp, err := h.grpcClient.MeasureService().Create(
 		context.Background(),
 		&measure,
-		)
+	)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating measure") {
 		return
@@ -64,7 +66,7 @@ func (h *handlerV1) CreateMeasure(c *gin.Context) {
 func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		model models.GetAllMeasuresModel
+		model      models.GetAllMeasuresModel
 	)
 	marshaller.OrigName = true
 
@@ -73,8 +75,8 @@ func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing page",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing page",
 			},
 		})
 		h.log.Error("error while parsing page", logger.Error(err))
@@ -84,7 +86,7 @@ func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 	resp, err := h.grpcClient.MeasureService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
-			Page:int64(page),
+			Page: int64(page),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all measures") {
@@ -97,9 +99,9 @@ func (h *handlerV1) GetAllMeasure(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError {
-				Code:ErrorCodeInternal,
-				Message:"error while parsing proto to struct",
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "error while parsing proto to struct",
 			},
 		})
 		h.log.Error("error while parsing proto to struct", logger.Error(err))

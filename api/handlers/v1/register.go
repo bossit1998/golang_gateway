@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -47,7 +48,10 @@ func (h *handlerV1) Register(c *gin.Context) {
 			Id: reg.Phone,
 		},
 	)
+	fmt.Println(err)
 	st, ok := status.FromError(err)
+	fmt.Println(st.Code())
+	fmt.Println(ok)
 	if st.Code() != codes.NotFound {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
@@ -66,7 +70,9 @@ func (h *handlerV1) Register(c *gin.Context) {
 		})
 		h.log.Error("Error while checking phone", logger.Error(err))
 		return
+		
 	} else if st.Code() == codes.Unavailable {
+	
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
@@ -76,7 +82,6 @@ func (h *handlerV1) Register(c *gin.Context) {
 		h.log.Error("Error while checking phone, unavailable", logger.Error(err))
 		return
 	}
-
 	if h.cfg.Environment == "develop" {
 		code = etc.GenerateCode(6, true)
 	} else {
