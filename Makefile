@@ -65,7 +65,7 @@ build-image:
 
 push-image:
 	docker push ${REGISTRY}/${IMG_NAME}:${TAG}
-	docker push ${REGISTRY}/${IMG_NAME}:${ENV_TAG}gss
+	docker push ${REGISTRY}/${IMG_NAME}:${ENV_TAG}
 
 swag_init:
 	swag init -g api/main.go -o api/docs
