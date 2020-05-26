@@ -181,7 +181,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	_, err = h.grpcClient.UserService().CreateClient(
 		context.Background(), &pbu.Client{
 			Id:        id.String(),
-			FirstName: name,
+			Name:      name,
 			Phone:     rc.Phone,
 		},
 	)

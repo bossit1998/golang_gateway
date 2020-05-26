@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
@@ -44,7 +45,13 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 		return
 	}
 
+	accessToken, err := jwt.GenerateJWT(id.String(), "user", signingKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
+		return
+	}
+
 	client.Id = id.String()
+	client.AccessToken = accessToken
 
 	res, err := h.grpcClient.UserService().CreateClient(
 		context.Background(), &client,
