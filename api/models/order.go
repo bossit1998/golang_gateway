@@ -9,6 +9,7 @@ type productModel struct {
 	Name     string  `json:"name" example:"Choyxona Osh"`
 	Quantity float64 `json:"quantity" example:"2"`
 	Price    float64 `json:"price" example:"25000"`
+	ProductID string `json:"product_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
 }
 
 type orderModel struct {
