@@ -3,8 +3,7 @@ package models
 //CreateUserModel ...
 type CreateUserModel struct {
 	ID        string `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Name      string `json:"first_name"`
 	Phone     string `json:"phone"`
 	IsActive  bool   `json:"is_active"`
 	CreatedAt string `json:"created_at"`
