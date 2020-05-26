@@ -14,7 +14,6 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
-
 	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
@@ -69,6 +68,8 @@ func New(cnf Config) *gin.Engine {
 	// Register endpoints
 	r.POST("/v1/users/register", handlerV1.Register)
 	r.POST("/v1/users/register-confirm", handlerV1.RegisterConfirm)
+	r.POST("/v1/users/check-login")
+	r.POST("/v1/users/confirm-login")
 
 	//User endpoints
 	r.POST("/v1/users", handlerV1.CreateClient)

@@ -2,8 +2,11 @@ package v1
 
 import (
 	"context"
+	pbc "genproto/courier_service"
+	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -12,8 +15,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
 // @Router /v1/users [post]
@@ -286,4 +291,153 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/users/check-login/ [POST]
+// @Summary Check User Login
+// @Description API that checks whether user exists
+// @Description and if exists sends sms to their number
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param check_login body models.CheckUserLoginRequest true "check login"
+// @Success 200 {object} models.CheckLoginResponse
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CheckUserLogin(c *gin.Context) {
+	var (
+		checkLoginModel models.CheckLoginRequest
+		code            string
+	)
+
+	err := c.ShouldBindJSON(&checkLoginModel)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	checkLoginModel.Login = strings.TrimSpace(checkLoginModel.Login)
+
+	resp, err := h.grpcClient.UserService().ExistsClient(
+		context.Background(), &pbu.ExistsClientRequest{
+			Phone: checkLoginModel.Login,
+		},
+	)
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking courier") {
+		return
+	}
+
+	if !resp.Exists {
+		c.JSON(http.StatusNotFound, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "User not found",
+			},
+		})
+		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
+		return
+	}
+
+	if h.cfg.Environment == "develop" {
+		code = etc.GenerateCode(6, true)
+	} else {
+		code = etc.GenerateCode(6)
+		_, err = h.grpcClient.SmsService().Send(
+			context.Background(), &pbs.Sms{
+				Text:       code,
+				Recipients: []string{checkLoginModel.Login},
+			},
+		)
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
+			return
+		}
+	}
+
+	err = h.inMemoryStorage.SetWithTTl(checkLoginModel.Login, code, 1800)
+	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.CheckLoginResponse{
+		Code:  code,
+		Phone: checkLoginModel.Login,
+	})
+}
+
+// @Router /v1/users/confirm-login/ [POST]
+// @Summary Confirm User Login
+// @Description API that checks whether user entered
+// @Description valid token
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param confirm_phone body models.ConfirmUserLoginRequest true "confirm login"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
+	var (
+		cm models.ConfirmLoginRequest
+	)
+
+	err := c.ShouldBindJSON(&cm)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	cm.Code = strings.TrimSpace(cm.Code)
+
+	//Getting code from redis
+	key := cm.Phone
+	s, err := redis.String(h.inMemoryStorage.Get(key))
+	if err != nil || s == "" {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Key does not exist", logger.Error(err))
+		return
+	}
+
+	//Checking whether received code is valid
+	if cm.Code != s {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInvalidCode,
+				Message: "Code is invalid",
+			},
+		})
+		h.log.Error("Code is invalid", logger.Error(err))
+		return
+	}
+
+	user, err := h.grpcClient.UserService().GetClient(
+		context.Background(), &pbu.GetClientRequest{
+			Id: cm.Phone,
+		},
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
+		return
+	}
+
+	access, err := jwt.GenerateJWT(user.Client.Id, "user", signingKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
+		return
+	}
+
+	_, err = h.grpcClient.CourierService().UpdateToken(
+		context.Background(), &pbc.UpdateTokenRequest{
+			Id:     user.Client.Id,
+			Access: access,
+		},
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating token") {
+		return
+	}
+
+	c.JSON(http.StatusOK, &models.ConfirmLoginResponse{
+		ID:          user.Client.Id,
+		AccessToken: access,
+	})
 }

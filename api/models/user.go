@@ -31,3 +31,12 @@ type GetAllUsersModel struct {
 	Count int            `json:"count"`
 	Users []GetUserModel `json:"users"`
 }
+//CheckUserLoginRequest ...
+type CheckUserLoginRequest struct {
+	Phone string `json:"phone" binding:"required"`
+}
+//ConfirmUserLoginResponse ...
+type ConfirmUserLoginResponse struct {
+	ID string `json:"id"`
+	AccessToken string `json:"access_token"`
+}
