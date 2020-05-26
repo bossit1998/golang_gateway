@@ -120,7 +120,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"co_service":            pbco.NewCOServiceClient(connCO),
 			"sms_service":           pbs.NewSmsServiceClient(connSms),
 			"user_service":          pbu.NewUserServiceClient(connUser),
-			"vendor_service0:"       pbu.NewUserServiceClient(connVendor),
+			"vendor_service":        pbu.NewUserServiceClient(connVendor),
 			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
 			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
@@ -163,11 +163,6 @@ func (g *GrpcClient) SmsService() pbs.SmsServiceClient {
 //UserService ...
 func (g *GrpcClient) UserService() pbu.UserServiceClient {
 	return g.connections["user_service"].(pbu.UserServiceClient)
-}
-
-//VendorService ...
-func (g *GrpcClient) UserService() pbu.VendorServiceClient {
-	return g.connections["vendor_service"].(pbu.VendorServiceClient)
 }
 
 //VendorService ...

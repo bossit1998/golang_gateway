@@ -36,7 +36,7 @@ type GetVendorModel struct {
 }
 
 //GetAllUsersModel ...
-type GetAllUsersModel struct {
+type GetAllVendorsModel struct {
 	Count  int              `json:"count"`
 	Vendor []GetVendorModel `json:"vendors"`
 }

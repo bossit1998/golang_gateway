@@ -34,7 +34,7 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &client)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -47,13 +47,15 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 	vendor.Id = id.String()
 
 	res, err := h.grpcClient.VendorService().CreateVendor(
-		context.Background(), &vendor,
+		context.Background(), &pbu.CreateVendorRequest{
+			Vendor: &vendor,
+		},
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating user") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating vendor") {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.Client)
+	js, err := jspbMarshal.MarshalToString(res.Vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
 	}
@@ -82,7 +84,7 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &client)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -96,7 +98,9 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 
 	res, err := h.grpcClient.VendorService().UpdateVendor(
 		context.Background(),
-		&vendor,
+		&pbu.UpdateVendorRequest{
+			Vendor: &vendor,
+		},
 	)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
@@ -120,7 +124,7 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.GetClient())
+	js, err := jspbMarshal.MarshalToString(res.GetVendor())
 	if err != nil {
 		return
 	}
@@ -193,7 +197,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 // @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetClient(c *gin.Context) {
+func (h *handlerV1) GetVendor(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -218,7 +222,7 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 		})
 		return
 	}
-	js, err := jspbMarshal.MarshalToString(res.GetClient())
+	js, err := jspbMarshal.MarshalToString(res.GetVendor())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return

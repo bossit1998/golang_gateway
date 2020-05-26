@@ -266,6 +266,25 @@ definitions:
       phone:
         type: string
     type: object
+  models.CreateVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      user_name:
+        type: string
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -373,6 +392,15 @@ definitions:
       users:
         items:
           $ref: '#/definitions/models.GetUserModel'
+        type: array
+    type: object
+  models.GetAllVendorsModel:
+    properties:
+      count:
+        type: integer
+      vendors:
+        items:
+          $ref: '#/definitions/models.GetVendorModel'
         type: array
     type: object
   models.GetCO:
@@ -607,6 +635,25 @@ definitions:
       phone:
         type: string
     type: object
+  models.GetVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      created_at:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
   models.Location:
     properties:
       lat:
@@ -814,6 +861,23 @@ definitions:
       id:
         type: string
       last_name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UpdateVendorModel:
+    properties:
+      cargo_owner_id:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        type: string
+      password:
         type: string
       phone:
         type: string
@@ -2907,6 +2971,153 @@ paths:
       summary: Delete Courier Vehicle
       tags:
       - vehicle
+  /v1/vendor/{vendor_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting vendor
+      parameters:
+      - description: vendor_id
+        in: path
+        name: vendor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Vendor
+      tags:
+      - vendor
+    get:
+      consumes:
+      - application/json
+      description: API for getting vendor info
+      parameters:
+      - description: user_id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Vendor
+      tags:
+      - vendor
+  /v1/vendors:
+    get:
+      consumes:
+      - application/json
+      description: API for getting vendors
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllVendorsModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Vendors
+      tags:
+      - vendor
+    post:
+      consumes:
+      - application/json
+      description: API for creating vendor
+      parameters:
+      - description: vendor
+        in: body
+        name: vendor
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateVendorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Vendor
+      tags:
+      - vendor
+    put:
+      consumes:
+      - application/json
+      description: API for updating vendor
+      parameters:
+      - description: vendor
+        in: body
+        name: vendor
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateVendorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Vendor
+      tags:
+      - vendor
 securityDefinitions:
   ApiKeyAuth:
     in: header
