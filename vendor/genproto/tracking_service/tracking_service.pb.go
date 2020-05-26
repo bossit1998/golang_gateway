@@ -131,11 +131,11 @@ var fileDescriptor_3d0ee08d8799866e = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // TrackingServiceClient is the client API for TrackingService service.
 //
@@ -147,10 +147,10 @@ type TrackingServiceClient interface {
 }
 
 type trackingServiceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewTrackingServiceClient(cc *grpc.ClientConn) TrackingServiceClient {
+func NewTrackingServiceClient(cc grpc.ClientConnInterface) TrackingServiceClient {
 	return &trackingServiceClient{cc}
 }
 
