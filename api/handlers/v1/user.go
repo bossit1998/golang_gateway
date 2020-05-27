@@ -189,7 +189,6 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 		h.log.Error("Error while deleting user, service unavailable", logger.Error(err))
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"answer": "success",
 	})

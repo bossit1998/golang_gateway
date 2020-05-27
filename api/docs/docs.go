@@ -3179,92 +3179,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/vendor/{vendor_id}": {
-            "get": {
-                "description": "API for getting vendor info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "vendor"
-                ],
-                "summary": "Get Vendor",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "vendor_id",
-                        "name": "vendor_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetVendorModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "API for deleting vendor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "vendor"
-                ],
-                "summary": "Delete Vendor",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "vendor_id",
-                        "name": "vendor_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/vendors": {
             "get": {
                 "description": "API for getting vendors",
@@ -3385,6 +3299,92 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetVendorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/vendors/{vendor_id}": {
+            "get": {
+                "description": "API for getting vendor info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vendor"
+                ],
+                "summary": "Get Vendor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vendor_id",
+                        "name": "vendor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetVendorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "API for deleting vendor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vendor"
+                ],
+                "summary": "Delete Vendor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "vendor_id",
+                        "name": "vendor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "404": {
@@ -4382,22 +4382,22 @@ var doc = `{
                 "created_at": {
                     "type": "string"
                 },
-                "first_name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "is_active": {
                     "type": "boolean"
                 },
-                "last_name": {
+                "name": {
                     "type": "string"
                 },
                 "password": {
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "user_name": {
                     "type": "string"
                 }
             }
@@ -4726,22 +4726,22 @@ var doc = `{
                 "cargo_owner_id": {
                     "type": "string"
                 },
-                "first_name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "is_active": {
                     "type": "boolean"
                 },
-                "last_name": {
+                "name": {
                     "type": "string"
                 },
                 "password": {
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "user_name": {
                     "type": "string"
                 }
             }

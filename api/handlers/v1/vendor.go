@@ -34,7 +34,6 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 		vendor        pbu.Vendor
 	)
 	jspbMarshal.OrigName = true
-	fmt.Println("==============================")
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
@@ -61,7 +60,7 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating vendor") {
 		return
 	}
-	
+
 	js, err := jspbMarshal.MarshalToString(res.Vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
@@ -141,7 +140,7 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 }
 
 // @Tags vendor
-// @Router /v1/vendor/{vendor_id} [delete]
+// @Router /v1/vendors/{vendor_id} [delete]
 // @Summary Delete Vendor
 // @Description API for deleting vendor
 // @Accept  json
@@ -158,6 +157,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 			Id: c.Param("vendor_id"),
 		},
 	)
+	fmt.Println(1111111111)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -188,14 +188,13 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 		h.log.Error("Error while deleting vendor, service unavailable", logger.Error(err))
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"answer": "success",
 	})
 }
 
 // @Tags vendor
-// @Router /v1/vendor/{vendor_id} [get]
+// @Router /v1/vendors/{vendor_id} [get]
 // @Summary Get Vendor
 // @Description API for getting vendor info
 // @Accept  json
@@ -206,7 +205,6 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetVendor(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
-
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 	res, err := h.grpcClient.VendorService().GetVendor(
