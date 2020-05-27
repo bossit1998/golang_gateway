@@ -86,8 +86,13 @@ func Load() Config {
 	c.GeoServiceHost = cast.ToString(getOrReturnDefault("GEO_SERVICE_HOST", "geo_service"))
 	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 80))
 
+<<<<<<< HEAD
 	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "localhost"))
 	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 9003))
+=======
+	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "delever_user_service"))
+	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 80))
+>>>>>>> 7b5985c55bf15a2d2fbf609396a2e952006852e8
 
 	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
 	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
