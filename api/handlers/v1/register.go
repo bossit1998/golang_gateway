@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -83,6 +84,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 		code = etc.GenerateCode(6, true)
 	} else {
 		code = etc.GenerateCode(6)
+		fmt.Println(code)
 		_, err := h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
 				Text:       "Your code for delever is " + code,
@@ -100,6 +102,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 	}
 
 	key := reg.Phone + "name"
+	fmt.Println(key)
 	err = h.inMemoryStorage.SetWithTTl(key, reg.Name, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
