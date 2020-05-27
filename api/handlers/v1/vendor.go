@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbu "genproto/user_service"
 	"net/http"
 
@@ -31,9 +32,8 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		vendor        pbu.Vendor
 	)
-
 	jspbMarshal.OrigName = true
-
+	fmt.Println("==============================")
 	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
@@ -45,7 +45,6 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 	}
 
 	vendor.Id = id.String()
-
 	res, err := h.grpcClient.VendorService().CreateVendor(
 		context.Background(), &pbu.CreateVendorRequest{
 			Vendor: &vendor,
@@ -193,7 +192,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 // @Description API for getting vendor info
 // @Accept  json
 // @Produce json
-// @Param user_id path string true "user_id"
+// @Param vendor_id path string true "vendor_id"
 // @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -202,7 +201,6 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-
 	res, err := h.grpcClient.VendorService().GetVendor(
 		context.Background(), &pbu.GetVendorRequest{
 			Id: c.Param("vendor_id"),
@@ -284,3 +282,5 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
+
+

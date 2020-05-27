@@ -2,14 +2,11 @@ package models
 
 //CreateVendorModel ...
 type CreateVendorModel struct {
-	ID           string `json:"id"`
 	CargoOwnerID string `json:"cargo_owner_id"`
 	Name         string `json:"name"`
 	UserName     string `json:"user_name"`
 	Password     string `json:"password"`
 	Phone        string `json:"phone"`
-	IsActive     bool   `json:"is_active"`
-	CreatedAt    string `json:"created_at"`
 }
 
 //UpdateVendorModel ...

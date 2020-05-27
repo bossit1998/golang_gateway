@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
@@ -196,7 +197,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 }
 
 // @Tags user
-// @Router /v1/user/{user_id} [get]
+// @Router /v1/users/{user_id} [get]
 // @Summary Get User
 // @Description API for getting user info
 // @Accept  json
@@ -207,10 +208,9 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetClient(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
-
+	fmt.Println()
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-
 	res, err := h.grpcClient.UserService().GetClient(
 		context.Background(), &pbu.GetClientRequest{
 			Id: c.Param("user_id"),
@@ -301,7 +301,7 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param check_login body models.CheckUserLoginRequest true "check login"
-// @Success 200 {object} models.CheckLoginResponse
+// @Success 200 {object} models.CheckUserLoginResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckUserLogin(c *gin.Context) {

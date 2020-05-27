@@ -893,8 +893,8 @@ func (h *handlerV1) DeleteCourierVehicle(c *gin.Context) {
 // @Tags courier
 // @Accept  json
 // @Produce  json
-// @Param check_login body models.CheckUserLoginRequest true "check login"
-// @Success 200 {object} models.CheckUserLoginResponse
+// @Param check_login body models.CheckLoginRequest true "check login"
+// @Success 200 {object} models.CheckLoginResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckCourierLogin(c *gin.Context) {

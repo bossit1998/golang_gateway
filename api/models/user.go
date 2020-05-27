@@ -2,17 +2,14 @@ package models
 
 //CreateUserModel ...
 type CreateUserModel struct {
-	ID        string `json:"id"`
-	Name      string `json:"first_name"`
+	Name      string `json:"name"`
 	Phone     string `json:"phone"`
-	IsActive  bool   `json:"is_active"`
-	CreatedAt string `json:"created_at"`
 }
 
 //UpdateUserModel ...
 type UpdateUserModel struct {
 	ID    string `json:"id"`
-	Name  string `json:"first_name"`
+	Name  string `json:"name"`
 	Phone string `json:"phone"`
 }
 
@@ -20,7 +17,7 @@ type UpdateUserModel struct {
 type GetUserModel struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
-	Name        string `json:"first_name"`
+	Name        string `json:"name"`
 	Phone       string `json:"phone"`
 	IsActive    bool   `json:"is_active"`
 	CreatedAt   string `json:"created_at"`
@@ -31,12 +28,25 @@ type GetAllUsersModel struct {
 	Count int            `json:"count"`
 	Users []GetUserModel `json:"users"`
 }
+
 //CheckUserLoginRequest ...
 type CheckUserLoginRequest struct {
-	Phone string `json:"phone" binding:"required"`
+	Phone string `json:"phone"`
 }
+
+//CheckUserLoginResponse ...
+type CheckUserLoginResponse struct {
+	Code string `json:"code"`
+}
+
+//ConfirmUserLoginRequest ...
+type ConfirmUserLoginRequest struct {
+	Code  string `json:"code"`
+	Phone string `json:"phone"`
+}
+
 //ConfirmUserLoginResponse ...
 type ConfirmUserLoginResponse struct {
-	ID string `json:"id"`
+	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
 }
