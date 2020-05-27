@@ -13,8 +13,8 @@ type CreateVendorModel struct {
 type UpdateVendorModel struct {
 	ID           string `json:"id"`
 	CargoOwnerID string `json:"cargo_owner_id"`
-	Name         string `json:"first_name"`
-	UserName     string `json:"last_name"`
+	Name         string `json:"name"`
+	UserName     string `json:"user_name"`
 	Phone        string `json:"phone"`
 	Password     string `json:"password"`
 	IsActive     bool   `json:"is_active"`
@@ -24,8 +24,8 @@ type UpdateVendorModel struct {
 type GetVendorModel struct {
 	ID           string `json:"id"`
 	CargoOwnerID string `json:"cargo_owner_id"`
-	Name         string `json:"first_name"`
-	UserName     string `json:"last_name"`
+	Name         string `json:"name"`
+	UserName     string `json:"user_name"`
 	Phone        string `json:"phone"`
 	Password     string `json:"password"`
 	IsActive     bool   `json:"is_active"`

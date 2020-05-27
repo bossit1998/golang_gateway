@@ -644,17 +644,17 @@ definitions:
         type: string
       created_at:
         type: string
-      first_name:
-        type: string
       id:
         type: string
       is_active:
         type: boolean
-      last_name:
+      name:
         type: string
       password:
         type: string
       phone:
+        type: string
+      user_name:
         type: string
     type: object
   models.Location:
@@ -870,17 +870,17 @@ definitions:
     properties:
       cargo_owner_id:
         type: string
-      first_name:
-        type: string
       id:
         type: string
       is_active:
         type: boolean
-      last_name:
+      name:
         type: string
       password:
         type: string
       phone:
+        type: string
+      user_name:
         type: string
     type: object
   models.getOrderModel:
@@ -3041,63 +3041,6 @@ paths:
       summary: Delete Courier Vehicle
       tags:
       - vehicle
-  /v1/vendor/{vendor_id}:
-    delete:
-      consumes:
-      - application/json
-      description: API for deleting vendor
-      parameters:
-      - description: vendor_id
-        in: path
-        name: vendor_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Delete Vendor
-      tags:
-      - vendor
-    get:
-      consumes:
-      - application/json
-      description: API for getting vendor info
-      parameters:
-      - description: vendor_id
-        in: path
-        name: vendor_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetVendorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Vendor
-      tags:
-      - vendor
   /v1/vendors:
     get:
       consumes:
@@ -3186,6 +3129,63 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Update Vendor
+      tags:
+      - vendor
+  /v1/vendors/{vendor_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting vendor
+      parameters:
+      - description: vendor_id
+        in: path
+        name: vendor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Vendor
+      tags:
+      - vendor
+    get:
+      consumes:
+      - application/json
+      description: API for getting vendor info
+      parameters:
+      - description: vendor_id
+        in: path
+        name: vendor_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Vendor
       tags:
       - vendor
 securityDefinitions:
