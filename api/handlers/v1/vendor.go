@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
@@ -44,7 +45,14 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 		return
 	}
 
+	accessToken, err := jwt.GenerateJWT(id.String(), "user", signingKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
+		return
+	}
+
 	vendor.Id = id.String()
+	vendor.AccessToken = accessToken
+
 	res, err := h.grpcClient.VendorService().CreateVendor(
 		context.Background(), &pbu.CreateVendorRequest{
 			Vendor: &vendor,
@@ -53,7 +61,7 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating vendor") {
 		return
 	}
-
+	
 	js, err := jspbMarshal.MarshalToString(res.Vendor)
 	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
@@ -282,5 +290,3 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
 }
-
-

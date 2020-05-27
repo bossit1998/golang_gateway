@@ -16,6 +16,7 @@ import (
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
+	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
@@ -118,7 +119,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param register_confirm body models.RegisterConfirmModel true "register_confirm"
-// @Success 200 {object} models.RegisterConfirmModel
+// @Success 200 {object} models.RegisterConfirmModelRegisterConfirmModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/users/register-confirm/ [post]
@@ -178,11 +179,16 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		return
 	}
 
+	accessToken, err := jwt.GenerateJWT(id.String(), "user", signingKey)
+	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
+		return
+	}
 	_, err = h.grpcClient.UserService().CreateClient(
 		context.Background(), &pbu.Client{
 			Id:        id.String(),
 			Name:      name,
 			Phone:     rc.Phone,
+			AccessToken: accessToken,
 		},
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a client") {

@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 	"fmt"
-	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -417,27 +416,12 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 			Id: cm.Phone,
 		},
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
-		return
-	}
-
-	access, err := jwt.GenerateJWT(user.Client.Id, "user", signingKey)
-	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
-		return
-	}
-
-	_, err = h.grpcClient.CourierService().UpdateToken(
-		context.Background(), &pbc.UpdateTokenRequest{
-			Id:     user.Client.Id,
-			Access: access,
-		},
-	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating token") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting client") {
 		return
 	}
 
 	c.JSON(http.StatusOK, &models.ConfirmLoginResponse{
 		ID:          user.Client.Id,
-		AccessToken: access,
+		AccessToken: user.Client.AccessToken,
 	})
 }
