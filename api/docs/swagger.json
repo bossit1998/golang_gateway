@@ -2525,50 +2525,6 @@
                 }
             }
         },
-        "/v1/user/{user_id}": {
-            "get": {
-                "description": "API for getting user info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get User",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "user_id",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetUserModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/users": {
             "get": {
                 "description": "API for getting users",
@@ -2706,6 +2662,98 @@
                 }
             }
         },
+        "/v1/users/check-login/": {
+            "post": {
+                "description": "API that checks whether user exists\nand if exists sends sms to their number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Check User Login",
+                "parameters": [
+                    {
+                        "description": "check login",
+                        "name": "check_login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckUserLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckUserLoginResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/confirm-login/": {
+            "post": {
+                "description": "API that checks whether user entered\nvalid token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Confirm User Login",
+                "parameters": [
+                    {
+                        "description": "confirm login",
+                        "name": "confirm_phone",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ConfirmUserLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/register-confirm/": {
             "post": {
                 "security": [
@@ -2799,6 +2847,48 @@
             }
         },
         "/v1/users/{user_id}": {
+            "get": {
+                "description": "API for getting user info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get User",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetUserModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "API for deleting user",
                 "consumes": [
@@ -3085,8 +3175,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "user_id",
-                        "name": "user_id",
+                        "description": "vendor_id",
+                        "name": "vendor_id",
                         "in": "path",
                         "required": true
                     }
@@ -3390,7 +3480,34 @@
                 }
             }
         },
+        "models.CheckUserLoginRequest": {
+            "type": "object",
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CheckUserLoginResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ConfirmLoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ConfirmUserLoginRequest": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3472,7 +3589,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "parent_id": {
                     "type": "string"
@@ -3548,7 +3666,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -3630,7 +3749,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -3653,13 +3773,15 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -3672,19 +3794,7 @@
         "models.CreateUserModel": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "last_name": {
+                "name": {
                     "type": "string"
                 },
                 "phone": {
@@ -3697,15 +3807,6 @@
             "properties": {
                 "cargo_owner_id": {
                     "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -3754,7 +3855,8 @@
                     }
                 },
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -3818,7 +3920,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "measures": {
                     "type": "array",
@@ -3846,7 +3949,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -3860,7 +3964,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "products": {
                     "type": "array",
@@ -4200,7 +4305,8 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4227,10 +4333,10 @@
         "models.GetUserModel": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "access_token": {
                     "type": "string"
                 },
-                "first_name": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -4239,7 +4345,7 @@
                 "is_active": {
                     "type": "boolean"
                 },
-                "last_name": {
+                "name": {
                     "type": "string"
                 },
                 "phone": {
@@ -4549,12 +4655,6 @@
                 "id": {
                     "type": "string"
                 },
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateStepModel"
-                    }
-                },
                 "to_address": {
                     "type": "string",
                     "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
@@ -4589,13 +4689,10 @@
         "models.UpdateUserModel": {
             "type": "object",
             "properties": {
-                "first_name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
-                "last_name": {
+                "name": {
                     "type": "string"
                 },
                 "phone": {
@@ -4746,63 +4843,6 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.productModel"
-                    }
-                }
-            }
-        },
-        "models.updateProduct": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Choyxona Osh"
-                },
-                "price": {
-                    "type": "number",
-                    "example": 25000
-                },
-                "product_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "quantity": {
-                    "type": "number",
-                    "example": 2
-                }
-            }
-        },
-        "models.updateStepModel": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "branch_name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "destination_address": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateProduct"
                     }
                 }
             }
