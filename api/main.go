@@ -35,6 +35,8 @@ type Config struct {
 func New(cnf Config) *gin.Engine {
 	r := gin.New()
 
+	r.Static("/images", "./static/images")
+
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
@@ -176,6 +178,9 @@ func New(cnf Config) *gin.Engine {
 	//Product Service
 	r.POST("/v1/product", handlerV1.CreateProduct)
 	r.GET("/v1/product", handlerV1.GetAllProducts)
+
+	//Upload File
+	r.POST("/v1/upload", handlerV1.ImageUpload)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
