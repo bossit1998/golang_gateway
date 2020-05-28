@@ -369,7 +369,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param confirm_phone body models.ConfirmUserLoginRequest true "confirm login"
-// @Success 200 {object} models.ResponseOK
+// @Success 200 {object} models.GetUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
