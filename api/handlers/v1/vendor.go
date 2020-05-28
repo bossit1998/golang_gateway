@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -415,7 +414,7 @@ type ConfirmVendorLoginResponse struct {
 		return
 	}
 
-	user, err := h.grpcClient.UserService().GetClient(
+	_, err = h.grpcClient.UserService().GetClient(
 		context.Background(), &pbu.GetClientRequest{
 			Id: cm.Phone,
 		},
@@ -424,5 +423,5 @@ type ConfirmVendorLoginResponse struct {
 		return
 	}
 
-	c.JSON(http.StatusOK)
+	c.Status(http.StatusOK)
 }
