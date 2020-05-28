@@ -307,7 +307,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		checkUserLoginModel models.CheckUserLoginRequest
 		code            string
 	)
-
+	
 	err := c.ShouldBindJSON(&checkUserLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
