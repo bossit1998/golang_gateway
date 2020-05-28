@@ -365,7 +365,7 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 
 // @Router /v1/vendors/confirm-login/ [POST]
 // @Summary Confirm Vendor Login
-// @Description API that checks whether vendor entered
+// @Description API that checks whether - vendor entered
 // @Description valid token
 // @Tags user
 // @Accept  json
