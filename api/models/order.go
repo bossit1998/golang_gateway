@@ -21,6 +21,8 @@ type orderModel struct {
 	CoDeliveryPrice     float64  `json:"co_delivery_price" example:"10000"`
 	Description         string   `json:"description"`
 	ExternalOrderID 	int64	 `json:"external_order_id"`
+	CustomerID 			string	 `json:"customer_id"`
+	VendorID			string	 `json:"vendor_id"`
 }
 
 type updateProduct struct {

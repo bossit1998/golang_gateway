@@ -3,7 +3,8 @@ FROM golang:1.13.1 as builder
 
 
 #
-RUN mkdir -p $GOPATH/src/bitbucket.org/alien_soft/api_gateway
+RUN mkdir -p $GOPATH/src/bitbucket.org/alien_soft/api_gateway && \
+    mkdir -p $GOPATH/src/bitbucket.org/alien_soft/api_gateway/static/images
 WORKDIR $GOPATH/src/bitbucket.org/alien_soft/api_gateway
 
 # Copy the local package files to the container's workspace.
