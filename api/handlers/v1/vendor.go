@@ -161,7 +161,6 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 			Id: c.Param("vendor_id"),
 		},
 	)
-	fmt.Println(1111111111)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
