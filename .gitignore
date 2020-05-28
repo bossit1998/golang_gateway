@@ -36,5 +36,3 @@ Temporary Items
 .idea
 
 !Gopkg.toml
-
-static/images/*
