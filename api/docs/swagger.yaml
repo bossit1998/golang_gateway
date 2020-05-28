@@ -302,6 +302,8 @@ definitions:
     type: object
   models.CreateVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
       name:
@@ -669,6 +671,8 @@ definitions:
     type: object
   models.GetVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
       created_at:
@@ -901,6 +905,8 @@ definitions:
     type: object
   models.UpdateVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
       id:
@@ -2858,7 +2864,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseOK'
+            $ref: '#/definitions/models.GetUserModel'
         "404":
           description: Not Found
           schema:
@@ -2888,7 +2894,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.RegisterConfirmModel'
+            $ref: '#/definitions/models.GetUserModel'
         "400":
           description: Bad Request
           schema:
@@ -3277,7 +3283,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseOK'
+            $ref: '#/definitions/models.GetVendorModel'
         "404":
           description: Not Found
           schema:

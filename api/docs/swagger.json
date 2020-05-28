@@ -2736,7 +2736,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "404": {
@@ -2787,7 +2787,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.RegisterConfirmModel"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "400": {
@@ -3370,7 +3370,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
+                            "$ref": "#/definitions/models.GetVendorModel"
                         }
                     },
                     "404": {
@@ -3936,6 +3936,9 @@
         "models.CreateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4493,6 +4496,9 @@
         "models.GetVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4846,6 +4852,9 @@
         "models.UpdateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },

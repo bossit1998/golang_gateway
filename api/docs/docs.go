@@ -2756,7 +2756,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "404": {
@@ -2807,7 +2807,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.RegisterConfirmModel"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "400": {
@@ -3390,7 +3390,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
+                            "$ref": "#/definitions/models.GetVendorModel"
                         }
                     },
                     "404": {
@@ -3956,6 +3956,9 @@ var doc = `{
         "models.CreateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4513,6 +4516,9 @@ var doc = `{
         "models.GetVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4866,6 +4872,9 @@ var doc = `{
         "models.UpdateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
