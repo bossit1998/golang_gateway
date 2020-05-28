@@ -370,7 +370,7 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param confirm_phone body models.ConfirmVendorLoginRequest true "confirm login"
-// @Success 200 {object} models.ResponseOK
+// @Success 200 {object} models.GetVendorModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) ConfirmVendorLogin(c *gin.Context) {
@@ -424,8 +424,5 @@ type ConfirmVendorLoginResponse struct {
 		return
 	}
 
-	c.JSON(http.StatusOK, &models.ConfirmVendorLoginResponse{
-		ID:          user.Client.Id,
-		AccessToken: user.Client.AccessToken,
-	})
+	c.JSON(http.StatusOK)
 }
