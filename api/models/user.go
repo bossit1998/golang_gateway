@@ -37,6 +37,7 @@ type CheckUserLoginRequest struct {
 //CheckUserLoginResponse ...
 type CheckUserLoginResponse struct {
 	Code string `json:"code"`
+	Phone string `json:"phone"`
 }
 
 //ConfirmUserLoginRequest ...

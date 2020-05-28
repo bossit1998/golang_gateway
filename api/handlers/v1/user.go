@@ -304,23 +304,23 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 	var (
-		checkLoginModel models.CheckLoginRequest
+		checkUserLoginModel models.CheckUserLoginRequest
 		code            string
 	)
 
-	err := c.ShouldBindJSON(&checkLoginModel)
+	err := c.ShouldBindJSON(&checkUserLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
 
-	checkLoginModel.Login = strings.TrimSpace(checkLoginModel.Login)
+	checkUserLoginModel.Phone = strings.TrimSpace(checkUserLoginModel.Phone)
 
 	resp, err := h.grpcClient.UserService().ExistsClient(
 		context.Background(), &pbu.ExistsClientRequest{
-			Phone: checkLoginModel.Login,
+			Phone: checkUserLoginModel.Phone,
 		},
 	)
-	if handleStorageErrWithMessage(c, h.log, err, "Error while checking courier") {
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking user") {
 		return
 	}
 
@@ -342,7 +342,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		_, err = h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
 				Text:       code,
-				Recipients: []string{checkLoginModel.Login},
+				Recipients: []string{checkUserLoginModel.Phone},
 			},
 		)
 		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
@@ -350,14 +350,14 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(checkLoginModel.Login, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(checkUserLoginModel.Phone, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckLoginResponse{
+	c.JSON(http.StatusOK, models.CheckUserLoginResponse{
 		Code:  code,
-		Phone: checkLoginModel.Login,
+		Phone: checkUserLoginModel.Phone,
 	})
 }
 
@@ -374,7 +374,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 	var (
-		cm models.ConfirmLoginRequest
+		cm models.ConfirmUserLoginRequest
 	)
 
 	err := c.ShouldBindJSON(&cm)
