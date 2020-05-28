@@ -68,8 +68,8 @@ func New(cnf Config) *gin.Engine {
 	// Register endpoints
 	r.POST("/v1/users/register", handlerV1.Register)
 	r.POST("/v1/users/register-confirm", handlerV1.RegisterConfirm)
-	r.POST("/v1/users/check-login")
-	r.POST("/v1/users/confirm-login")
+	r.POST("/v1/users/check-login",handlerV1.CheckUserLogin)
+	r.POST("/v1/users/confirm-login",handlerV1.ConfirmUserLogin)
 
 	//User endpoints
 	r.POST("/v1/users", handlerV1.CreateClient)

@@ -3513,6 +3513,9 @@ var doc = `{
             "properties": {
                 "code": {
                     "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 }
             }
         },
