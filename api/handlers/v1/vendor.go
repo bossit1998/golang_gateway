@@ -367,7 +367,7 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 // @Summary Confirm Vendor Login
 // @Description API that checks whether - vendor entered
 // @Description valid token
-// @Tags user
+// @Tags vendor
 // @Accept  json
 // @Produce  json
 // @Param confirm_phone body models.ConfirmVendorLoginRequest true "confirm login"

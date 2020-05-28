@@ -3288,7 +3288,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Confirm Vendor Login
       tags:
-      - user
+      - vendor
 securityDefinitions:
   ApiKeyAuth:
     in: header
