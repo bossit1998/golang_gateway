@@ -419,7 +419,7 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &models.ConfirmLoginResponse{
+	c.JSON(http.StatusOK, &models.ConfirmUserLoginResponse{
 		ID:          user.Client.Id,
 		AccessToken: user.Client.AccessToken,
 	})
