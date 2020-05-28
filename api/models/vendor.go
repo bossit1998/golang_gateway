@@ -32,8 +32,31 @@ type GetVendorModel struct {
 	CreatedAt    string `json:"created_at"`
 }
 
-//GetAllUsersModel ...
+//GetAllVendorsModel ...
 type GetAllVendorsModel struct {
 	Count  int              `json:"count"`
 	Vendor []GetVendorModel `json:"vendors"`
+}
+
+//CheckVendorLoginRequest ...
+type CheckVendorLoginRequest struct {
+	Phone string `json:"phone"`
+}
+
+//CheckVendorLoginResponse ...
+type CheckVendorLoginResponse struct {
+	Code string `json:"code"`
+	Phone string `json:"phone"`
+}
+
+//ConfirmVendorLoginRequest ...
+type ConfirmVendorLoginRequest struct {
+	Code  string `json:"code"`
+	Phone string `json:"phone"`
+}
+
+//ConfirmVendorLoginResponse ...
+type ConfirmVendorLoginResponse struct {
+	ID          string `json:"id"`
+	AccessToken string `json:"access_token"`
 }

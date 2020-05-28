@@ -3,8 +3,10 @@ package v1
 import (
 	"context"
 	"fmt"
+	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -13,8 +15,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
 // @Router /v1/vendors [post]
@@ -287,4 +291,142 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/vendors/check-login/ [POST]
+// @Summary Check Vendor Login
+// @Description API that checks whether vendor exists
+// @Description and if exists sends sms to their number
+// @Tags vendor
+// @Accept  json
+// @Produce  json
+// @Param check_login body models.CheckVendorLoginRequest true "check login"
+// @Success 200 {object} models.CheckVendorLoginResponse
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
+	var (
+		checkVendorLoginModel models.CheckVendorLoginRequest
+		code            string
+	)
+	
+	err := c.ShouldBindJSON(&checkVendorLoginModel)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	checkVendorLoginModel.Phone = strings.TrimSpace(checkVendorLoginModel.Phone)
+
+	resp, err := h.grpcClient.VendorService().ExistsVendor(
+		context.Background(), &pbu.ExistsVendorRequest{
+			Phone: checkVendorLoginModel.Phone,
+		},
+	)
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking vendor") {
+		return
+	}
+
+	if !resp.Exists {
+		c.JSON(http.StatusNotFound, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "User not found",
+			},
+		})
+		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
+		return
+	}
+
+	if h.cfg.Environment == "develop" {
+		code = etc.GenerateCode(6, true)
+	} else {
+		code = etc.GenerateCode(6)
+		_, err = h.grpcClient.SmsService().Send(
+			context.Background(), &pbs.Sms{
+				Text:       code,
+				Recipients: []string{checkVendorLoginModel.Phone},
+			},
+		)
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
+			return
+		}
+	}
+
+	err = h.inMemoryStorage.SetWithTTl(checkVendorLoginModel.Phone, code, 1800)
+	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.CheckUserLoginResponse{
+		Code:  code,
+		Phone: checkVendorLoginModel.Phone,
+	})
+}
+
+// @Router /v1/vendors/confirm-login/ [POST]
+// @Summary Confirm Vendor Login
+// @Description API that checks whether vendor entered
+// @Description valid token
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param confirm_phone body models.ConfirmVendorLoginRequest true "confirm login"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) ConfirmVendorLogin(c *gin.Context) {
+	var (
+		cm models.ConfirmUserLoginRequest
+	)
+
+	err := c.ShouldBindJSON(&cm)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+//ConfirmVendorLoginResponse ...
+type ConfirmVendorLoginResponse struct {
+	ID          string `json:"id"`
+	AccessToken string `json:"access_token"`
+}
+	cm.Code = strings.TrimSpace(cm.Code)
+
+	//Getting code from redis
+	key := cm.Phone
+	s, err := redis.String(h.inMemoryStorage.Get(key))
+	if err != nil || s == "" {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Key does not exist", logger.Error(err))
+		return
+	}
+
+	//Checking whether received code is valid
+	if cm.Code != s {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInvalidCode,
+				Message: "Code is invalid",
+			},
+		})
+		h.log.Error("Code is invalid", logger.Error(err))
+		return
+	}
+
+	user, err := h.grpcClient.UserService().GetClient(
+		context.Background(), &pbu.GetClientRequest{
+			Id: cm.Phone,
+		},
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting client") {
+		return
+	}
+
+	c.JSON(http.StatusOK, &models.ConfirmVendorLoginResponse{
+		ID:          user.Client.Id,
+		AccessToken: user.Client.AccessToken,
+	})
 }
