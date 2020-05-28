@@ -14,6 +14,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.5.2
+	github.com/minio/minio-go/v6 v6.0.55
 	github.com/spf13/cast v1.3.1
 	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
