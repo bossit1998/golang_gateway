@@ -3352,7 +3352,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "vendor"
                 ],
                 "summary": "Confirm Vendor Login",
                 "parameters": [

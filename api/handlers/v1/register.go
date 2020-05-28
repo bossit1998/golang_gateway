@@ -119,7 +119,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param register_confirm body models.RegisterConfirmModel true "register_confirm"
-// @Success 200 {object} models.RegisterConfirmModel
+// @Success 200 {object} models.GetUserModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/users/register-confirm/ [post]

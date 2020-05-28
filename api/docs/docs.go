@@ -3372,7 +3372,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "vendor"
                 ],
                 "summary": "Confirm Vendor Login",
                 "parameters": [
