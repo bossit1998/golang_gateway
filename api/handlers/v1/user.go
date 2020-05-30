@@ -433,6 +433,7 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 // @Success 200 {object} models.SearchByPhoneResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
+
 func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 

@@ -759,15 +759,6 @@ definitions:
       message:
         type: object
     type: object
-  models.SearchByPhoneResponse:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      phone:
-        type: string
-    type: object
   models.Status:
     properties:
       id:
@@ -2683,35 +2674,6 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
-  /v1/search-users:
-    get:
-      consumes:
-      - application/json
-      description: API for getting phones
-      parameters:
-      - description: phone
-        in: path
-        name: phone
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.SearchByPhoneResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Search by phone
-      tags:
-      - user
   /v1/users:
     get:
       consumes:
