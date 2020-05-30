@@ -9,6 +9,13 @@ import (
 	"net/http"
 	"strconv"
 
+	jwtg "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
@@ -16,12 +23,6 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
-	jwtg "github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type handlerV1 struct {
