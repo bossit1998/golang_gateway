@@ -2,8 +2,8 @@ package models
 
 //CreateUserModel ...
 type CreateUserModel struct {
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
 }
 
 //UpdateUserModel ...
@@ -36,7 +36,7 @@ type CheckUserLoginRequest struct {
 
 //CheckUserLoginResponse ...
 type CheckUserLoginResponse struct {
-	Code string `json:"code"`
+	Code  string `json:"code"`
 	Phone string `json:"phone"`
 }
 
@@ -50,4 +50,11 @@ type ConfirmUserLoginRequest struct {
 type ConfirmUserLoginResponse struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
+}
+
+//SearchByPhoneResponse ...
+type SearchByPhoneResponse struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
 }

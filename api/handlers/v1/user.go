@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -206,7 +205,6 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetClient(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
-	fmt.Println()
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 	res, err := h.grpcClient.UserService().GetClient(
@@ -423,4 +421,39 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 		ID:          user.Client.Id,
 		AccessToken: user.Client.AccessToken,
 	})
+}
+
+// @Router /v1/search-users [get]
+// @Summary Search by phone
+// @Description API for getting phones
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param phone path string true "phone"
+// @Success 200 {object} models.SearchByPhoneResponse
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) SearchByPhone(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.UserService().SearchClientsByPhone(
+		context.Background(),
+		&pbu.SearchClientsByPhoneRequest{
+			Phone: c.Param("phone"),
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }

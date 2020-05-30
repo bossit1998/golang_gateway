@@ -8,6 +8,7 @@ type CreateVendorModel struct {
 	Password     string `json:"password"`
 	Phone        string `json:"phone"`
 	Address      string `json:"address"`
+	Location     Location `json:"location"`
 }
 
 //UpdateVendorModel ...
@@ -20,6 +21,7 @@ type UpdateVendorModel struct {
 	Password     string `json:"password"`
 	IsActive     bool   `json:"is_active"`
 	Address      string `json:"address"`
+	Location     Location `json:"location"`
 }
 
 //GetVendorModel ...
@@ -30,7 +32,8 @@ type GetVendorModel struct {
 	UserName     string `json:"user_name"`
 	Phone        string `json:"phone"`
 	Password     string `json:"password"`
-	Address      string `json:address`
+	Address      string `json:"address"`
+	Location     Location `json:"location"`
 	IsActive     bool   `json:"is_active"`
 	CreatedAt    string `json:"created_at"`
 }
