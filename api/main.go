@@ -74,7 +74,7 @@ func New(cnf Config) *gin.Engine {
 	//User endpoints
 	r.POST("/v1/users", handlerV1.CreateClient)
 	r.PUT("/v1/users", handlerV1.UpdateClient)
-	r.DELETE("/v1users/:user_id", handlerV1.DeleteClient)
+	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
 	r.GET("/v1/search-users", handlerV1.SearchByPhone)
 	r.GET("/v1/users/:user_id", handlerV1.GetClient)
 	r.GET("/v1/users", handlerV1.GetAllClients)
