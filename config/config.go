@@ -119,14 +119,14 @@ func Load() Config {
 
 	c.MapboxToken = cast.ToString(getOrReturnDefault("MAPBOX_TOKEN", "pk.eyJ1IjoidGRvc3RvbiIsImEiOiJjazh0cmRrMnowMWszM29sc2Y5c3A5NTZ4In0.mtrOXD4cD4QKZ-dnZ_vKdA"))
 
-	c.MinioEndpoint = cast.ToString(getOrReturnDefault("MINIO_ENDPOINT", "minio:9000"))
+	c.MinioEndpoint = cast.ToString(getOrReturnDefault("MINIO_ENDPOINT", "minio"))
 	c.MinioAccessKeyID = cast.ToString(getOrReturnDefault("MINIO_ACCESS_KEY", "d0097ebbb13854f41d6b4d150ace067b4c860169efc6fafd0e8864f4a7307814"))
 	c.MinioSecretAccesKey = cast.ToString(getOrReturnDefault("MINIO_SECRET_KEY", "56ee38257eb238304a7dee5a6d59bdf9c57f1fea53e0f400d939bf2aa64090d1"))
 
 	return c
 }
 
-func getOrReturnDefault(key string, defaultValue interface{}) interface{} {
+func getOrReturnDefault(key string, defaultValue interface{}) interface{}
 	_, exists := os.LookupEnv(key)
 	if exists {
 		return os.Getenv(key)
