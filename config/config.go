@@ -126,7 +126,7 @@ func Load() Config {
 	return c
 }
 
-func getOrReturnDefault(key string, defaultValue interface{}) interface{}
+func getOrReturnDefault(key string, defaultValue interface{}) interface{} {
 	_, exists := os.LookupEnv(key)
 	if exists {
 		return os.Getenv(key)
