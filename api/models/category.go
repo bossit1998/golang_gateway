@@ -5,6 +5,7 @@ type CreateCategoryModel struct {
 	ParentID string `json:"parent_id"`
 	Description string `json:"description"`
 	OrderNo int64 `json:"order_no,string"`
+	Image string `json:"image"`
 }
 
 type GetCategoryModel struct {
@@ -14,6 +15,7 @@ type GetCategoryModel struct {
 	ParentID string `json:"parent_id"`
 	Description string `json:"description"`
 	ChildCategories []GetCategoryModel `json:"child_categories"`
+	Image string `json:"image"`
 }
 
 type GetAllCategoriesModel struct {
