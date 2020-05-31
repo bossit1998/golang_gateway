@@ -110,7 +110,7 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	}
 
 	for i, p := range model.Products {
-		model.Products[i].Image = fmt.Sprintf("http://api.delever.uz:9000/%s", p.Image)
+		model.Products[i].Image = fmt.Sprintf("http://api.delever.uz:9001/delever/%s", p.Image)
 	}
 
 	c.JSON(http.StatusOK, model)
