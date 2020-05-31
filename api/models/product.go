@@ -11,6 +11,7 @@ type CreateProductModel struct {
 	Description string `json:"description"`
 	OrderNo int64 `json:"order_no,string"`
 	Price int64 `json:"price,string"`
+	Image string `json:"image"`
 }
 
 type GetProductModel struct {
@@ -25,6 +26,7 @@ type GetProductModel struct {
 	CategoryID string `json:"category_id"`
 	Description string `json:"description"`
 	Price int64 `json:"price,string"`
+	Image string `json:"image"`
 }
 
 type GetAllProductsModel struct {
