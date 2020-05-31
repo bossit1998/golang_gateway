@@ -151,6 +151,8 @@ definitions:
     properties:
       description:
         type: string
+      image:
+        type: string
       name:
         type: string
       order_no:
@@ -455,6 +457,8 @@ definitions:
       description:
         type: string
       id:
+        type: string
+      image:
         type: string
       name:
         type: string
