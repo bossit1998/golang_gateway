@@ -3899,7 +3899,8 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "parent_id": {
                     "type": "string"
@@ -3975,7 +3976,8 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4060,7 +4062,8 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -4086,13 +4089,15 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4173,7 +4178,8 @@ var doc = `{
                     }
                 },
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -4237,7 +4243,8 @@ var doc = `{
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "measures": {
                     "type": "array",
@@ -4265,7 +4272,8 @@ var doc = `{
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -4279,7 +4287,8 @@ var doc = `{
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "products": {
                     "type": "array",
@@ -4625,7 +4634,8 @@ var doc = `{
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5023,12 +5033,6 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateStepModel"
-                    }
-                },
                 "to_address": {
                     "type": "string",
                     "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
@@ -5230,63 +5234,6 @@ var doc = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.productModel"
-                    }
-                }
-            }
-        },
-        "models.updateProduct": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Choyxona Osh"
-                },
-                "price": {
-                    "type": "number",
-                    "example": 25000
-                },
-                "product_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "quantity": {
-                    "type": "number",
-                    "example": 2
-                }
-            }
-        },
-        "models.updateStepModel": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "branch_name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "destination_address": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateProduct"
                     }
                 }
             }

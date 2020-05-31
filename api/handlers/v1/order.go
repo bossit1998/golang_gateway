@@ -1,16 +1,18 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/config"
-	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"context"
 	"fmt"
 	pbo "genproto/order_service"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
-	"net/http"
+
+	"bitbucket.org/alien_soft/api_getaway/api/models"
+	"bitbucket.org/alien_soft/api_getaway/config"
+	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
 // @Security ApiKeyAuth
@@ -168,11 +170,11 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 func (h *handlerV1) GetOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		order *pbo.OrdersResponse
-		statusID string
-		err error
-		page uint64
-		limit uint64
+		order       *pbo.OrdersResponse
+		statusID    string
+		err         error
+		page        uint64
+		limit       uint64
 	)
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -208,8 +210,8 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 
 		order, err = h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
 			StatusId: statusID,
-			Page: page,
-			Limit: limit,
+			Page:     page,
+			Limit:    limit,
 		})
 	}
 
@@ -279,8 +281,7 @@ func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetStatuses(c *gin.Context) {
-	var (
-	)
+	var ()
 	m := make(map[string]string)
 	m["new"] = config.NewStatusId
 	m["courier_accepted"] = config.CourierAcceptedStatusId
@@ -589,7 +590,7 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusOK, models.ResponseError{
-			Error:"invalid uuid format in param",
+			Error: "invalid uuid format in param",
 		})
 	}
 
