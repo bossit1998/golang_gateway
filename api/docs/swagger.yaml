@@ -255,8 +255,6 @@ definitions:
         type: object
       name:
         type: string
-      phone:
-        type: string
     type: object
   models.CreateProductKindModel:
     properties:
@@ -759,6 +757,15 @@ definitions:
       message:
         type: object
     type: object
+  models.SaveCourierVendorsModel:
+    properties:
+      courier_id:
+        type: string
+      vendor_ids:
+        items:
+          type: string
+        type: array
+    type: object
   models.SearchByPhoneResponse:
     properties:
       id:
@@ -767,6 +774,13 @@ definitions:
         type: string
       phone:
         type: string
+    type: object
+  models.SearchCouriersByPhoneModel:
+    properties:
+      couriers:
+        items:
+          $ref: '#/definitions/models.GetCourierModel'
+        type: array
     type: object
   models.Status:
     properties:
@@ -905,8 +919,6 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
-        type: string
-      phone:
         type: string
     type: object
   models.UpdateUserModel:
@@ -1682,6 +1694,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Update Courier Details
+      tags:
+      - courier
+  /v1/couriers/save-vendors:
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier vendor
+      parameters:
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.SaveCourierVendorsModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier
       tags:
       - courier
   /v1/distributors:
@@ -2683,6 +2725,35 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/search-couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting phones
+      parameters:
+      - description: phone
+        in: query
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SearchCouriersByPhoneModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Search by phone
+      tags:
+      - courier
   /v1/search-users:
     get:
       consumes:

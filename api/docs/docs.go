@@ -800,6 +800,52 @@ var doc = `{
                 }
             }
         },
+        "/v1/couriers/save-vendors": {
+            "post": {
+                "description": "API for creating courier vendor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Create Courier",
+                "parameters": [
+                    {
+                        "description": "courier",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveCourierVendorsModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers/{courier_id}": {
             "delete": {
                 "description": "API for deleting courier",
@@ -2545,6 +2591,50 @@ var doc = `{
                 }
             }
         },
+        "/v1/search-couriers": {
+            "get": {
+                "description": "API for getting phones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Search by phone",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SearchCouriersByPhoneModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/search-users": {
             "get": {
                 "description": "API for getting phones",
@@ -3928,9 +4018,6 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "phone": {
-                    "type": "string"
                 }
             }
         },
@@ -4695,6 +4782,20 @@ var doc = `{
                 }
             }
         },
+        "models.SaveCourierVendorsModel": {
+            "type": "object",
+            "properties": {
+                "courier_id": {
+                    "type": "string"
+                },
+                "vendor_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.SearchByPhoneResponse": {
             "type": "object",
             "properties": {
@@ -4706,6 +4807,17 @@ var doc = `{
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "models.SearchCouriersByPhoneModel": {
+            "type": "object",
+            "properties": {
+                "couriers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetCourierModel"
+                    }
                 }
             }
         },
@@ -4914,9 +5026,6 @@ var doc = `{
                     "$ref": "#/definitions/models.LocationModel"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "phone": {
                     "type": "string"
                 }
             }
