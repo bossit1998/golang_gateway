@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v6"
-	url2 "net/url"
+	url "net/url"
 	"os"
 	"time"
 
@@ -101,10 +101,10 @@ func (h *handlerV1) ImageUpload(c *gin.Context) {
 	}
 	os.Remove(dst+"/"+fName.String())
 
-	url, err := minioClient.PresignedGetObject("delever", fName.String(), time.Hour, url2.Values{})
+	url, err := minioClient.PresignedGetObject("delever", fName.String(), time.Hour, url.Values{})
 	fmt.Println(url)
 	
 	c.JSON(http.StatusOK, Path{
-		Filename: fName.String(),
+		Filename: url.String(),
 	})
 }
