@@ -190,9 +190,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 		h.log.Error("Error while deleting vendor, service unavailable", logger.Error(err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"answer": "success",
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Tags vendor
@@ -263,7 +261,7 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 		return
 	}
 
-	pageSize, err := ParsePageSizeQueryParam(c)
+	limit, err := ParseLimitQueryParam(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -275,7 +273,7 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 		context.Background(),
 		&pbu.GetAllVendorsRequest{
 			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Limit: uint64(limit),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {

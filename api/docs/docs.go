@@ -2565,6 +2565,12 @@ var doc = `{
                         "name": "phone",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {

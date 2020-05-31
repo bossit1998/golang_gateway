@@ -2694,6 +2694,10 @@ paths:
         name: phone
         required: true
         type: string
+      - description: limit
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
