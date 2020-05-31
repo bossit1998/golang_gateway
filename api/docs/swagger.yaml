@@ -1019,6 +1019,11 @@ definitions:
           $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
+  v1.Path:
+    properties:
+      filename:
+        type: string
+    type: object
 info:
   contact: {}
   license: {}
@@ -2673,6 +2678,21 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/upload:
+    post:
+      parameters:
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.Path'
+      tags:
+      - image
   /v1/users:
     get:
       consumes:

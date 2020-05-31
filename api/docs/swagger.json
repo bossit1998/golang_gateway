@@ -2525,6 +2525,30 @@
                 }
             }
         },
+        "/v1/upload": {
+            "post": {
+                "tags": [
+                    "image"
+                ],
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.Path"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users": {
             "get": {
                 "description": "API for getting users",
@@ -4924,6 +4948,14 @@
                     "items": {
                         "$ref": "#/definitions/models.updateProduct"
                     }
+                }
+            }
+        },
+        "v1.Path": {
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "type": "string"
                 }
             }
         }
