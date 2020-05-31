@@ -63,6 +63,10 @@ type Config struct {
 
 	CasbinConfigPath string
 	MapboxToken      string
+	
+	MinioEndpoint 		string
+	MinioAccessKeyID 	string
+	MinioSecretAccesKey string
 }
 
 // Load loads environment vars and inflates Config
@@ -111,6 +115,10 @@ func Load() Config {
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 
 	c.MapboxToken = cast.ToString(getOrReturnDefault("MAPBOX_TOKEN", "pk.eyJ1IjoidGRvc3RvbiIsImEiOiJjazh0cmRrMnowMWszM29sc2Y5c3A5NTZ4In0.mtrOXD4cD4QKZ-dnZ_vKdA"))
+
+	c.MinioEndpoint = cast.ToString(getOrReturnDefault("MINIO_ENDPOINT", "127.0.0.1:9000"))
+	c.MinioAccessKeyID = cast.ToString(getOrReturnDefault("MINIO_ACCESS_KEY_ID", "123"))
+	c.MinioSecretAccesKey = cast.ToString(getOrReturnDefault("MINIO_SECRET_ACCESS_KEY", "12345678"))
 
 	return c
 }
