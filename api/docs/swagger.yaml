@@ -274,6 +274,8 @@ definitions:
         type: string
       description:
         type: string
+      image:
+        type: string
       measure_id:
         type: string
       name:
