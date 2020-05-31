@@ -101,10 +101,7 @@ func ParsePageQueryParam(c *gin.Context) (uint64, error) {
 
 //ParsePageSizeQueryParam ...
 func ParsePageSizeQueryParam(c *gin.Context) (uint64, error) {
-	fmt.Println("=========================")
-	fmt.Println(c.Param("page_size"))
 	pageSize, err := strconv.ParseUint(c.DefaultQuery("page_size", "10"), 10, 10)
-	fmt.Println(pageSize)
 	if err != nil {
 		return 0, err
 	}

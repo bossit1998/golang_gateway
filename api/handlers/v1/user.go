@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -152,17 +151,13 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteClient(c *gin.Context) {
-	fmt.Println(c.Param("user_id"))
 	_, err := h.grpcClient.UserService().DeleteClient(
 		context.Background(),
 		&pbu.DeleteClientRequest{
 			Id: c.Param("user_id"),
 		},
 	)
-	fmt.Println("=================")
-	fmt.Println(err)
 	st, ok := status.FromError(err)
-	fmt.Println(st)
 	if !ok || st.Code() == codes.NotFound {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
@@ -215,7 +210,6 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 	)
 
 	st, ok := status.FromError(err)
-	fmt.Println(st.Code())
 	if st.Code() == codes.NotFound {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
