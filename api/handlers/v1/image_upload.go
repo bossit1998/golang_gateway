@@ -3,14 +3,10 @@ package v1
 import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/minio/minio-go/v6"
-	url "net/url"
-	"os"
-	"time"
-
 	"github.com/google/uuid"
+	"github.com/minio/minio-go/v6"
+	"os"
 	//"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -108,11 +104,8 @@ func (h *handlerV1) ImageUpload(c *gin.Context) {
 		return
 	}
 	os.Remove(dst+"/"+fName.String())
-
-	url, err := minioClient.PresignedGetObject("delever", fName.String(), time.Hour, url.Values{})
-	fmt.Println(url)
 	
 	c.JSON(http.StatusOK, Path{
-		Filename: url.String(),
+		Filename: fName.String(),
 	})
 }
