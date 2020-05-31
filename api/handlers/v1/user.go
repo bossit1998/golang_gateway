@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -303,9 +304,9 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 	var (
 		checkUserLoginModel models.CheckUserLoginRequest
-		code            string
+		code                string
 	)
-	
+
 	err := c.ShouldBindJSON(&checkUserLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
@@ -429,21 +430,21 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 // @Tags user
 // @Accept  json
 // @Produce  json
-// @Param phone path string true "phone"
+// @Param phone query string true "phone"
 // @Success 200 {object} models.SearchByPhoneResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-
 func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-
+	phone, _ := c.GetQuery("phone")
+	fmt.Println(phone)
 	res, err := h.grpcClient.UserService().SearchClientsByPhone(
 		context.Background(),
 		&pbu.SearchClientsByPhoneRequest{
-			Phone: c.Param("phone"),
+			Phone: phone,
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
