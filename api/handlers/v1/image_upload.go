@@ -73,6 +73,7 @@ func (h *handlerV1) ImageUpload(c *gin.Context) {
 	dst, _ := os.Getwd()
 
 	minioClient, err := minio.New(h.cfg.MinioEndpoint, h.cfg.MinioAccessKeyID, h.cfg.MinioSecretAccesKey, false)
+	h.log.Info("info", logger.String("access_key: ", h.cfg.MinioAccessKeyID), logger.String("access_secret: ", h.cfg.MinioSecretAccesKey))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
