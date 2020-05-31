@@ -154,8 +154,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -204,8 +203,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -255,8 +253,6 @@ definitions:
         type: object
       name:
         type: string
-      phone:
-        type: string
     type: object
   models.CreateProductKindModel:
     properties:
@@ -265,8 +261,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.CreateProductModel:
     properties:
@@ -281,13 +276,11 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -340,8 +333,7 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -382,8 +374,7 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -401,8 +392,7 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -411,8 +401,7 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -641,8 +630,7 @@ definitions:
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -759,6 +747,15 @@ definitions:
       message:
         type: object
     type: object
+  models.SaveCourierVendorsModel:
+    properties:
+      courier_id:
+        type: string
+      vendor_ids:
+        items:
+          type: string
+        type: array
+    type: object
   models.SearchByPhoneResponse:
     properties:
       id:
@@ -767,6 +764,13 @@ definitions:
         type: string
       phone:
         type: string
+    type: object
+  models.SearchCouriersByPhoneModel:
+    properties:
+      couriers:
+        items:
+          $ref: '#/definitions/models.GetCourierModel'
+        type: array
     type: object
   models.Status:
     properties:
@@ -886,6 +890,10 @@ definitions:
         type: string
       id:
         type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.updateStepModel'
+        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
@@ -905,8 +913,6 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
-        type: string
-      phone:
         type: string
     type: object
   models.UpdateUserModel:
@@ -1028,6 +1034,50 @@ definitions:
         items:
           $ref: '#/definitions/models.productModel'
         type: array
+    type: object
+  models.updateProduct:
+    properties:
+      id:
+        type: string
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      product_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      quantity:
+        example: 2
+        type: number
+    type: object
+  models.updateStepModel:
+    properties:
+      address:
+        type: string
+      branch_name:
+        type: string
+      description:
+        type: string
+      destination_address:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.updateProduct'
+        type: array
+    type: object
+  v1.Path:
+    properties:
+      filename:
+        type: string
     type: object
 info:
   contact: {}
@@ -1682,6 +1732,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Update Courier Details
+      tags:
+      - courier
+  /v1/couriers/save-vendors:
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier vendor
+      parameters:
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.SaveCourierVendorsModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier
       tags:
       - courier
   /v1/distributors:
@@ -2683,6 +2763,35 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/search-couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting phones
+      parameters:
+      - description: phone
+        in: query
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SearchCouriersByPhoneModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Search by phone
+      tags:
+      - courier
   /v1/search-users:
     get:
       consumes:
@@ -2716,6 +2825,21 @@ paths:
       summary: Search by phone
       tags:
       - user
+  /v1/upload:
+    post:
+      parameters:
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.Path'
+      tags:
+      - image
   /v1/users:
     get:
       consumes:

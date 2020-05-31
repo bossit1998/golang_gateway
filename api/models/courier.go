@@ -17,6 +17,17 @@ type GetAllCouriersModel struct {
 	Couriers []GetCourierModel `json:"couriers"`
 }
 
+//SearchCouriersByModel ...
+type SearchCouriersByPhoneModel struct {
+	Couriers []GetCourierModel `json:"couriers"`
+}
+
+//GetAllCouriersModel ...
+type SaveCourierVendorsModel struct {
+	CourierId     	  string `json:"courier_id"`
+	VendorsIds []string `json:"vendor_ids"`
+}
+
 //CreateCourierModel ...
 type CreateCourierModel struct {
 	Phone     	  string `json:"phone"`

@@ -780,6 +780,52 @@
                 }
             }
         },
+        "/v1/couriers/save-vendors": {
+            "post": {
+                "description": "API for creating courier vendor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Create Courier",
+                "parameters": [
+                    {
+                        "description": "courier",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveCourierVendorsModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers/{courier_id}": {
             "delete": {
                 "description": "API for deleting courier",
@@ -2525,6 +2571,50 @@
                 }
             }
         },
+        "/v1/search-couriers": {
+            "get": {
+                "description": "API for getting phones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Search by phone",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SearchCouriersByPhoneModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/search-users": {
             "get": {
                 "description": "API for getting phones",
@@ -2570,6 +2660,30 @@
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/upload": {
+            "post": {
+                "tags": [
+                    "image"
+                ],
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.Path"
                         }
                     }
                 }
@@ -3764,8 +3878,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -3841,8 +3954,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -3914,9 +4026,6 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "phone": {
-                    "type": "string"
                 }
             }
         },
@@ -3930,8 +4039,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -3954,15 +4062,13 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4043,8 +4149,7 @@
                     }
                 },
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -4108,8 +4213,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "measures": {
                     "type": "array",
@@ -4137,8 +4241,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -4152,8 +4255,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "products": {
                     "type": "array",
@@ -4499,8 +4601,7 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4681,6 +4782,20 @@
                 }
             }
         },
+        "models.SaveCourierVendorsModel": {
+            "type": "object",
+            "properties": {
+                "courier_id": {
+                    "type": "string"
+                },
+                "vendor_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "models.SearchByPhoneResponse": {
             "type": "object",
             "properties": {
@@ -4692,6 +4807,17 @@
                 },
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "models.SearchCouriersByPhoneModel": {
+            "type": "object",
+            "properties": {
+                "couriers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetCourierModel"
+                    }
                 }
             }
         },
@@ -4873,6 +4999,12 @@
                 "id": {
                     "type": "string"
                 },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.updateStepModel"
+                    }
+                },
                 "to_address": {
                     "type": "string",
                     "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
@@ -4900,9 +5032,6 @@
                     "$ref": "#/definitions/models.LocationModel"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "phone": {
                     "type": "string"
                 }
             }
@@ -5078,6 +5207,71 @@
                     "items": {
                         "$ref": "#/definitions/models.productModel"
                     }
+                }
+            }
+        },
+        "models.updateProduct": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Choyxona Osh"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 25000
+                },
+                "product_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 2
+                }
+            }
+        },
+        "models.updateStepModel": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_address": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.updateProduct"
+                    }
+                }
+            }
+        },
+        "v1.Path": {
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "type": "string"
                 }
             }
         }
