@@ -13,6 +13,7 @@ type GetCategoryModel struct {
 	Slug string `json:"slug"`
 	ParentID string `json:"parent_id"`
 	Description string `json:"description"`
+	ChildCategories []GetCategoryModel `json:"child_categories"`
 }
 
 type GetAllCategoriesModel struct {

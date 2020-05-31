@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	pb "genproto/catalog_service"
 	"net/http"
 
@@ -66,10 +65,10 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	var (
-		marshaler jsonpb.Marshaler
-
+		marshaller jsonpb.Marshaler
 		model models.GetAllCategoriesModel
 	)
+	marshaller.OrigName = true
 	page, err := ParsePageQueryParam(c)
 
 	if err != nil {
@@ -93,8 +92,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 		return
 	}
 
-	js, _ := marshaler.MarshalToString(resp)
-	fmt.Println(js)
+	js, _ := marshaller.MarshalToString(resp)
 
 	err = json.Unmarshal([]byte(js), &model)
 
