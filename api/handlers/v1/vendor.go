@@ -190,9 +190,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 		h.log.Error("Error while deleting vendor, service unavailable", logger.Error(err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"answer": "success",
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Tags vendor
@@ -214,20 +212,36 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 			Id: c.Param("vendor_id"),
 		},
 	)
-
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-
-	if res == nil {
-		c.JSON(http.StatusNotFound, models.ResponseError{
+	st, ok := status.FromError(err)
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "User Not Found",
+				Message: "Vendor Not Found",
 			},
 		})
+		h.log.Error("Error while getting vendor, Vendor Not Found", logger.Error(err))
 		return
-	}
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Server unavailable",
+			},
+		})
+		h.log.Error("Error while getting vendor, service unavailable", logger.Error(err))
+		return
+	} else if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while getting vendor", logger.Error(err))
+		return
+	} 
+	
 	js, err := jspbMarshal.MarshalToString(res.GetVendor())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
@@ -263,7 +277,7 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 		return
 	}
 
-	pageSize, err := ParsePageSizeQueryParam(c)
+	limit, err := ParseLimitQueryParam(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -275,7 +289,7 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 		context.Background(),
 		&pbu.GetAllVendorsRequest{
 			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Limit: uint64(limit),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {

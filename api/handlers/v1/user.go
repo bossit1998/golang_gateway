@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -152,7 +151,6 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteClient(c *gin.Context) {
-
 	_, err := h.grpcClient.UserService().DeleteClient(
 		context.Background(),
 		&pbu.DeleteClientRequest{
@@ -160,7 +158,16 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 		},
 	)
 	st, ok := status.FromError(err)
-	if !ok || st.Code() == codes.Internal {
+	if !ok || st.Code() == codes.NotFound {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "User Not found",
+			},
+		})
+		h.log.Error("Error while deleting user, not found", logger.Error(err))
+		return
+	}else if  st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
@@ -168,16 +175,6 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 			},
 		})
 		h.log.Error("Error while deleting user", logger.Error(err))
-		return
-	}
-	if st.Code() == codes.NotFound {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Not found",
-			},
-		})
-		h.log.Error("Error while deleting user, not found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -189,9 +186,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 		h.log.Error("Error while deleting user, service unavailable", logger.Error(err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"answer": "success",
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Tags user
@@ -214,19 +209,35 @@ func (h *handlerV1) GetClient(c *gin.Context) {
 		},
 	)
 
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-
-	if res == nil {
-		c.JSON(http.StatusNotFound, models.ResponseError{
+	st, ok := status.FromError(err)
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
 				Message: "User Not Found",
 			},
 		})
+		h.log.Error("Error while getting user, User Not Found", logger.Error(err))
 		return
-	}
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Server unavailable",
+			},
+		})
+		h.log.Error("Error while getting user, service unavailable", logger.Error(err))
+		return
+	} else if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while getting user", logger.Error(err))
+		return
+	} 
 	js, err := jspbMarshal.MarshalToString(res.GetClient())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
@@ -262,7 +273,7 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 		return
 	}
 
-	pageSize, err := ParsePageSizeQueryParam(c)
+	limit, err := ParseLimitQueryParam(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -274,7 +285,7 @@ func (h *handlerV1) GetAllClients(c *gin.Context) {
 		context.Background(),
 		&pbu.GetAllClientsRequest{
 			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Limit: uint64(limit),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
@@ -431,6 +442,7 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param phone query string true "phone"
+// @Param limit query integer false "limit"
 // @Success 200 {object} models.SearchByPhoneResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -440,11 +452,18 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 	phone, _ := c.GetQuery("phone")
-	fmt.Println(phone)
+	limit, err := ParseLimitQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
 	res, err := h.grpcClient.UserService().SearchClientsByPhone(
 		context.Background(),
 		&pbu.SearchClientsByPhoneRequest{
 			Phone: phone,
+			Limit: uint64(limit),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
