@@ -542,9 +542,9 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	}
 
 	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
-		StatusId: config.NEW_STATUS_ID,
-		Page:     page,
-		Limit:    limit,
+		StatusId: config.NewStatusId,
+		Page:  page,
+		Limit: limit,
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting new orders") {
