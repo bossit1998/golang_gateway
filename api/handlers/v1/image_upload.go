@@ -84,6 +84,13 @@ func (h *handlerV1) ImageUpload(c *gin.Context) {
 		h.log.Error("error while connecting minio", logger.Error(err))
 		return
 	}
+
+	exists, _ := minioClient.BucketExists("delever")
+
+	if !exists {
+		minioClient.MakeBucket("delever", "us-east-1")
+	}
+
 	err = c.SaveUploadedFile(file.File, dst+"/"+fName.String())
 
 	_, err = minioClient.FPutObject("delever", fName.String(), dst+"/"+fName.String(), minio.PutObjectOptions{ContentType:"image/jpeg"})
