@@ -780,6 +780,52 @@
                 }
             }
         },
+        "/v1/couriers/save-vendors": {
+            "post": {
+                "description": "API for creating courier vendor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Create Courier",
+                "parameters": [
+                    {
+                        "description": "courier",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveCourierVendorsModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers/{courier_id}": {
             "delete": {
                 "description": "API for deleting courier",
@@ -2525,6 +2571,94 @@
                 }
             }
         },
+        "/v1/search-couriers": {
+            "get": {
+                "description": "API for getting phones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Search by phone",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SearchCouriersByPhoneModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/search-users": {
+            "get": {
+                "description": "API for getting phones",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Search by phone",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "phone",
+                        "name": "phone",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SearchByPhoneResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/upload": {
             "post": {
                 "tags": [
@@ -2760,7 +2894,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "404": {
@@ -2811,7 +2945,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.RegisterConfirmModel"
+                            "$ref": "#/definitions/models.GetUserModel"
                         }
                     },
                     "400": {
@@ -3320,6 +3454,98 @@
                 }
             }
         },
+        "/v1/vendors/check-login/": {
+            "post": {
+                "description": "API that checks whether vendor exists\nand if exists sends sms to their number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vendor"
+                ],
+                "summary": "Check Vendor Login",
+                "parameters": [
+                    {
+                        "description": "check login",
+                        "name": "check_login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckVendorLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CheckVendorLoginResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/vendors/confirm-login/": {
+            "post": {
+                "description": "API that checks whether - vendor entered\nvalid token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vendor"
+                ],
+                "summary": "Confirm Vendor Login",
+                "parameters": [
+                    {
+                        "description": "confirm login",
+                        "name": "confirm_phone",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ConfirmVendorLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetVendorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/vendors/{vendor_id}": {
             "get": {
                 "description": "API for getting vendor info",
@@ -3523,6 +3749,25 @@
                 }
             }
         },
+        "models.CheckVendorLoginRequest": {
+            "type": "object",
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CheckVendorLoginResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ConfirmLoginRequest": {
             "type": "object",
             "properties": {
@@ -3535,6 +3780,17 @@
             }
         },
         "models.ConfirmUserLoginRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ConfirmVendorLoginRequest": {
             "type": "object",
             "properties": {
                 "code": {
@@ -3764,9 +4020,6 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "phone": {
-                    "type": "string"
                 }
             }
         },
@@ -3833,8 +4086,15 @@
         "models.CreateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
                 },
                 "name": {
                     "type": "string"
@@ -4385,6 +4645,9 @@
         "models.GetVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4396,6 +4659,10 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
                 },
                 "name": {
                     "type": "string"
@@ -4506,6 +4773,45 @@
             "properties": {
                 "message": {
                     "type": "object"
+                }
+            }
+        },
+        "models.SaveCourierVendorsModel": {
+            "type": "object",
+            "properties": {
+                "courier_id": {
+                    "type": "string"
+                },
+                "vendor_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.SearchByPhoneResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SearchCouriersByPhoneModel": {
+            "type": "object",
+            "properties": {
+                "couriers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetCourierModel"
+                    }
                 }
             }
         },
@@ -4721,9 +5027,6 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "phone": {
-                    "type": "string"
                 }
             }
         },
@@ -4744,6 +5047,9 @@
         "models.UpdateVendorModel": {
             "type": "object",
             "properties": {
+                "address": {
+                    "type": "string"
+                },
                 "cargo_owner_id": {
                     "type": "string"
                 },
@@ -4752,6 +5058,10 @@
                 },
                 "is_active": {
                     "type": "boolean"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
                 },
                 "name": {
                     "type": "string"

@@ -39,7 +39,6 @@ type GetParkModel struct {
 
 type CreateParkModel struct {
 	DistributorID string        `json:"distributor_id"`
-	Phone         string        `json:"phone"`
 	Name          string        `json:"name"`
 	Location      LocationModel `json:"location"`
 	Address       string        `json:"address"`
@@ -47,7 +46,6 @@ type CreateParkModel struct {
 
 type UpdateParkModel struct {
 	ID       string        `json:"id"`
-	Phone    string        `json:"phone"`
 	Name     string        `json:"name"`
 	Location LocationModel `json:"location"`
 	Address  string        `json:"address"`

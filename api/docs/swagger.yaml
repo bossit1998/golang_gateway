@@ -73,6 +73,18 @@ definitions:
       phone:
         type: string
     type: object
+  models.CheckVendorLoginRequest:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.CheckVendorLoginResponse:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
   models.ConfirmLoginRequest:
     properties:
       code:
@@ -81,6 +93,13 @@ definitions:
         type: string
     type: object
   models.ConfirmUserLoginRequest:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.ConfirmVendorLoginRequest:
     properties:
       code:
         type: string
@@ -234,8 +253,6 @@ definitions:
         type: object
       name:
         type: string
-      phone:
-        type: string
     type: object
   models.CreateProductKindModel:
     properties:
@@ -278,8 +295,13 @@ definitions:
     type: object
   models.CreateVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
       name:
         type: string
       password:
@@ -640,6 +662,8 @@ definitions:
     type: object
   models.GetVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
       created_at:
@@ -648,6 +672,9 @@ definitions:
         type: string
       is_active:
         type: boolean
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
       name:
         type: string
       password:
@@ -719,6 +746,31 @@ definitions:
     properties:
       message:
         type: object
+    type: object
+  models.SaveCourierVendorsModel:
+    properties:
+      courier_id:
+        type: string
+      vendor_ids:
+        items:
+          type: string
+        type: array
+    type: object
+  models.SearchByPhoneResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.SearchCouriersByPhoneModel:
+    properties:
+      couriers:
+        items:
+          $ref: '#/definitions/models.GetCourierModel'
+        type: array
     type: object
   models.Status:
     properties:
@@ -862,8 +914,6 @@ definitions:
         type: object
       name:
         type: string
-      phone:
-        type: string
     type: object
   models.UpdateUserModel:
     properties:
@@ -876,12 +926,17 @@ definitions:
     type: object
   models.UpdateVendorModel:
     properties:
+      address:
+        type: string
       cargo_owner_id:
         type: string
       id:
         type: string
       is_active:
         type: boolean
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
       name:
         type: string
       password:
@@ -1677,6 +1732,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Update Courier Details
+      tags:
+      - courier
+  /v1/couriers/save-vendors:
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier vendor
+      parameters:
+      - description: courier
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.SaveCourierVendorsModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Courier
       tags:
       - courier
   /v1/distributors:
@@ -2678,6 +2763,64 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/search-couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting phones
+      parameters:
+      - description: phone
+        in: query
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SearchCouriersByPhoneModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Search by phone
+      tags:
+      - courier
+  /v1/search-users:
+    get:
+      consumes:
+      - application/json
+      description: API for getting phones
+      parameters:
+      - description: phone
+        in: query
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SearchByPhoneResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Search by phone
+      tags:
+      - user
   /v1/upload:
     post:
       parameters:
@@ -2892,7 +3035,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseOK'
+            $ref: '#/definitions/models.GetUserModel'
         "404":
           description: Not Found
           schema:
@@ -2922,7 +3065,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.RegisterConfirmModel'
+            $ref: '#/definitions/models.GetUserModel'
         "400":
           description: Bad Request
           schema:
@@ -3257,6 +3400,70 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Vendor
+      tags:
+      - vendor
+  /v1/vendors/check-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether vendor exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckVendorLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckVendorLoginResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Vendor Login
+      tags:
+      - vendor
+  /v1/vendors/confirm-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether - vendor entered
+        valid token
+      parameters:
+      - description: confirm login
+        in: body
+        name: confirm_phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmVendorLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetVendorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm Vendor Login
       tags:
       - vendor
 securityDefinitions:

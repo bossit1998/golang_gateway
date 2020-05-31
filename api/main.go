@@ -70,15 +70,18 @@ func New(cnf Config) *gin.Engine {
 	// Register endpoints
 	r.POST("/v1/users/register", handlerV1.Register)
 	r.POST("/v1/users/register-confirm", handlerV1.RegisterConfirm)
-	r.POST("/v1/users/check-login")
-	r.POST("/v1/users/confirm-login")
 
 	//User endpoints
 	r.POST("/v1/users", handlerV1.CreateClient)
 	r.PUT("/v1/users", handlerV1.UpdateClient)
 	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
+	r.GET("/v1/search-users", handlerV1.SearchByPhone)
 	r.GET("/v1/users/:user_id", handlerV1.GetClient)
 	r.GET("/v1/users", handlerV1.GetAllClients)
+	r.POST("/v1/users/check-login",handlerV1.CheckUserLogin)
+	r.POST("/v1/users/confirm-login",handlerV1.ConfirmUserLogin)
+	
+	
 
 	//Vendor endpoints
 	r.POST("/v1/vendors", handlerV1.CreateVendor)
@@ -86,13 +89,17 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/vendors/:vendor_id", handlerV1.DeleteVendor)
 	r.GET("/v1/vendors/:vendor_id", handlerV1.GetVendor)
 	r.GET("/v1/vendors", handlerV1.GetAllVendors)
+	r.POST("/v1/vendors/check-login",handlerV1.CheckVendorLogin)
+	r.POST("/v1/vendors/confirm-login",handlerV1.ConfirmVendorLogin)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
 	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
+	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
 	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
+	r.POST("/v1/couriers/save-vendors", handlerV1.SaveCourierVendors)
 	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)
 	r.PATCH("/v1/couriers/:courier_id/block", handlerV1.BlockCourier)
 	r.PATCH("/v1/couriers/:courier_id/unblock", handlerV1.UnblockCourier)

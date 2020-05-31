@@ -1034,3 +1034,78 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 		AccessToken: access,
 	})
 }
+
+// @Router /v1/search-couriers [get]
+// @Summary Search by phone
+// @Description API for getting phones
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param phone query string true "phone"
+// @Success 200 {object} models.SearchCouriersByPhoneModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	phone, _ := c.GetQuery("phone")
+	fmt.Print(phone)
+	res, err := h.grpcClient.CourierService().SearchCouriersByPhone(
+		context.Background(),
+		&pbc.SearchCouriersByPhoneRequest{
+			Phone: phone,
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+
+// @Router /v1/couriers/save-vendors [post]
+// @Summary Create Courier
+// @Description API for creating courier vendor
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier body models.SaveCourierVendorsModel true "courier"
+// @Success 200 {object} models.GetCourierModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) SaveCourierVendors(c *gin.Context) {
+	fmt.Print("ok")
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		courierVendors pbc.SaveCourierVendorsRequest
+	)
+
+	jspbMarshal.OrigName = true
+
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &courierVendors)
+	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
+		return
+	}
+
+	_, err = h.grpcClient.CourierService().SaveCourierVendors(
+		context.Background(), &courierVendors,
+	)
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while saving courier vendors") {
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": "success",
+	})
+}
