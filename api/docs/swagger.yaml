@@ -151,11 +151,12 @@ definitions:
     properties:
       description:
         type: string
+      image:
+        type: string
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -204,8 +205,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -263,8 +263,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.CreateProductModel:
     properties:
@@ -274,18 +273,18 @@ definitions:
         type: string
       description:
         type: string
+      image:
+        type: string
       measure_id:
         type: string
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -316,6 +315,21 @@ definitions:
       user_name:
         type: string
     type: object
+  models.CustomerAddress:
+    properties:
+      address:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+    type: object
+  models.CustomerAddressesModel:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.CustomerAddress'
+        type: array
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -338,8 +352,7 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -380,8 +393,7 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -399,8 +411,7 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -409,8 +420,7 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -455,9 +465,15 @@ definitions:
     type: object
   models.GetCategoryModel:
     properties:
+      child_categories:
+        items:
+          $ref: '#/definitions/models.GetCategoryModel'
+        type: array
       description:
         type: string
       id:
+        type: string
+      image:
         type: string
       name:
         type: string
@@ -632,6 +648,8 @@ definitions:
         type: string
       id:
         type: string
+      image:
+        type: string
       measure_id:
         type: string
       name:
@@ -639,8 +657,7 @@ definitions:
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -900,6 +917,10 @@ definitions:
         type: string
       id:
         type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.updateStepModel'
+        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
@@ -1039,6 +1060,45 @@ definitions:
       products:
         items:
           $ref: '#/definitions/models.productModel'
+        type: array
+    type: object
+  models.updateProduct:
+    properties:
+      id:
+        type: string
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      product_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      quantity:
+        example: 2
+        type: number
+    type: object
+  models.updateStepModel:
+    properties:
+      address:
+        type: string
+      branch_name:
+        type: string
+      description:
+        type: string
+      destination_address:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
   v1.Path:
@@ -1731,6 +1791,37 @@ paths:
       summary: Create Courier
       tags:
       - courier
+  /v1/customer-addresses/{phone}:
+    get:
+      consumes:
+      - application/json
+      description: API for taking all order addresses
+      parameters:
+      - description: phone
+        in: path
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerAddressesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Customer Order Addresses
+      tags:
+      - order
   /v1/distributors:
     get:
       consumes:

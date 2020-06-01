@@ -3,7 +3,8 @@ package v1
 import (
 	"context"
 	"encoding/json"
-	 pb "genproto/catalog_service"
+	"fmt"
+	pb "genproto/catalog_service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -106,6 +107,10 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 		})
 		h.log.Error("error while parsing proto to struct", logger.Error(err))
 		return
+	}
+
+	for i, p := range model.Products {
+		model.Products[i].Image = fmt.Sprintf("http://api.delever.uz:9001/delever/%s", p.Image)
 	}
 
 	c.JSON(http.StatusOK, model)
