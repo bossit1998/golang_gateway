@@ -81,7 +81,6 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/users/check-login",handlerV1.CheckUserLogin)
 	r.POST("/v1/users/confirm-login",handlerV1.ConfirmUserLogin)
 	
-	
 
 	//Vendor endpoints
 	r.POST("/v1/vendors", handlerV1.CreateVendor)

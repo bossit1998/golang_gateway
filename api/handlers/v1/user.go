@@ -442,7 +442,7 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 // @Tags user
 // @Accept  json
 // @Produce  json
-// @Param phone query string true "phone"
+// @Param phone query string false "phone"
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.SearchByPhoneResponse
 // @Failure 404 {object} models.ResponseError
@@ -453,11 +453,19 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 	phone, _ := c.GetQuery("phone")
+	limit, err := ParseLimitQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
 
 	res, err := h.grpcClient.UserService().SearchClientsByPhone(
 		context.Background(),
 		&pbu.SearchClientsByPhoneRequest{
 			Phone: phone,
+			Limit: limit,
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
