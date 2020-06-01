@@ -315,6 +315,21 @@ definitions:
       user_name:
         type: string
     type: object
+  models.CustomerAddress:
+    properties:
+      address:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+    type: object
+  models.CustomerAddressesModel:
+    properties:
+      addresses:
+        items:
+          $ref: '#/definitions/models.CustomerAddress'
+        type: array
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -1776,6 +1791,37 @@ paths:
       summary: Create Courier
       tags:
       - courier
+  /v1/customer-addresses/{phone}:
+    get:
+      consumes:
+      - application/json
+      description: API for taking all order addresses
+      parameters:
+      - description: phone
+        in: path
+        name: phone
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerAddressesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Customer Order Addresses
+      tags:
+      - order
   /v1/distributors:
     get:
       consumes:

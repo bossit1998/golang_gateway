@@ -154,6 +154,7 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
 	r.GET("/v1/courier/order", handlerV1.GetCourierOrders)
 	r.PATCH("/v1/order-step/:step_id/take", handlerV1.TakeOrderStep)
+	r.GET("/v1/customer-addresses/:phone", handlerV1.GetCustomerAddresses)
 
 	//Cargo owner
 	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
