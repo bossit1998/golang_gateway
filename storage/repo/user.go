@@ -6,7 +6,7 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
-//User ...
+//User struct ...
 type User struct {
 	ID           string                `json:"id,omitempty"`
 	CreatedAt    string                `json:"created_at,omitempty"`

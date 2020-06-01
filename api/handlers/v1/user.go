@@ -134,6 +134,7 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 	js, err := jspbMarshal.MarshalToString(res.GetClient())
 	if err != nil {
 		return
+		
 	}
 
 	c.Header("Content-Type", "application/json")
