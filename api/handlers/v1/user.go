@@ -453,19 +453,19 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 	phone, _ := c.GetQuery("phone")
-	limit, err := ParseLimitQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
+	//limit, err := ParseLimitQueryParam(c)
+	//if err != nil {
+	//	c.JSON(http.StatusBadRequest, models.ResponseError{
+	//		Error: ErrorBadRequest,
+	//	})
+	//	return
+	//}
 
 	res, err := h.grpcClient.UserService().SearchClientsByPhone(
 		context.Background(),
 		&pbu.SearchClientsByPhoneRequest{
 			Phone: phone,
-			Limit: limit,
+			//Limit: limit,
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
