@@ -608,3 +608,26 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 		Message: "order step took",
 	})
 }
+
+// @Security ApiKeyAuth
+// @Router /v1/customer-addresses/{phone} [get]
+// @Summary Get Customer Order Addresses
+// @Description API for taking all order addresses
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param phone path string true "phone"
+// @Success 200 {object} models.CustomerAddressesModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
+	phone := c.Param("phone")
+
+	res, _ := h.grpcClient.OrderService().GetCustomerAddresses(
+		context.Background(),
+		&pbo.GetCustomerAddressesRequest{
+			Phone:phone,
+		})
+
+	c.JSON(http.StatusOK, res)
+}

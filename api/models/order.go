@@ -107,3 +107,12 @@ type GetStatuses struct {
 type AddCourierRequest struct {
 	CourierID string `json:"courier_id"`
 }
+
+type CustomerAddress struct {
+	Location Location `json:"location"`
+	Address string `json:"address"`
+}
+
+type CustomerAddressesModel struct {
+	Addresses []CustomerAddress `json:"addresses"`
+} 
