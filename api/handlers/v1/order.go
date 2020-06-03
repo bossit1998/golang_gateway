@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
@@ -16,17 +17,17 @@ import (
 )
 
 // @Security ApiKeyAuth
-// @Router /v1/order/ [post]
-// @Summary Create Order
-// @Description API for creating order
+// @Router /v1/demand-order/ [post]
+// @Summary Create Demand Order
+// @Description API for creating demand order
 // @Tags order
 // @Accept  json
 // @Produce  json
-// @Param order body models.CreateOrder true "order"
+// @Param order body models.CreateDemandOrderModel true "order"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateOrder(c *gin.Context) {
+func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -49,10 +50,12 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 		return
 	}
 	order.DeliveryPrice = order.CoDeliveryPrice
-	order.CoId = userInfo.ID
-	order.UserId = userInfo.ID
+	order.ClientId = userInfo.ID
+	order.ShipperId = userInfo.ID
+	order.CreatorId = userInfo.ID
 	order.CreatorTypeId = userInfo.ID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
+	order.StatusId = config.VendorAcceptedStatusId
 
 	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
 
@@ -60,7 +63,61 @@ func (h *handlerV1) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/ondemand-order/ [post]
+// @Summary Create On Demand Order
+// @Description API for creating on demand order
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order body models.CreateOnDemandOrderModel true "order"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		order         pbo.Order
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+	jspbMarshal.OrigName = true
+
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("error while unmarshal", logger.Error(err))
+		return
+	}
+	order.DeliveryPrice = order.CoDeliveryPrice
+	order.ShipperId = userInfo.ID
+	order.CreatorId = userInfo.ID
+	order.CreatorTypeId = userInfo.ID
+	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
+
+	if order.Steps[0].BranchId.GetValue() == "" {
+		order.StatusId = config.NewStatusId
+	} else {
+		order.StatusId = config.VendorAcceptedStatusId
+	}
+
+	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // @Security ApiKeyAuth
@@ -100,8 +157,8 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	}
 	order.Id = orderID
 	order.DeliveryPrice = order.CoDeliveryPrice
-	order.CoId = userInfo.ID
-	order.UserId = userInfo.ID
+	order.ShipperId = userInfo.ID
+	order.CreatorId = userInfo.ID
 	order.CreatorTypeId = userInfo.ID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
@@ -117,6 +174,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order/{order_id} [get]
 // @Summary Get Order
 // @Description API for getting order
@@ -124,20 +182,28 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param order_id path string true "order_id"
-// @Success 200 {object} models.GetOrder
+// @Success 200 {object} models.GetOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetOrder(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
 		orderID     string
+		model models.GetOrderModel
 	)
+	_, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
 	orderID = c.Param("order_id")
 
 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
+		ShipperId: "48e53b11-c484-4dc2-86eb-4d323faa55aa",
 		Id: orderID,
 	})
 
@@ -151,20 +217,26 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 		return
 	}
 
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order [get]
 // @Summary Get Orders
 // @Description API for getting orders
 // @Tags order
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param status_id query string false "status_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Success 200 {object} models.GetOrders
+// @Success 200 {object} models.GetAllOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetOrders(c *gin.Context) {
@@ -175,9 +247,16 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		err         error
 		page        uint64
 		limit       uint64
+		model models.GetAllOrderModel
 	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
 	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
+	//jspbMarshal.EmitDefaults = true
 
 	statusID = c.Query("status_id")
 
@@ -195,6 +274,7 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
+			ShipperId:userInfo.ID,
 			Page:  page,
 			Limit: limit,
 		})
@@ -209,6 +289,7 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		}
 
 		order, err = h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
+			ShipperId: userInfo.ID,
 			StatusId: statusID,
 			Page:     page,
 			Limit:    limit,
@@ -224,9 +305,15 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
+	fmt.Println(js)
 
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
 
 // @Router /v1/order/{order_id}/change-status [patch]
@@ -404,18 +491,22 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param courier_id query string false "courier_id"
-// @Success 200 {object} models.GetOrders
+// @Success 200 {object} models.GetCourierOrdersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	var (
+		jspbMarshal jsonpb.Marshaler
 		courierID string
+		model models.GetCourierOrdersModel
 	)
 	userInfo, err := userInfo(h, c)
 
 	if err != nil {
 		return
 	}
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
 
 	if userInfo.Role == config.RoleCourier {
 		courierID = userInfo.ID
@@ -456,7 +547,19 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, orders)
+	js, err := jspbMarshal.MarshalToString(orders)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
 
 func (h *handlerV1) GetCOOrders(c *gin.Context) {

@@ -156,8 +156,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -178,6 +177,52 @@ definitions:
         type: string
       vehicle_number:
         type: string
+    type: object
+  models.CreateDemandOrderModel:
+    properties:
+      client_name:
+        example: Oybek
+        type: string
+      client_phone_number:
+        example: "998998765432"
+        type: string
+      co_delivery_price:
+        example: 10000
+        type: number
+      description:
+        type: string
+      external_order_id:
+        type: integer
+      steps:
+        items:
+          properties:
+            address:
+              type: string
+            branch_name:
+              type: string
+            description:
+              type: string
+            destination_address:
+              type: string
+            external_step_id:
+              type: integer
+            location:
+              $ref: '#/definitions/models.Location'
+              type: object
+            phone_number:
+              type: string
+            products:
+              items:
+                $ref: '#/definitions/models.productDemandModel'
+              type: array
+          type: object
+        type: array
+      to_address:
+        example: Hamid Olimjon maydoni 10A dom 40-kvartira
+        type: string
+      to_location:
+        $ref: '#/definitions/models.Location'
+        type: object
     type: object
   models.CreateDistributorModel:
     properties:
@@ -206,36 +251,33 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
         type: string
     type: object
-  models.CreateOrder:
+  models.CreateOnDemandOrderModel:
     properties:
+      client_id:
+        type: string
       co_delivery_price:
         example: 10000
         type: number
-      customer_id:
-        type: string
-      customer_name:
-        example: Oybek
-        type: string
-      customer_phone_number:
-        example: "998998765432"
-        type: string
       description:
-        type: string
-      external_order_id:
-        type: integer
-      fare_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       steps:
         items:
-          $ref: '#/definitions/models.stepModel'
+          properties:
+            branch_id:
+              type: string
+            description:
+              type: string
+            products:
+              items:
+                $ref: '#/definitions/models.productOnDemandModel'
+              type: array
+          type: object
         type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
@@ -243,8 +285,6 @@ definitions:
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      vendor_id:
-        type: string
     type: object
   models.CreateParkModel:
     properties:
@@ -265,8 +305,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.CreateProductModel:
     properties:
@@ -283,13 +322,11 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -357,8 +394,7 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -399,11 +435,53 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
+        type: array
+    type: object
+  models.GetAllOrderModel:
+    properties:
+      count:
+        type: integer
+      orders:
+        items:
+          properties:
+            client_id:
+              type: string
+            client_name:
+              example: Oybek
+              type: string
+            client_phone_number:
+              example: "998998765432"
+              type: string
+            co_delivery_price:
+              example: 10000
+              type: number
+            courier_id:
+              type: string
+            created_at:
+              type: string
+            description:
+              type: string
+            external_order_id:
+              type: integer
+            finished_at:
+              type: string
+            id:
+              type: string
+            order_amount:
+              type: integer
+            status_id:
+              type: string
+            to_address:
+              example: Hamid Olimjon maydoni 10A dom 40-kvartira
+              type: string
+            to_location:
+              $ref: '#/definitions/models.Location'
+              type: object
+          type: object
         type: array
     type: object
   models.GetAllParksModel:
@@ -418,8 +496,7 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -428,8 +505,7 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -508,6 +584,69 @@ definitions:
       phone:
         type: string
     type: object
+  models.GetCourierOrdersModel:
+    properties:
+      count:
+        type: integer
+      orders:
+        items:
+          properties:
+            client_id:
+              type: string
+            client_name:
+              type: string
+            client_phone_number:
+              type: string
+            co_delivery_price:
+              example: 10000
+              type: number
+            created_at:
+              type: string
+            description:
+              type: string
+            id:
+              type: string
+            order_amount:
+              type: integer
+            status_id:
+              type: string
+            steps:
+              items:
+                properties:
+                  address:
+                    type: string
+                  branch_id:
+                    type: string
+                  branch_name:
+                    type: string
+                  description:
+                    type: string
+                  destination_address:
+                    type: string
+                  external_step_id:
+                    type: integer
+                  id:
+                    type: string
+                  location:
+                    $ref: '#/definitions/models.Location'
+                    type: object
+                  phone_number:
+                    type: string
+                  status:
+                    type: string
+                  step_amount:
+                    type: integer
+                type: object
+              type: array
+            to_address:
+              example: Hamid Olimjon maydoni 10A dom 40-kvartira
+              type: string
+            to_location:
+              $ref: '#/definitions/models.Location'
+              type: object
+          type: object
+        type: array
+    type: object
   models.GetCourierVehicleModel:
     properties:
       created_at:
@@ -570,44 +709,92 @@ definitions:
       slug:
         type: string
     type: object
-  models.GetOrder:
+  models.GetOrderModel:
     properties:
+      client_id:
+        type: string
+      client_name:
+        example: Oybek
+        type: string
+      client_phone_number:
+        example: "998998765432"
+        type: string
       co_delivery_price:
         example: 10000
         type: number
-      customer_id:
+      courier_id:
         type: string
-      customer_name:
-        example: Oybek
-        type: string
-      customer_phone_number:
-        example: "998998765432"
+      created_at:
         type: string
       description:
         type: string
       external_order_id:
         type: integer
-      fare_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
+      finished_at:
         type: string
       id:
-        example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
         type: string
-      products:
-        items:
-          $ref: '#/definitions/models.getOrderProductModel'
-        type: array
+      order_amount:
+        type: integer
       status_id:
-        example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
         type: string
+      steps:
+        items:
+          properties:
+            address:
+              type: string
+            branch_id:
+              type: string
+            branch_name:
+              type: string
+            description:
+              type: string
+            destination_address:
+              type: string
+            external_step_id:
+              type: integer
+            id:
+              type: string
+            location:
+              $ref: '#/definitions/models.Location'
+              type: object
+            phone_number:
+              type: string
+            products:
+              items:
+                properties:
+                  external_product_id:
+                    example: 1234
+                    type: integer
+                  id:
+                    type: string
+                  name:
+                    example: Choyxona Osh
+                    type: string
+                  price:
+                    example: 25000
+                    type: number
+                  product_id:
+                    type: string
+                  quantity:
+                    example: 2
+                    type: number
+                  total_amount:
+                    type: integer
+                type: object
+              type: array
+            status:
+              type: string
+            step_amount:
+              type: integer
+          type: object
+        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      vendor_id:
-        type: string
     type: object
   models.GetOrders:
     properties:
@@ -666,8 +853,7 @@ definitions:
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -907,34 +1093,31 @@ definitions:
     type: object
   models.UpdateOrder:
     properties:
+      client_name:
+        example: Oybek
+        type: string
+      client_phone_number:
+        example: "998998765432"
+        type: string
       co_delivery_price:
         example: 10000
         type: number
-      customer_id:
-        type: string
-      customer_name:
-        example: Oybek
-        type: string
-      customer_phone_number:
-        example: "998998765432"
-        type: string
       description:
         type: string
       external_order_id:
         type: integer
-      fare_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
       id:
         type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.updateStepModel'
+        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
       to_location:
         $ref: '#/definitions/models.Location'
         type: object
-      vendor_id:
-        type: string
     type: object
   models.UpdateParkModel:
     properties:
@@ -981,74 +1164,64 @@ definitions:
     type: object
   models.getOrderModel:
     properties:
-      co_delivery_price:
-        example: 10000
-        type: number
-      customer_id:
-        type: string
-      customer_name:
-        example: Oybek
-        type: string
-      customer_phone_number:
-        example: "998998765432"
-        type: string
-      description:
-        type: string
-      external_order_id:
-        type: integer
-      fare_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
       id:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
         type: string
+      price:
+        example: 50000
+        type: integer
+      product_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      quantity:
+        example: 5
+        type: number
       status_id:
         example: 52f248b4-23a0-4350-80b7-1704eaff6c8c
         type: string
-      to_address:
-        example: Hamid Olimjon maydoni 10A dom 40-kvartira
-        type: string
-      to_location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      vendor_id:
-        type: string
     type: object
-  models.getOrderProductModel:
+  models.productDemandModel:
+    properties:
+      external_product_id:
+        example: 1234
+        type: integer
+      name:
+        example: Choyxona Osh
+        type: string
+      price:
+        example: 25000
+        type: number
+      quantity:
+        example: 2
+        type: number
+    type: object
+  models.productOnDemandModel:
+    properties:
+      price:
+        example: 50000
+        type: integer
+      product_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      quantity:
+        example: 5
+        type: number
+    type: object
+  models.updateProduct:
     properties:
       id:
         type: string
-      name:
-        example: Choyxona Osh
-        type: string
       price:
-        example: 25000
-        type: number
+        example: 50000
+        type: integer
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       quantity:
-        example: 2
-        type: number
-      total_amount:
+        example: 5
         type: number
     type: object
-  models.productModel:
-    properties:
-      name:
-        example: Choyxona Osh
-        type: string
-      price:
-        example: 25000
-        type: number
-      product_id:
-        example: a010f178-da52-4373-aacd-e477d871e27a
-        type: string
-      quantity:
-        example: 2
-        type: number
-    type: object
-  models.stepModel:
+  models.updateStepModel:
     properties:
       address:
         type: string
@@ -1058,6 +1231,8 @@ definitions:
         type: string
       destination_address:
         type: string
+      id:
+        type: string
       location:
         $ref: '#/definitions/models.Location'
         type: object
@@ -1065,7 +1240,7 @@ definitions:
         type: string
       products:
         items:
-          $ref: '#/definitions/models.productModel'
+          $ref: '#/definitions/models.updateProduct'
         type: array
     type: object
   v1.Path:
@@ -1356,7 +1531,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetOrders'
+            $ref: '#/definitions/models.GetCourierOrdersModel'
         "404":
           description: Not Found
           schema:
@@ -1787,6 +1962,38 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get Customer Order Addresses
+      tags:
+      - order
+  /v1/demand-order/:
+    post:
+      consumes:
+      - application/json
+      description: API for creating demand order
+      parameters:
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDemandOrderModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Demand Order
       tags:
       - order
   /v1/distributors:
@@ -2236,6 +2443,38 @@ paths:
       summary: Get New Orders
       tags:
       - order
+  /v1/ondemand-order/:
+    post:
+      consumes:
+      - application/json
+      description: API for creating on demand order
+      parameters:
+      - description: order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateOnDemandOrderModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create On Demand Order
+      tags:
+      - order
   /v1/optimized-trip:
     post:
       consumes:
@@ -2296,7 +2535,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetOrders'
+            $ref: '#/definitions/models.GetAllOrderModel'
         "404":
           description: Not Found
           schema:
@@ -2305,6 +2544,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Orders
       tags:
       - order
@@ -2362,38 +2603,6 @@ paths:
       summary: Take Order Steps
       tags:
       - order
-  /v1/order/:
-    post:
-      consumes:
-      - application/json
-      description: API for creating order
-      parameters:
-      - description: order
-        in: body
-        name: order
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateOrder'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Order
-      tags:
-      - order
   /v1/order/{order_id}:
     get:
       consumes:
@@ -2411,7 +2620,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetOrder'
+            $ref: '#/definitions/models.GetOrderModel'
         "404":
           description: Not Found
           schema:
@@ -2420,6 +2629,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Order
       tags:
       - order
