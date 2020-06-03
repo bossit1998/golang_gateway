@@ -21,7 +21,7 @@ import (
 )
 
 // @Summary Register
-// @Description Register - API for registering users
+// @Description Register - API for registering customers
 // @Tags register
 // @Accept  json
 // @Produce  json
@@ -29,7 +29,7 @@ import (
 // @Success 200
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/users/register/ [post]
+// @Router /v1/customers/register/ [post]
 func (h *handlerV1) Register(c *gin.Context) {
 	var (
 		reg  models.RegisterModel
@@ -44,14 +44,14 @@ func (h *handlerV1) Register(c *gin.Context) {
 	reg.Phone = strings.TrimSpace(reg.Phone)
 	reg.Name = strings.TrimSpace(reg.Name)
 
-	_, err = h.grpcClient.UserService().ExistsClient(
-		context.Background(), &pbu.ExistsClientRequest{
+	result, err := h.grpcClient.CustomerService().ExistsCustomer(
+		context.Background(), &pbu.ExistsCustomerRequest{
 			Phone:reg.Phone,
 		})
 
 	st, ok := status.FromError(err)
 
-	if st.Code() == codes.NotFound {
+	if result.Exists {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeAlreadyExists,
@@ -85,7 +85,6 @@ func (h *handlerV1) Register(c *gin.Context) {
 		code = etc.GenerateCode(6, true)
 	} else {
 		code = etc.GenerateCode(6)
-		fmt.Println(code)
 		_, err := h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
 				Text:       "Your code for delever is " + code,
@@ -119,19 +118,21 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param register_confirm body models.RegisterConfirmModel true "register_confirm"
-// @Success 200 {object} models.GetUserModel
+// @Success 200 {object} models.GetCustomerModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 // @Router /v1/users/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
-	var rc models.RegisterConfirmModel
-
+	var (
+		rc models.RegisterConfirmModel
+		customer pbu.Customer
+	)
 	err := c.ShouldBindJSON(&rc)
 	if handleBadRequestErrWithMessage(c, h.log, err, "Error binding json") {
 		return
 	}
 
-	rc.ActivationCode = strings.TrimSpace(rc.ActivationCode)
+	rc.Code = strings.TrimSpace(rc.Code)
 	rc.Phone = strings.TrimSpace(rc.Phone)
 
 	//Getting code from redis
@@ -149,7 +150,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 
 	//Checking whether received code is valid
-	if rc.ActivationCode != s {
+	if rc.Code != s {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInvalidCode,
@@ -183,15 +184,18 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
-	_, err = h.grpcClient.UserService().CreateClient(
-		context.Background(), &pbu.Client{
-			Id:        id.String(),
-			Name:      name,
-			Phone:     rc.Phone,
-			AccessToken: accessToken,
-		},
+	customer = pbu.Customer{
+		Id:        id.String(),
+		Name:      name,
+		Phone:     rc.Phone,
+		AccessToken: accessToken,
+	}
+	_, err = h.grpcClient.CustomerService().CreateCustomer(
+		context.Background(), &pbu.CreateCustomerRequest{
+			Customer: &customer,
+	},
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a client") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a customer") {
 		return
 	}
 

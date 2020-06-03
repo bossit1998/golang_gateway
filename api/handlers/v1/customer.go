@@ -20,26 +20,26 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
-// @Router /v1/users [post]
-// @Summary Create User
-// @Description API for creating user
-// @Tags user
+// @Router /v1/customers [post]
+// @Summary Create Customer
+// @Description API for creating customer
+// @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param user body models.CreateUserModel true "user"
-// @Success 200 {object} models.GetUserModel
+// @Param customer body models.CreateCustomerModel true "customer"
+// @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateClient(c *gin.Context) {
+func (h *handlerV1) CreateCustomer(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		client        pbu.Client
+		customer      pbu.Customer
 	)
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &client)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -54,17 +54,19 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 		return
 	}
 
-	client.Id = id.String()
-	client.AccessToken = accessToken
+	customer.Id = id.String()
+	customer.AccessToken = accessToken
 
-	res, err := h.grpcClient.UserService().CreateClient(
-		context.Background(), &client,
+	res, err := h.grpcClient.CustomerService().CreateCustomer(
+		context.Background(), &pbu.CreateCustomerRequest{
+			Customer: &customer,
+		},
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating user") {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.Client)
+	js, err := jspbMarshal.MarshalToString(res.Customer)
 	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
 	}
@@ -73,27 +75,139 @@ func (h *handlerV1) CreateClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/users [put]
-// @Summary Update User
-// @Description API for updating user
-// @Tags user
+// @Tags customer
+// @Router /v1/customers/{customer_id} [get]
+// @Summary Get Customer
+// @Description API for getting customer info
 // @Accept  json
-// @Produce  json
-// @Param courier body models.UpdateUserModel true "user"
-// @Success 200 {object} models.GetUserModel
+// @Produce json
+// @Param customer_id path string true "customer_id"
+// @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) UpdateClient(c *gin.Context) {
+func (h *handlerV1) GetCustomer(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+	res, err := h.grpcClient.CustomerService().GetCustomer(
+		context.Background(), &pbu.GetCustomerRequest{
+			Id: c.Param("customer_id"),
+		},
+	)
+
+	st, ok := status.FromError(err)
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Customer Not Found",
+			},
+		})
+		h.log.Error("Error while getting customer, Customer Not Found", logger.Error(err))
+		return
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Server unavailable",
+			},
+		})
+		h.log.Error("Error while getting customer, service unavailable", logger.Error(err))
+		return
+	} else if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while getting customer", logger.Error(err))
+		return
+	} 
+	js, err := jspbMarshal.MarshalToString(res.GetCustomer())
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/customers [get]
+// @Summary Get All Customers
+// @Description API for getting customers
+// @Tags customer
+// @Accept  json
+// @Produce  json
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllCustomersModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetAllCustomers(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	page, err := ParsePageQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	limit, err := ParseLimitQueryParam(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		return
+	}
+
+	res, err := h.grpcClient.CustomerService().GetAllCustomers(
+		context.Background(),
+		&pbu.GetAllCustomersRequest{
+			Page:  uint64(page),
+			Limit: uint64(limit),
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/customers [put]
+// @Summary Update Customer
+// @Description API for updating customer
+// @Tags customer
+// @Accept  json
+// @Produce  json
+// @Param customer body models.UpdateCustomerModel true "customer"
+// @Success 200 {object} models.GetCustomerModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		client        pbu.Client
+		customer        pbu.Customer
 	)
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &client)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -105,9 +219,11 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.UserService().UpdateClient(
+	res, err := h.grpcClient.CustomerService().UpdateCustomer(
 		context.Background(),
-		&client,
+		&pbu.UpdateCustomerRequest{
+			Customer: &customer,
+		},
 	)
 	st, ok := status.FromError(err)
 	if !ok || st.Code() == codes.Internal {
@@ -131,7 +247,7 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.GetClient())
+	js, err := jspbMarshal.MarshalToString(res.GetCustomer())
 	if err != nil {
 		return
 		
@@ -141,21 +257,21 @@ func (h *handlerV1) UpdateClient(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Tags user
-// @Router /v1/users/{user_id} [delete]
-// @Summary Delete User
-// @Description API for deleting user
+// @Tags customer
+// @Router /v1/customers/{customer_id} [delete]
+// @Summary Delete Customer
+// @Description API for deleting customer
 // @Accept  json
 // @Produce  json
-// @Param user_id path string true "user_id"
+// @Param customer_id path string true "customer_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) DeleteClient(c *gin.Context) {
-	_, err := h.grpcClient.UserService().DeleteClient(
+func (h *handlerV1) DeleteCustomer(c *gin.Context) {
+	_, err := h.grpcClient.CustomerService().DeleteCustomer(
 		context.Background(),
-		&pbu.DeleteClientRequest{
-			Id: c.Param("user_id"),
+		&pbu.DeleteCustomerRequest{
+			Id: c.Param("customer_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -163,10 +279,10 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "User Not found",
+				Message: "Customer Not found",
 			},
 		})
-		h.log.Error("Error while deleting user, not found", logger.Error(err))
+		h.log.Error("Error while deleting customer, not found", logger.Error(err))
 		return
 	}else if  st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -175,7 +291,7 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting user", logger.Error(err))
+		h.log.Error("Error while deleting customer", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -184,154 +300,44 @@ func (h *handlerV1) DeleteClient(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting user, service unavailable", logger.Error(err))
+		h.log.Error("Error while deleting customer, service unavailable", logger.Error(err))
 		return
 	}
 	c.Status(http.StatusOK)
 }
 
-// @Tags user
-// @Router /v1/users/{user_id} [get]
-// @Summary Get User
-// @Description API for getting user info
-// @Accept  json
-// @Produce json
-// @Param user_id path string true "user_id"
-// @Success 200 {object} models.GetUserModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetClient(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
-	res, err := h.grpcClient.UserService().GetClient(
-		context.Background(), &pbu.GetClientRequest{
-			Id: c.Param("user_id"),
-		},
-	)
 
-	st, ok := status.FromError(err)
-	if st.Code() == codes.NotFound {
-		c.JSON(http.StatusConflict, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "User Not Found",
-			},
-		})
-		h.log.Error("Error while getting user, User Not Found", logger.Error(err))
-		return
-	} else if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Server unavailable",
-			},
-		})
-		h.log.Error("Error while getting user, service unavailable", logger.Error(err))
-		return
-	} else if !ok || st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while getting user", logger.Error(err))
-		return
-	} 
-	js, err := jspbMarshal.MarshalToString(res.GetClient())
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
-}
-
-// @Router /v1/users [get]
-// @Summary Get All Users
-// @Description API for getting users
-// @Tags user
-// @Accept  json
-// @Produce  json
-// @Param page query integer false "page"
-// @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllUsersModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllClients(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
-
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
-
-	page, err := ParsePageQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
-
-	limit, err := ParseLimitQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
-
-	res, err := h.grpcClient.UserService().GetAllClients(
-		context.Background(),
-		&pbu.GetAllClientsRequest{
-			Page:  uint64(page),
-			Limit: uint64(limit),
-		},
-	)
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-	js, err := jspbMarshal.MarshalToString(res)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
-}
-
-// @Router /v1/users/check-login/ [POST]
-// @Summary Check User Login
-// @Description API that checks whether user exists
+// @Router /v1/customers/check-login/ [POST]
+// @Summary Check Customer Login
+// @Description API that checks whether customer exists
 // @Description and if exists sends sms to their number
-// @Tags user
+// @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param check_login body models.CheckUserLoginRequest true "check login"
-// @Success 200 {object} models.CheckUserLoginResponse
+// @Param check_login body models.CheckCustomerLoginRequest true "check login"
+// @Success 200 {object} models.CheckCustomerLoginResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CheckUserLogin(c *gin.Context) {
+func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 	var (
-		checkUserLoginModel models.CheckUserLoginRequest
+		checkCustomerLoginModel models.CheckCustomerLoginRequest
 		code                string
 	)
 
-	err := c.ShouldBindJSON(&checkUserLoginModel)
+	err := c.ShouldBindJSON(&checkCustomerLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
 
-	checkUserLoginModel.Phone = strings.TrimSpace(checkUserLoginModel.Phone)
+	checkCustomerLoginModel.Phone = strings.TrimSpace(checkCustomerLoginModel.Phone)
 
-	resp, err := h.grpcClient.UserService().ExistsClient(
-		context.Background(), &pbu.ExistsClientRequest{
-			Phone: checkUserLoginModel.Phone,
+	resp, err := h.grpcClient.CustomerService().ExistsCustomer(
+		context.Background(), &pbu.ExistsCustomerRequest{
+			Phone: checkCustomerLoginModel.Phone,
 		},
 	)
-	if handleStorageErrWithMessage(c, h.log, err, "Error while checking user") {
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking customer") {
 		return
 	}
 
@@ -339,7 +345,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "User not found",
+				Message: "Customer not found",
 			},
 		})
 		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
@@ -353,7 +359,7 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		_, err = h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
 				Text:       code,
-				Recipients: []string{checkUserLoginModel.Phone},
+				Recipients: []string{checkCustomerLoginModel.Phone},
 			},
 		)
 		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
@@ -361,31 +367,31 @@ func (h *handlerV1) CheckUserLogin(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(checkUserLoginModel.Phone, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(checkCustomerLoginModel.Phone, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckUserLoginResponse{
+	c.JSON(http.StatusOK, models.CheckCustomerLoginResponse{
 		Code:  code,
-		Phone: checkUserLoginModel.Phone,
+		Phone: checkCustomerLoginModel.Phone,
 	})
 }
 
-// @Router /v1/users/confirm-login/ [POST]
-// @Summary Confirm User Login
-// @Description API that checks whether user entered
+// @Router /v1/customers/confirm-login/ [POST]
+// @Summary Confirm Customer Login
+// @Description API that checks whether customer entered
 // @Description valid token
-// @Tags user
+// @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param confirm_phone body models.ConfirmUserLoginRequest true "confirm login"
-// @Success 200 {object} models.GetUserModel
+// @Param confirm_phone body models.ConfirmCustomerLoginRequest true "confirm login"
+// @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
+func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	var (
-		cm models.ConfirmUserLoginRequest
+		cm models.ConfirmCustomerLoginRequest
 	)
 
 	err := c.ShouldBindJSON(&cm)
@@ -421,8 +427,8 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 		return
 	}
 
-	user, err := h.grpcClient.UserService().GetClient(
-		context.Background(), &pbu.GetClientRequest{
+	customer, err := h.grpcClient.CustomerService().GetCustomer(
+		context.Background(), &pbu.GetCustomerRequest{
 			Id: cm.Phone,
 		},
 	)
@@ -430,13 +436,13 @@ func (h *handlerV1) ConfirmUserLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &models.ConfirmUserLoginResponse{
-		ID:          user.Client.Id,
-		AccessToken: user.Client.AccessToken,
+	c.JSON(http.StatusOK, &models.ConfirmCustomerLoginResponse{
+		ID:          customer.Customer.Id,
+		AccessToken: customer.Customer.AccessToken,
 	})
 }
 
-// @Router /v1/search-users [get]
+// @Router /v1/search-customers [get]
 // @Summary Search by phone
 // @Description API for getting phones
 // @Tags user
@@ -461,9 +467,9 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.UserService().SearchClientsByPhone(
+	res, err := h.grpcClient.CustomerService().SearchCustomersByPhone(
 		context.Background(),
-		&pbu.SearchClientsByPhoneRequest{
+		&pbu.SearchCustomersByPhoneRequest{
 			Phone: phone,
 			Limit: limit,
 		},
