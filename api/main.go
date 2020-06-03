@@ -144,7 +144,8 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/fares/:fare_id", handlerV1.DeleteFare)
 
 	//Order endpoints
-	r.POST("/v1/order", handlerV1.CreateOrder)
+	r.POST("/v1/demand-order", handlerV1.CreateDemandOrder)
+	r.POST("/v1/ondemand-order", handlerV1.CreateOnDemandOrder)
 	r.PUT("/v1/order/:order_id", handlerV1.UpdateOrder)
 	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
 	r.GET("/v1/order", handlerV1.GetOrders)

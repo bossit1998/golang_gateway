@@ -5,28 +5,129 @@ type Location struct {
 	Lat  float64 `json:"lat" example:"40.123"`
 }
 
-type productModel struct {
+type productDemandModel struct {
 	Name     string  `json:"name" example:"Choyxona Osh"`
 	Quantity float64 `json:"quantity" example:"2"`
 	Price    float64 `json:"price" example:"25000"`
-	ProductID string `json:"product_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
+	ExternalProductId int64 `json:"external_product_id,omitempty,string" example:"1234"`
 }
 
-type orderModel struct {
-	ToLocation          Location `json:"to_location"`
-	ToAddress           string   `json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
-	CustomerName        string   `json:"customer_name" example:"Oybek"`
-	CustomerPhoneNumber string   `json:"customer_phone_number" example:"998998765432"`
-	FareID              string   `json:"fare_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
-	CoDeliveryPrice     float64  `json:"co_delivery_price" example:"10000"`
-	Description         string   `json:"description"`
-	ExternalOrderID 	int64	 `json:"external_order_id"`
-	CustomerID 			string	 `json:"customer_id"`
-	VendorID			string	 `json:"vendor_id"`
+type stepDemandModel struct {
+	BranchName string 				`json:"branch_name"`
+	PhoneNumber string 				`json:"phone_number"`
+	Address string 					`json:"address"`
+	DestinationAddress string 		`json:"destination_address"`
+	Location Location 				`json:"location"`
+	ExternalStepID int64 			`json:"external_step_id,omitempty,string"`
+	Description string `json:"description"`
+}
+
+type orderDemandModel struct {
+	ToLocation          Location 		`json:"to_location"`
+	ToAddress           string   		`json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
+	ClientName        	string   		`json:"client_name" example:"Oybek"`
+	ClientPhoneNumber 	string   		`json:"client_phone_number" example:"998998765432"`
+	CoDeliveryPrice     float64  		`json:"co_delivery_price" example:"10000"`
+	Description         string   		`json:"description"`
+	ExternalOrderID 	uint64	 		`json:"external_order_id,string"`
+}
+
+type CreateDemandOrderModel struct {
+	orderDemandModel
+	Steps []struct{
+		stepDemandModel
+		Products []productDemandModel `json:"products"`
+	} `json:"steps"`
+}
+
+type productOnDemandModel struct {
+	ProductID string 	`json:"product_id" example:"a010f178-da52-4373-aacd-e477d871e27a"`
+	Quantity  float64 	`json:"quantity" example:"5"`
+	Price  	  int64 	`json:"price,string" example:"50000"`
+}
+
+type stepOnDemandModel struct {
+	BranchID string `json:"branch_id"`
+	Description string `json:"description"`
+}
+
+type orderOnDemandModel struct {
+	ToLocation          Location 			`json:"to_location"`
+	ToAddress           string   			`json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
+	ClientID        	string   			`json:"client_id"`
+	CoDeliveryPrice     float64  			`json:"co_delivery_price" example:"10000"`
+	Description         string   			`json:"description"`
+}
+
+type CreateOnDemandOrderModel struct {
+	orderOnDemandModel
+	Steps []struct{
+		stepOnDemandModel
+		Products []productOnDemandModel `json:"products"`
+	} `json:"steps"`
+}
+
+type GetOrderModel struct {
+	orderDemandModel
+	ID string `json:"id"`
+	ClientID string `json:"client_id"`
+	CourierID string `json:"courier_id"`
+	StatusID string `json:"status_id"`
+	CreatedAt string `json:"created_at"`
+	FinishedAt string `json:"finished_at"`
+	OrderAmount uint64 `json:"order_amount,string"`
+	Steps []struct{
+		stepDemandModel
+		ID string `json:"id"`
+		BranchID string `json:"branch_id"`
+		Status string `json:"status"`
+		StepAmount uint64 `json:"step_amount,string"`
+		Products []struct{
+			productDemandModel
+			ID string `json:"id"`
+			ProductID string `json:"product_id"`
+			TotalAmount uint64 `json:"total_amount,string"`
+		} `json:"products"`
+	} `json:"steps"`
+}
+
+type GetAllOrderModel struct {
+	Orders [] struct{
+		orderDemandModel
+		ID string `json:"id"`
+		ClientID string `json:"client_id"`
+		CourierID string `json:"courier_id"`
+		StatusID string `json:"status_id"`
+		CreatedAt string `json:"created_at"`
+		FinishedAt string `json:"finished_at"`
+		OrderAmount int64 `json:"order_amount,omitempty"`
+	} `json:"orders"`
+	Count int64 `json:"count,string"`
+}
+
+type GetCourierOrdersModel struct {
+	Orders [] struct {
+		orderOnDemandModel
+		ID string `json:"id"`
+		ClientID string `json:"client_id"`
+		ClientName        	string   		`json:"client_name"`
+		ClientPhoneNumber 	string   		`json:"client_phone_number"`
+		StatusID string `json:"status_id"`
+		CreatedAt string `json:"created_at"`
+		OrderAmount uint64 `json:"order_amount"`
+		Steps []struct {
+			stepDemandModel
+			ID string `json:"id"`
+			BranchID string `json:"branch_id"`
+			Status string `json:"status"`
+			StepAmount uint64 `json:"step_amount"`
+		} `json:"steps"`
+	} `json:"orders"`
+	Count uint64 `json:"count,string"`
 }
 
 type updateProduct struct {
-	productModel
+	productOnDemandModel
 	ID string `json:"id"`
 }
 
@@ -42,7 +143,7 @@ type updateStepModel struct {
 
 type updateOrder struct {
 	ID string `json:"id"`
-	orderModel
+	orderDemandModel
 }
 
 type UpdateOrder struct {
@@ -61,22 +162,22 @@ type step struct {
 
 type stepModel struct {
 	step
-	Products []productModel `json:"products"`
+	Products []productOnDemandModel `json:"products"`
 }
 
 type CreateOrder struct {
-	orderModel
+	productOnDemandModel
 	Steps []stepModel `json:"steps"`
 }
 
 type getOrderProductModel struct {
-	productModel
+	productOnDemandModel
 	ID          string  `json:"id" `
 	TotalAmount float64 `json:"total_amount"`
 }
 
 type getOrderModel struct {
-	orderModel
+	productOnDemandModel
 	ID       string `json:"id" example:"701dc270-0adc-4d00-ae78-4f2f78d794cc"`
 	StatusID string `json:"status_id" example:"52f248b4-23a0-4350-80b7-1704eaff6c8c"`
 }

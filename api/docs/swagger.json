@@ -443,7 +443,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetOrders"
+                            "$ref": "#/definitions/models.GetCourierOrdersModel"
                         }
                     },
                     "404": {
@@ -1078,6 +1078,57 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.CustomerAddressesModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/demand-order/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating demand order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create Demand Order",
+                "parameters": [
+                    {
+                        "description": "order",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateDemandOrderModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "404": {
@@ -1775,6 +1826,57 @@
                 }
             }
         },
+        "/v1/ondemand-order/": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating on demand order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create On Demand Order",
+                "parameters": [
+                    {
+                        "description": "order",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateOnDemandOrderModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/optimized-trip": {
             "post": {
                 "description": "API for getting optimized trip",
@@ -1832,6 +1934,11 @@
         },
         "/v1/order": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting orders",
                 "consumes": [
                     "application/json"
@@ -1867,7 +1974,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetOrders"
+                            "$ref": "#/definitions/models.GetAllOrderModel"
                         }
                     },
                     "404": {
@@ -1969,59 +2076,13 @@
                 }
             }
         },
-        "/v1/order/": {
-            "post": {
+        "/v1/order/{order_id}": {
+            "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "API for creating order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "order"
-                ],
-                "summary": "Create Order",
-                "parameters": [
-                    {
-                        "description": "order",
-                        "name": "order",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateOrder"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/order/{order_id}": {
-            "get": {
                 "description": "API for getting order",
                 "consumes": [
                     "application/json"
@@ -2046,7 +2107,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetOrder"
+                            "$ref": "#/definitions/models.GetOrderModel"
                         }
                     },
                     "404": {
@@ -3929,8 +3990,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -3962,6 +4022,73 @@
                 },
                 "vehicle_number": {
                     "type": "string"
+                }
+            }
+        },
+        "models.CreateDemandOrderModel": {
+            "type": "object",
+            "properties": {
+                "client_name": {
+                    "type": "string",
+                    "example": "Oybek"
+                },
+                "client_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
+                },
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
+                },
+                "description": {
+                    "type": "string"
+                },
+                "external_order_id": {
+                    "type": "integer"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "address": {
+                                "type": "string"
+                            },
+                            "branch_name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "destination_address": {
+                                "type": "string"
+                            },
+                            "external_step_id": {
+                                "type": "integer"
+                            },
+                            "location": {
+                                "type": "object",
+                                "$ref": "#/definitions/models.Location"
+                            },
+                            "phone_number": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.productDemandModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "to_address": {
+                    "type": "string",
+                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                },
+                "to_location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
                 }
             }
         },
@@ -4006,8 +4133,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4017,38 +4143,37 @@
                 }
             }
         },
-        "models.CreateOrder": {
+        "models.CreateOnDemandOrderModel": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
                 },
-                "customer_id": {
-                    "type": "string"
-                },
-                "customer_name": {
-                    "type": "string",
-                    "example": "Oybek"
-                },
-                "customer_phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
-                },
                 "description": {
                     "type": "string"
-                },
-                "external_order_id": {
-                    "type": "integer"
-                },
-                "fare_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
                 },
                 "steps": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.stepModel"
+                        "type": "object",
+                        "properties": {
+                            "branch_id": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.productOnDemandModel"
+                                }
+                            }
+                        }
                     }
                 },
                 "to_address": {
@@ -4058,9 +4183,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "vendor_id": {
-                    "type": "string"
                 }
             }
         },
@@ -4092,8 +4214,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -4119,15 +4240,13 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4231,8 +4350,7 @@
                     }
                 },
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -4296,13 +4414,75 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "measures": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.GetMeasureModel"
+                    }
+                }
+            }
+        },
+        "models.GetAllOrderModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "orders": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "client_id": {
+                                "type": "string"
+                            },
+                            "client_name": {
+                                "type": "string",
+                                "example": "Oybek"
+                            },
+                            "client_phone_number": {
+                                "type": "string",
+                                "example": "998998765432"
+                            },
+                            "co_delivery_price": {
+                                "type": "number",
+                                "example": 10000
+                            },
+                            "courier_id": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "external_order_id": {
+                                "type": "integer"
+                            },
+                            "finished_at": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "order_amount": {
+                                "type": "integer"
+                            },
+                            "status_id": {
+                                "type": "string"
+                            },
+                            "to_address": {
+                                "type": "string",
+                                "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                            },
+                            "to_location": {
+                                "type": "object",
+                                "$ref": "#/definitions/models.Location"
+                            }
+                        }
                     }
                 }
             }
@@ -4325,8 +4505,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -4340,8 +4519,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "products": {
                     "type": "array",
@@ -4463,6 +4641,100 @@
                 }
             }
         },
+        "models.GetCourierOrdersModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "orders": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "client_id": {
+                                "type": "string"
+                            },
+                            "client_name": {
+                                "type": "string"
+                            },
+                            "client_phone_number": {
+                                "type": "string"
+                            },
+                            "co_delivery_price": {
+                                "type": "number",
+                                "example": 10000
+                            },
+                            "created_at": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "order_amount": {
+                                "type": "integer"
+                            },
+                            "status_id": {
+                                "type": "string"
+                            },
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "branch_id": {
+                                            "type": "string"
+                                        },
+                                        "branch_name": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "destination_address": {
+                                            "type": "string"
+                                        },
+                                        "external_step_id": {
+                                            "type": "integer"
+                                        },
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "location": {
+                                            "type": "object",
+                                            "$ref": "#/definitions/models.Location"
+                                        },
+                                        "phone_number": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "step_amount": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            },
+                            "to_address": {
+                                "type": "string",
+                                "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
+                            },
+                            "to_location": {
+                                "type": "object",
+                                "$ref": "#/definitions/models.Location"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "models.GetCourierVehicleModel": {
             "type": "object",
             "properties": {
@@ -4558,23 +4830,29 @@
                 }
             }
         },
-        "models.GetOrder": {
+        "models.GetOrderModel": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string",
+                    "example": "Oybek"
+                },
+                "client_phone_number": {
+                    "type": "string",
+                    "example": "998998765432"
+                },
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
                 },
-                "customer_id": {
+                "courier_id": {
                     "type": "string"
                 },
-                "customer_name": {
-                    "type": "string",
-                    "example": "Oybek"
-                },
-                "customer_phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
+                "created_at": {
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
@@ -4582,23 +4860,92 @@
                 "external_order_id": {
                     "type": "integer"
                 },
-                "fare_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                "finished_at": {
+                    "type": "string"
                 },
                 "id": {
-                    "type": "string",
-                    "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
+                    "type": "string"
                 },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.getOrderProductModel"
-                    }
+                "order_amount": {
+                    "type": "integer"
                 },
                 "status_id": {
-                    "type": "string",
-                    "example": "52f248b4-23a0-4350-80b7-1704eaff6c8c"
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "address": {
+                                "type": "string"
+                            },
+                            "branch_id": {
+                                "type": "string"
+                            },
+                            "branch_name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "destination_address": {
+                                "type": "string"
+                            },
+                            "external_step_id": {
+                                "type": "integer"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "location": {
+                                "type": "object",
+                                "$ref": "#/definitions/models.Location"
+                            },
+                            "phone_number": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "external_product_id": {
+                                            "type": "integer",
+                                            "example": 1234
+                                        },
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Choyxona Osh"
+                                        },
+                                        "price": {
+                                            "type": "number",
+                                            "example": 25000
+                                        },
+                                        "product_id": {
+                                            "type": "string"
+                                        },
+                                        "quantity": {
+                                            "type": "number",
+                                            "example": 2
+                                        },
+                                        "total_amount": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "step_amount": {
+                                "type": "integer"
+                            }
+                        }
+                    }
                 },
                 "to_address": {
                     "type": "string",
@@ -4607,9 +4954,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "vendor_id": {
-                    "type": "string"
                 }
             }
         },
@@ -4699,8 +5043,7 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5070,20 +5413,17 @@
         "models.UpdateOrder": {
             "type": "object",
             "properties": {
-                "co_delivery_price": {
-                    "type": "number",
-                    "example": 10000
-                },
-                "customer_id": {
-                    "type": "string"
-                },
-                "customer_name": {
+                "client_name": {
                     "type": "string",
                     "example": "Oybek"
                 },
-                "customer_phone_number": {
+                "client_phone_number": {
                     "type": "string",
                     "example": "998998765432"
+                },
+                "co_delivery_price": {
+                    "type": "number",
+                    "example": 10000
                 },
                 "description": {
                     "type": "string"
@@ -5091,12 +5431,14 @@
                 "external_order_id": {
                     "type": "integer"
                 },
-                "fare_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
                 "id": {
                     "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.updateStepModel"
+                    }
                 },
                 "to_address": {
                     "type": "string",
@@ -5105,9 +5447,6 @@
                 "to_location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
-                },
-                "vendor_id": {
-                    "type": "string"
                 }
             }
         },
@@ -5179,65 +5518,75 @@
         "models.getOrderModel": {
             "type": "object",
             "properties": {
-                "co_delivery_price": {
-                    "type": "number",
-                    "example": 10000
-                },
-                "customer_id": {
-                    "type": "string"
-                },
-                "customer_name": {
-                    "type": "string",
-                    "example": "Oybek"
-                },
-                "customer_phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "external_order_id": {
-                    "type": "integer"
-                },
-                "fare_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
                 "id": {
                     "type": "string",
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
                 },
+                "price": {
+                    "type": "integer",
+                    "example": 50000
+                },
+                "product_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 5
+                },
                 "status_id": {
                     "type": "string",
                     "example": "52f248b4-23a0-4350-80b7-1704eaff6c8c"
-                },
-                "to_address": {
-                    "type": "string",
-                    "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
-                },
-                "to_location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
-                "vendor_id": {
-                    "type": "string"
                 }
             }
         },
-        "models.getOrderProductModel": {
+        "models.productDemandModel": {
+            "type": "object",
+            "properties": {
+                "external_product_id": {
+                    "type": "integer",
+                    "example": 1234
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Choyxona Osh"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 25000
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 2
+                }
+            }
+        },
+        "models.productOnDemandModel": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "integer",
+                    "example": 50000
+                },
+                "product_id": {
+                    "type": "string",
+                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
+                },
+                "quantity": {
+                    "type": "number",
+                    "example": 5
+                }
+            }
+        },
+        "models.updateProduct": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string",
-                    "example": "Choyxona Osh"
-                },
                 "price": {
-                    "type": "number",
-                    "example": 25000
+                    "type": "integer",
+                    "example": 50000
                 },
                 "product_id": {
                     "type": "string",
@@ -5245,35 +5594,11 @@
                 },
                 "quantity": {
                     "type": "number",
-                    "example": 2
-                },
-                "total_amount": {
-                    "type": "number"
+                    "example": 5
                 }
             }
         },
-        "models.productModel": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Choyxona Osh"
-                },
-                "price": {
-                    "type": "number",
-                    "example": 25000
-                },
-                "product_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "quantity": {
-                    "type": "number",
-                    "example": 2
-                }
-            }
-        },
-        "models.stepModel": {
+        "models.updateStepModel": {
             "type": "object",
             "properties": {
                 "address": {
@@ -5288,6 +5613,9 @@
                 "destination_address": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
@@ -5298,7 +5626,7 @@
                 "products": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.productModel"
+                        "$ref": "#/definitions/models.updateProduct"
                     }
                 }
             }
