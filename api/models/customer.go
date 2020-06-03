@@ -1,20 +1,20 @@
 package models
 
-//CreateUserModel ...
-type CreateUserModel struct {
+//CreateCustomerModel ...
+type CreateCustomerModel struct {
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
 }
 
-//UpdateUserModel ...
-type UpdateUserModel struct {
+//UpdateCustomerModel ...
+type UpdateCustomerModel struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
 }
 
-//GetUserModel ...
-type GetUserModel struct {
+//GetCustomerModel ...
+type GetCustomerModel struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
 	Name        string `json:"name"`
@@ -23,31 +23,31 @@ type GetUserModel struct {
 	CreatedAt   string `json:"created_at"`
 }
 
-//GetAllUsersModel ...
-type GetAllUsersModel struct {
+//GetAllCustomersModel ...
+type GetAllCustomersModel struct {
 	Count int            `json:"count"`
-	Users []GetUserModel `json:"users"`
+	Customers []GetCustomerModel `json:"customers"`
 }
 
-//CheckUserLoginRequest ...
-type CheckUserLoginRequest struct {
+//CheckCustomerLoginRequest ...
+type CheckCustomerLoginRequest struct {
 	Phone string `json:"phone"`
 }
 
-//CheckUserLoginResponse ...
-type CheckUserLoginResponse struct {
+//CheckCustomerLoginResponse ...
+type CheckCustomerLoginResponse struct {
 	Code  string `json:"code"`
 	Phone string `json:"phone"`
 }
 
-//ConfirmUserLoginRequest ...
-type ConfirmUserLoginRequest struct {
+//ConfirmCustomerLoginRequest ...
+type ConfirmCustomerLoginRequest struct {
 	Code  string `json:"code"`
 	Phone string `json:"phone"`
 }
 
-//ConfirmUserLoginResponse ...
-type ConfirmUserLoginResponse struct {
+//ConfirmCustomerLoginResponse ...
+type ConfirmCustomerLoginResponse struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
 }

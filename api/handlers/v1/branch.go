@@ -2,9 +2,11 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -20,24 +22,25 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
-// @Router /v1/vendors [post]
-// @Summary Create Vendor
-// @Description API for creating vendor
-// @Tags vendor
+// @Router /v1/branches [post]
+// @Summary Create Branch
+// @Description API for creating branch
+// @Tags branch
 // @Accept  json
 // @Produce  json
-// @Param vendor body models.CreateVendorModel true "vendor"
-// @Success 200 {object} models.GetVendorModel
+// @Param branch body models.CreateBranchModel true "branch"
+// @Success 200 {object} models.GetBranchModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateVendor(c *gin.Context) {
+func (h *handlerV1) CreateBranch(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		vendor        pbu.Vendor
+		branch        pbu.Branch
 	)
 	jspbMarshal.OrigName = true
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
+
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -47,24 +50,24 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "user", signingKey)
+	accessToken, err := jwt.GenerateJWT(id.String(), "branch", signingKey)
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
 
-	vendor.Id = id.String()
-	vendor.AccessToken = accessToken
+	branch.Id = id.String()
+	branch.AccessToken = accessToken
 
-	res, err := h.grpcClient.VendorService().CreateVendor(
-		context.Background(), &pbu.CreateVendorRequest{
-			Vendor: &vendor,
+	res, err := h.grpcClient.BranchService().CreateBranch(
+		context.Background(), &pbu.CreateBranchRequest{
+			Branch: &branch,
 		},
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating vendor") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating branch") {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.Vendor)
+	js, err := jspbMarshal.MarshalToString(res.Branch)
 	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
 		return
 	}
@@ -73,27 +76,27 @@ func (h *handlerV1) CreateVendor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/vendors [put]
-// @Summary Update Vendor
-// @Description API for updating vendor
-// @Tags vendor
+// @Router /v1/branches [put]
+// @Summary Update Branch
+// @Description API for updating branch
+// @Tags branch
 // @Accept  json
 // @Produce  json
-// @Param vendor body models.UpdateVendorModel true "vendor"
-// @Success 200 {object} models.GetVendorModel
+// @Param branch body models.UpdateBranchModel true "branch"
+// @Success 200 {object} models.GetBranchModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) UpdateVendor(c *gin.Context) {
+func (h *handlerV1) UpdateBranch(c *gin.Context) {
 
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		vendor        pbu.Vendor
+		branch        pbu.Branch
 	)
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &vendor)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -105,10 +108,10 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.VendorService().UpdateVendor(
+	res, err := h.grpcClient.BranchService().UpdateBranch(
 		context.Background(),
-		&pbu.UpdateVendorRequest{
-			Vendor: &vendor,
+		&pbu.UpdateBranchRequest{
+			Branch: &branch,
 		},
 	)
 	st, ok := status.FromError(err)
@@ -119,7 +122,7 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating vendor", logger.Error(err))
+		h.log.Error("Error while updating branch", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -129,11 +132,11 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating vendor, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating branch, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.GetVendor())
+	js, err := jspbMarshal.MarshalToString(res.GetBranch())
 	if err != nil {
 		return
 	}
@@ -142,22 +145,22 @@ func (h *handlerV1) UpdateVendor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Tags vendor
-// @Router /v1/vendors/{vendor_id} [delete]
-// @Summary Delete Vendor
-// @Description API for deleting vendor
+// @Tags branch
+// @Router /v1/branches/{branch_id} [delete]
+// @Summary Delete Branch
+// @Description API for deleting branch
 // @Accept  json
 // @Produce  json
-// @Param vendor_id path string true "vendor_id"
+// @Param branch_id path string true "branch_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) DeleteVendor(c *gin.Context) {
+func (h *handlerV1) DeleteBranch(c *gin.Context) {
 
-	_, err := h.grpcClient.VendorService().DeleteVendor(
+	_, err := h.grpcClient.BranchService().DeleteBranch(
 		context.Background(),
-		&pbu.DeleteVendorRequest{
-			Id: c.Param("vendor_id"),
+		&pbu.DeleteBranchRequest{
+			Id: c.Param("branch_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -168,7 +171,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting vendor", logger.Error(err))
+		h.log.Error("Error while deleting branch", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.NotFound {
@@ -178,7 +181,7 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 				Message: "Not found",
 			},
 		})
-		h.log.Error("Error while deleting vendor, not found", logger.Error(err))
+		h.log.Error("Error while deleting branch, not found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -187,29 +190,29 @@ func (h *handlerV1) DeleteVendor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting vendor, service unavailable", logger.Error(err))
+		h.log.Error("Error while deleting branch, service unavailable", logger.Error(err))
 		return
 	}
 	c.Status(http.StatusOK)
 }
 
-// @Tags vendor
-// @Router /v1/vendors/{vendor_id} [get]
-// @Summary Get Vendor
-// @Description API for getting vendor info
+// @Tags branch
+// @Router /v1/branches/{branch_id} [get]
+// @Summary Get Branch
+// @Description API for getting branch info
 // @Accept  json
 // @Produce json
-// @Param vendor_id path string true "vendor_id"
-// @Success 200 {object} models.GetVendorModel
+// @Param branch_id path string true "branch_id"
+// @Success 200 {object} models.GetBranchModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetVendor(c *gin.Context) {
+func (h *handlerV1) GetBranch(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-	res, err := h.grpcClient.VendorService().GetVendor(
-		context.Background(), &pbu.GetVendorRequest{
-			Id: c.Param("vendor_id"),
+	res, err := h.grpcClient.BranchService().GetBranch(
+		context.Background(), &pbu.GetBranchRequest{
+			Id: c.Param("branch_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -217,10 +220,10 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Vendor Not Found",
+				Message: "Branch Not Found",
 			},
 		})
-		h.log.Error("Error while getting vendor, Vendor Not Found", logger.Error(err))
+		h.log.Error("Error while getting branch, Branch Not Found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -229,7 +232,7 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 				Message: "Server unavailable",
 			},
 		})
-		h.log.Error("Error while getting vendor, service unavailable", logger.Error(err))
+		h.log.Error("Error while getting branch, service unavailable", logger.Error(err))
 		return
 	} else if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -238,11 +241,11 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while getting vendor", logger.Error(err))
+		h.log.Error("Error while getting branch", logger.Error(err))
 		return
-	} 
-	
-	js, err := jspbMarshal.MarshalToString(res.GetVendor())
+	}
+
+	js, err := jspbMarshal.MarshalToString(res.GetBranch())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
@@ -252,18 +255,18 @@ func (h *handlerV1) GetVendor(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/vendors [get]
-// @Summary Get All Vendors
-// @Description API for getting vendors
-// @Tags vendor
+// @Router /v1/branches [get]
+// @Summary Get All Branches
+// @Description API for getting branches
+// @Tags branch
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllVendorsModel
+// @Success 200 {object} models.GetAllBranchesModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllVendors(c *gin.Context) {
+func (h *handlerV1) GetAllBranches(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -285,9 +288,9 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.VendorService().GetAllVendors(
+	res, err := h.grpcClient.BranchService().GetAllBranches(
 		context.Background(),
-		&pbu.GetAllVendorsRequest{
+		&pbu.GetAllBranchesRequest{
 			Page:  uint64(page),
 			Limit: uint64(limit),
 		},
@@ -305,36 +308,36 @@ func (h *handlerV1) GetAllVendors(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/vendors/check-login/ [POST]
-// @Summary Check Vendor Login
-// @Description API that checks whether vendor exists
+// @Router /v1/branches/check-login/ [POST]
+// @Summary Check Branch Login
+// @Description API that checks whether branch exists
 // @Description and if exists sends sms to their number
-// @Tags vendor
+// @Tags branch
 // @Accept  json
 // @Produce  json
-// @Param check_login body models.CheckVendorLoginRequest true "check login"
-// @Success 200 {object} models.CheckVendorLoginResponse
+// @Param check_login body models.CheckBranchLoginRequest true "check login"
+// @Success 200 {object} models.CheckBranchLoginResponse
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
+func (h *handlerV1) CheckBranchLogin(c *gin.Context) {
 	var (
-		checkVendorLoginModel models.CheckVendorLoginRequest
-		code            string
+		checkBranchLoginModel models.CheckBranchLoginRequest
+		code                  string
 	)
-	
-	err := c.ShouldBindJSON(&checkVendorLoginModel)
+
+	err := c.ShouldBindJSON(&checkBranchLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
 
-	checkVendorLoginModel.Phone = strings.TrimSpace(checkVendorLoginModel.Phone)
+	checkBranchLoginModel.Phone = strings.TrimSpace(checkBranchLoginModel.Phone)
 
-	resp, err := h.grpcClient.VendorService().ExistsVendor(
-		context.Background(), &pbu.ExistsVendorRequest{
-			Phone: checkVendorLoginModel.Phone,
+	resp, err := h.grpcClient.BranchService().ExistsBranch(
+		context.Background(), &pbu.ExistsBranchRequest{
+			Phone: checkBranchLoginModel.Phone,
 		},
 	)
-	if handleStorageErrWithMessage(c, h.log, err, "Error while checking vendor") {
+	if handleStorageErrWithMessage(c, h.log, err, "Error while checking branch") {
 		return
 	}
 
@@ -342,7 +345,7 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 		c.JSON(http.StatusNotFound, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "User not found",
+				Message: "Branch not found",
 			},
 		})
 		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
@@ -356,7 +359,7 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 		_, err = h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
 				Text:       code,
-				Recipients: []string{checkVendorLoginModel.Phone},
+				Recipients: []string{checkBranchLoginModel.Phone},
 			},
 		)
 		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
@@ -364,46 +367,42 @@ func (h *handlerV1) CheckVendorLogin(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(checkVendorLoginModel.Phone, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(checkBranchLoginModel.Phone, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckUserLoginResponse{
+	c.JSON(http.StatusOK, models.CheckCustomerLoginResponse{
 		Code:  code,
-		Phone: checkVendorLoginModel.Phone,
+		Phone: checkBranchLoginModel.Phone,
 	})
 }
 
-// @Router /v1/vendors/confirm-login/ [POST]
-// @Summary Confirm Vendor Login
-// @Description API that checks whether - vendor entered
+// @Router /v1/branches/confirm-login/ [POST]
+// @Summary Confirm Branch Login
+// @Description API that checks whether - branch entered
 // @Description valid token
-// @Tags vendor
+// @Tags branch
 // @Accept  json
 // @Produce  json
-// @Param confirm_phone body models.ConfirmVendorLoginRequest true "confirm login"
-// @Success 200 {object} models.GetVendorModel
+// @Param confirm_phone body models.ConfirmBranchLoginRequest true "confirm login"
+// @Success 200 {object} models.GetBranchModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) ConfirmVendorLogin(c *gin.Context) {
+func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 	var (
-		cm models.ConfirmUserLoginRequest
+		cb models.ConfirmBranchLoginRequest
 	)
 
-	err := c.ShouldBindJSON(&cm)
+	err := c.ShouldBindJSON(&cb)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
-//ConfirmVendorLoginResponse ...
-type ConfirmVendorLoginResponse struct {
-	ID          string `json:"id"`
-	AccessToken string `json:"access_token"`
-}
-	cm.Code = strings.TrimSpace(cm.Code)
+
+	cb.Code = strings.TrimSpace(cb.Code)
 
 	//Getting code from redis
-	key := cm.Phone
+	key := cb.Phone
 	s, err := redis.String(h.inMemoryStorage.Get(key))
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -417,7 +416,7 @@ type ConfirmVendorLoginResponse struct {
 	}
 
 	//Checking whether received code is valid
-	if cm.Code != s {
+	if cb.Code != s {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInvalidCode,
@@ -428,14 +427,88 @@ type ConfirmVendorLoginResponse struct {
 		return
 	}
 
-	_, err = h.grpcClient.UserService().GetClient(
-		context.Background(), &pbu.GetClientRequest{
-			Id: cm.Phone,
+	_, err = h.grpcClient.BranchService().GetBranch(
+		context.Background(), &pbu.GetBranchRequest{
+			Id: cb.Phone,
 		},
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting client") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting branch") {
 		return
 	}
 
 	c.Status(http.StatusOK)
+}
+
+// @Tags branch
+// @Router /v1/nearest-branch [get]
+// @Summary Get Nearest Branch
+// @Description API for getting branch info
+// @Accept  json
+// @Produce json
+// @Param long query string false "long"
+// @Param lat query string false "lat"
+// @Success 200 {object} models.GetBranchModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetNearestBranch(c *gin.Context) {
+
+	var jspbMarshal jsonpb.Marshaler
+	var location pbu.Location
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+	longString,_ := c.GetQuery("long")
+	fmt.Println()
+	long, _ := strconv.ParseFloat(longString,64)
+	latString,_ := c.GetQuery("lat")
+	lat, _ := strconv.ParseFloat(latString,64)
+	location.Long = long
+	location.Lat = lat
+	res, err := h.grpcClient.BranchService().GetNearestBranch(
+		context.Background(),
+		&pbu.GetNearestBranchRequest{
+			Location : &location,
+			},
+		)
+	if handleGRPCErr(c, h.log, err) {
+		return 
+	}
+
+	st, ok := status.FromError(err)
+	if st.Code() == codes.NotFound {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeNotFound,
+				Message: "Branch Not Found",
+			},
+		})
+		h.log.Error("Error while getting branch, Branch Not Found", logger.Error(err))
+		return
+	} else if st.Code() == codes.Unavailable {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Server unavailable",
+			},
+		})
+		h.log.Error("Error while getting branch, service unavailable", logger.Error(err))
+		return
+	} else if !ok || st.Code() == codes.Internal {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Error while getting branch", logger.Error(err))
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }

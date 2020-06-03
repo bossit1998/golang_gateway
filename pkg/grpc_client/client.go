@@ -22,8 +22,8 @@ type GrpcClientI interface {
 	FareService() pbf.FareServiceClient
 	OrderService() pbo.OrderServiceClient
 	SmsService() pbs.SmsServiceClient
-	UserService() pbu.UserServiceClient
-	VendorService() pbu.VendorServiceClient
+	CustomerService() pbu.CustomerServiceClient
+	BranchService() pbu.BranchServiceClient
 	SpecificationService() pb.SpecificationServiceClient
 	ProductKindService() pb.ProductKindServiceClient
 	MeasureService() pb.MeasureServiceClient
@@ -114,8 +114,8 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"order_service":         pbo.NewOrderServiceClient(connOrder),
 			"co_service":            pbco.NewCOServiceClient(connCO),
 			"sms_service":           pbs.NewSmsServiceClient(connSms),
-			"user_service":          pbu.NewUserServiceClient(connUser),
-			"vendor_service":        pbu.NewVendorServiceClient(connUser),
+			"customer_service":      pbu.NewCustomerServiceClient(connUser),
+			"branch_service":        pbu.NewBranchServiceClient(connUser),
 			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
 			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
@@ -155,21 +155,21 @@ func (g *GrpcClient) SmsService() pbs.SmsServiceClient {
 	return g.connections["sms_service"].(pbs.SmsServiceClient)
 }
 
-//UserService ...
-func (g *GrpcClient) UserService() pbu.UserServiceClient {
-	return g.connections["user_service"].(pbu.UserServiceClient)
+//CustomerService ...
+func (g *GrpcClient) CustomerService() pbu.CustomerServiceClient {
+	return g.connections["customer_service"].(pbu.CustomerServiceClient)
 }
 
-//VendorService ...
-func (g *GrpcClient) VendorService() pbu.VendorServiceClient {
-	return g.connections["vendor_service"].(pbu.VendorServiceClient)
+//BranchService ...
+func (g *GrpcClient) BranchService() pbu.BranchServiceClient {
+	return g.connections["branch_service"].(pbu.BranchServiceClient)
 }
 
 //SpecificationService ...
 func (g *GrpcClient) SpecificationService() pb.SpecificationServiceClient {
 	return g.connections["specification_service"].(pb.SpecificationServiceClient)
 }
-
+//ProductKindService ...
 func (g *GrpcClient) ProductKindService() pb.ProductKindServiceClient {
 	return g.connections["product_kind_service"].(pb.ProductKindServiceClient)
 }

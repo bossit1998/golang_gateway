@@ -38,6 +38,30 @@ definitions:
       status_id:
         type: string
     type: object
+  models.CheckBranchLoginRequest:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.CheckBranchLoginResponse:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.CheckCustomerLoginRequest:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.CheckCustomerLoginResponse:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
   models.CheckExistsResponse:
     type: object
   models.CheckLoginRequest:
@@ -61,24 +85,14 @@ definitions:
     required:
     - name
     type: object
-  models.CheckUserLoginRequest:
-    properties:
-      phone:
-        type: string
-    type: object
-  models.CheckUserLoginResponse:
+  models.ConfirmBranchLoginRequest:
     properties:
       code:
         type: string
       phone:
         type: string
     type: object
-  models.CheckVendorLoginRequest:
-    properties:
-      phone:
-        type: string
-    type: object
-  models.CheckVendorLoginResponse:
+  models.ConfirmCustomerLoginRequest:
     properties:
       code:
         type: string
@@ -86,20 +100,6 @@ definitions:
         type: string
     type: object
   models.ConfirmLoginRequest:
-    properties:
-      code:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.ConfirmUserLoginRequest:
-    properties:
-      code:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.ConfirmVendorLoginRequest:
     properties:
       code:
         type: string
@@ -125,6 +125,28 @@ definitions:
       lisense_number:
         type: string
       passport_number:
+        type: string
+    type: object
+  models.CreateBranchModel:
+    properties:
+      address:
+        type: string
+      destination:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      shipper_id:
+        type: string
+      username:
         type: string
     type: object
   models.CreateCargoOwner:
@@ -177,6 +199,13 @@ definitions:
       model:
         type: string
       vehicle_number:
+        type: string
+    type: object
+  models.CreateCustomerModel:
+    properties:
+      name:
+        type: string
+      phone:
         type: string
     type: object
   models.CreateDistributorModel:
@@ -295,31 +324,6 @@ definitions:
       short_name:
         type: string
     type: object
-  models.CreateUserModel:
-    properties:
-      name:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.CreateVendorModel:
-    properties:
-      address:
-        type: string
-      cargo_owner_id:
-        type: string
-      location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      name:
-        type: string
-      password:
-        type: string
-      phone:
-        type: string
-      user_name:
-        type: string
-    type: object
   models.CustomerAddress:
     properties:
       address:
@@ -350,6 +354,15 @@ definitions:
       weight:
         type: number
     type: object
+  models.GetAllBranchesModel:
+    properties:
+      branches:
+        items:
+          $ref: '#/definitions/models.GetBranchModel'
+        type: array
+      count:
+        type: integer
+    type: object
   models.GetAllCategoriesModel:
     properties:
       categories:
@@ -376,6 +389,15 @@ definitions:
       couriers:
         items:
           $ref: '#/definitions/models.GetCourierModel'
+        type: array
+    type: object
+  models.GetAllCustomersModel:
+    properties:
+      count:
+        type: integer
+      customers:
+        items:
+          $ref: '#/definitions/models.GetCustomerModel'
         type: array
     type: object
   models.GetAllDistributorsModel:
@@ -435,23 +457,33 @@ definitions:
           $ref: '#/definitions/models.GetProductModel'
         type: array
     type: object
-  models.GetAllUsersModel:
+  models.GetBranchModel:
     properties:
-      count:
-        type: integer
-      users:
+      address:
+        type: string
+      created_at:
+        type: string
+      destination:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      name:
+        type: string
+      password:
+        type: string
+      phone:
         items:
-          $ref: '#/definitions/models.GetUserModel'
+          type: string
         type: array
-    type: object
-  models.GetAllVendorsModel:
-    properties:
-      count:
-        type: integer
-      vendors:
-        items:
-          $ref: '#/definitions/models.GetVendorModel'
-        type: array
+      shipper_id:
+        type: string
+      username:
+        type: string
     type: object
   models.GetCO:
     properties:
@@ -517,6 +549,21 @@ definitions:
       model:
         type: string
       vehicle_number:
+        type: string
+    type: object
+  models.GetCustomerModel:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        type: string
+      phone:
         type: string
     type: object
   models.GetDistributorModel:
@@ -682,45 +729,6 @@ definitions:
           $ref: '#/definitions/models.Status'
         type: array
     type: object
-  models.GetUserModel:
-    properties:
-      access_token:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      is_active:
-        type: boolean
-      name:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.GetVendorModel:
-    properties:
-      address:
-        type: string
-      cargo_owner_id:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      is_active:
-        type: boolean
-      location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      name:
-        type: string
-      password:
-        type: string
-      phone:
-        type: string
-      user_name:
-        type: string
-    type: object
   models.Location:
     properties:
       lat:
@@ -757,7 +765,7 @@ definitions:
     type: object
   models.RegisterConfirmModel:
     properties:
-      activation_code:
+      code:
         type: string
       phone:
         type: string
@@ -861,6 +869,30 @@ definitions:
       waypoint_index:
         type: integer
     type: object
+  models.UpdateBranchModel:
+    properties:
+      address:
+        type: string
+      destination:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      shipper_id:
+        type: string
+      username:
+        type: string
+    type: object
   models.UpdateCourierModel:
     properties:
       first_name:
@@ -879,6 +911,15 @@ definitions:
       model:
         type: string
       vehicle_number:
+        type: string
+    type: object
+  models.UpdateCustomerModel:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phone:
         type: string
     type: object
   models.UpdateDistributorModel:
@@ -946,37 +987,6 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
-        type: string
-    type: object
-  models.UpdateUserModel:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.UpdateVendorModel:
-    properties:
-      address:
-        type: string
-      cargo_owner_id:
-        type: string
-      id:
-        type: string
-      is_active:
-        type: boolean
-      location:
-        $ref: '#/definitions/models.Location'
-        type: object
-      name:
-        type: string
-      password:
-        type: string
-      phone:
-        type: string
-      user_name:
         type: string
     type: object
   models.getOrderModel:
@@ -1077,6 +1087,217 @@ info:
   contact: {}
   license: {}
 paths:
+  /v1/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branches
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllBranchesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Branches
+      tags:
+      - branch
+    post:
+      consumes:
+      - application/json
+      description: API for creating branch
+      parameters:
+      - description: branch
+        in: body
+        name: branch
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateBranchModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetBranchModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Branch
+      tags:
+      - branch
+    put:
+      consumes:
+      - application/json
+      description: API for updating branch
+      parameters:
+      - description: branch
+        in: body
+        name: branch
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateBranchModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetBranchModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Branch
+      tags:
+      - branch
+  /v1/branches/{branch_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting branch
+      parameters:
+      - description: branch_id
+        in: path
+        name: branch_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Branch
+      tags:
+      - branch
+    get:
+      consumes:
+      - application/json
+      description: API for getting branch info
+      parameters:
+      - description: branch_id
+        in: path
+        name: branch_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetBranchModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Branch
+      tags:
+      - branch
+  /v1/branches/check-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether branch exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckBranchLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckBranchLoginResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Branch Login
+      tags:
+      - branch
+  /v1/branches/confirm-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether - branch entered
+        valid token
+      parameters:
+      - description: confirm login
+        in: body
+        name: confirm_phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmBranchLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetBranchModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm Branch Login
+      tags:
+      - branch
   /v1/calc-delivery-cost:
     post:
       consumes:
@@ -1789,6 +2010,244 @@ paths:
       summary: Get Customer Order Addresses
       tags:
       - order
+  /v1/customers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting customers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCustomersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Customers
+      tags:
+      - customer
+    post:
+      consumes:
+      - application/json
+      description: API for creating customer
+      parameters:
+      - description: customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCustomerModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCustomerModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Customer
+      tags:
+      - customer
+    put:
+      consumes:
+      - application/json
+      description: API for updating customer
+      parameters:
+      - description: customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCustomerModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCustomerModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Customer
+      tags:
+      - customer
+  /v1/customers/{customer_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting customer
+      parameters:
+      - description: customer_id
+        in: path
+        name: customer_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Customer
+      tags:
+      - customer
+    get:
+      consumes:
+      - application/json
+      description: API for getting customer info
+      parameters:
+      - description: customer_id
+        in: path
+        name: customer_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCustomerModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Customer
+      tags:
+      - customer
+  /v1/customers/check-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether customer exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckCustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckCustomerLoginResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Customer Login
+      tags:
+      - customer
+  /v1/customers/confirm-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether customer entered
+        valid token
+      parameters:
+      - description: confirm login
+        in: body
+        name: confirm_phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmCustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCustomerModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm Customer Login
+      tags:
+      - customer
+  /v1/customers/register/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for registering customers
+      parameters:
+      - description: register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterModel'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Register
+      tags:
+      - register
   /v1/distributors:
     get:
       consumes:
@@ -2204,6 +2663,38 @@ paths:
       summary: Create Measure
       tags:
       - measure
+  /v1/nearest-branch:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branch info
+      parameters:
+      - description: long
+        in: query
+        name: long
+        type: number
+      - description: lat
+        in: query
+        name: lat
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetBranchModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Nearest Branch
+      tags:
+      - branch
   /v1/new-order:
     get:
       consumes:
@@ -2817,7 +3308,7 @@ paths:
       summary: Search by phone
       tags:
       - courier
-  /v1/search-users:
+  /v1/search-customers:
     get:
       consumes:
       - application/json
@@ -2864,217 +3355,6 @@ paths:
             $ref: '#/definitions/v1.Path'
       tags:
       - image
-  /v1/users:
-    get:
-      consumes:
-      - application/json
-      description: API for getting users
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetAllUsersModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get All Users
-      tags:
-      - user
-    post:
-      consumes:
-      - application/json
-      description: API for creating user
-      parameters:
-      - description: user
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateUserModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetUserModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Create User
-      tags:
-      - user
-    put:
-      consumes:
-      - application/json
-      description: API for updating user
-      parameters:
-      - description: user
-        in: body
-        name: courier
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateUserModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetUserModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Update User
-      tags:
-      - user
-  /v1/users/{user_id}:
-    delete:
-      consumes:
-      - application/json
-      description: API for deleting user
-      parameters:
-      - description: user_id
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Delete User
-      tags:
-      - user
-    get:
-      consumes:
-      - application/json
-      description: API for getting user info
-      parameters:
-      - description: user_id
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetUserModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get User
-      tags:
-      - user
-  /v1/users/check-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether user exists
-        and if exists sends sms to their number
-      parameters:
-      - description: check login
-        in: body
-        name: check_login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckUserLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckUserLoginResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check User Login
-      tags:
-      - user
-  /v1/users/confirm-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether user entered
-        valid token
-      parameters:
-      - description: confirm login
-        in: body
-        name: confirm_phone
-        required: true
-        schema:
-          $ref: '#/definitions/models.ConfirmUserLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetUserModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Confirm User Login
-      tags:
-      - user
   /v1/users/register-confirm/:
     post:
       consumes:
@@ -3093,7 +3373,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetUserModel'
+            $ref: '#/definitions/models.GetCustomerModel'
         "400":
           description: Bad Request
           schema:
@@ -3105,33 +3385,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Register confirm
-      tags:
-      - register
-  /v1/users/register/:
-    post:
-      consumes:
-      - application/json
-      description: Register - API for registering users
-      parameters:
-      - description: register
-        in: body
-        name: register
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterModel'
-      produces:
-      - application/json
-      responses:
-        "200": {}
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Register
       tags:
       - register
   /v1/vehicle:
@@ -3283,217 +3536,6 @@ paths:
       summary: Delete Courier Vehicle
       tags:
       - vehicle
-  /v1/vendors:
-    get:
-      consumes:
-      - application/json
-      description: API for getting vendors
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetAllVendorsModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get All Vendors
-      tags:
-      - vendor
-    post:
-      consumes:
-      - application/json
-      description: API for creating vendor
-      parameters:
-      - description: vendor
-        in: body
-        name: vendor
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateVendorModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetVendorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Create Vendor
-      tags:
-      - vendor
-    put:
-      consumes:
-      - application/json
-      description: API for updating vendor
-      parameters:
-      - description: vendor
-        in: body
-        name: vendor
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateVendorModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetVendorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Update Vendor
-      tags:
-      - vendor
-  /v1/vendors/{vendor_id}:
-    delete:
-      consumes:
-      - application/json
-      description: API for deleting vendor
-      parameters:
-      - description: vendor_id
-        in: path
-        name: vendor_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Delete Vendor
-      tags:
-      - vendor
-    get:
-      consumes:
-      - application/json
-      description: API for getting vendor info
-      parameters:
-      - description: vendor_id
-        in: path
-        name: vendor_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetVendorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get Vendor
-      tags:
-      - vendor
-  /v1/vendors/check-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether vendor exists
-        and if exists sends sms to their number
-      parameters:
-      - description: check login
-        in: body
-        name: check_login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckVendorLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckVendorLoginResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check Vendor Login
-      tags:
-      - vendor
-  /v1/vendors/confirm-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether - vendor entered
-        valid token
-      parameters:
-      - description: confirm login
-        in: body
-        name: confirm_phone
-        required: true
-        schema:
-          $ref: '#/definitions/models.ConfirmVendorLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetVendorModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Confirm Vendor Login
-      tags:
-      - vendor
 securityDefinitions:
   ApiKeyAuth:
     in: header

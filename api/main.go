@@ -70,28 +70,28 @@ func New(cnf Config) *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
 	// Register endpoints
-	r.POST("/v1/users/register", handlerV1.Register)
-	r.POST("/v1/users/register-confirm", handlerV1.RegisterConfirm)
+	r.POST("/v1/customers/register", handlerV1.Register)
+	r.POST("/v1/customers/register-confirm", handlerV1.RegisterConfirm)
 
-	//User endpoints
-	r.POST("/v1/users", handlerV1.CreateClient)
-	r.PUT("/v1/users", handlerV1.UpdateClient)
-	r.DELETE("/v1/users/:user_id", handlerV1.DeleteClient)
-	r.GET("/v1/search-users", handlerV1.SearchByPhone)
-	r.GET("/v1/users/:user_id", handlerV1.GetClient)
-	r.GET("/v1/users", handlerV1.GetAllClients)
-	r.POST("/v1/users/check-login",handlerV1.CheckUserLogin)
-	r.POST("/v1/users/confirm-login",handlerV1.ConfirmUserLogin)
-	
+	//Customer endpoints
+	r.POST("/v1/customers", handlerV1.CreateCustomer)
+	r.PUT("/v1/customers", handlerV1.UpdateCustomer)
+	r.DELETE("/v1/customers/:customer_id", handlerV1.DeleteCustomer)
+	r.GET("/v1/search-customers", handlerV1.SearchByPhone)
+	r.GET("/v1/customers/:customer_id", handlerV1.GetCustomer)
+	r.GET("/v1/customers", handlerV1.GetAllCustomers)
+	r.POST("/v1/customers/check-login", handlerV1.CheckCustomerLogin)
+	r.POST("/v1/customers/confirm-login", handlerV1.ConfirmCustomerLogin)
 
-	//Vendor endpoints
-	r.POST("/v1/vendors", handlerV1.CreateVendor)
-	r.PUT("/v1/vendors", handlerV1.UpdateVendor)
-	r.DELETE("/v1/vendors/:vendor_id", handlerV1.DeleteVendor)
-	r.GET("/v1/vendors/:vendor_id", handlerV1.GetVendor)
-	r.GET("/v1/vendors", handlerV1.GetAllVendors)
-	r.POST("/v1/vendors/check-login",handlerV1.CheckVendorLogin)
-	r.POST("/v1/vendors/confirm-login",handlerV1.ConfirmVendorLogin)
+	//Branch endpoints
+	r.POST("/v1/branches", handlerV1.CreateBranch)
+	r.PUT("/v1/branches", handlerV1.UpdateBranch)
+	r.DELETE("/v1/branches/:branch_id", handlerV1.DeleteBranch)
+	r.GET("/v1/branches/:branch_id", handlerV1.GetBranch)
+	r.GET("/v1/branches", handlerV1.GetAllBranches)
+	r.POST("/v1/branches/check-login", handlerV1.CheckBranchLogin)
+	r.POST("/v1/branches/confirm-login", handlerV1.ConfirmBranchLogin)
+	r.GET("/v1/nearest-branch",handlerV1.GetNearestBranch)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
