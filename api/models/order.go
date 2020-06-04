@@ -216,4 +216,8 @@ type CustomerAddress struct {
 
 type CustomerAddressesModel struct {
 	Addresses []CustomerAddress `json:"addresses"`
+}
+
+type AddBranchIDModel struct {
+	BranchID string `json:"branch_id"`
 } 
