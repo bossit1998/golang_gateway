@@ -93,6 +93,8 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/branches/confirm-login", handlerV1.ConfirmBranchLogin)
 	r.GET("/v1/nearest-branch",handlerV1.GetNearestBranch)
 	r.POST("/v1/branches/add-courier", handlerV1.CreateBranchCourier)
+	r.POST("/v1/branches/remove-courier", handlerV1.DeleteBranchCourier)
+	r.GET("/v1/branches/:branch_id/couriers", handlerV1.GetAllBranchCouriers)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)

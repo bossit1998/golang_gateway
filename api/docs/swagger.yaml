@@ -9,6 +9,13 @@ definitions:
       courier_id:
         type: string
     type: object
+  models.BranchCourierModel:
+    properties:
+      branch_id:
+        type: string
+      courier_id:
+        type: string
+    type: object
   models.CalcDeliveryCostRequest:
     properties:
       min_distance:
@@ -132,13 +139,6 @@ definitions:
       passport_number:
         type: string
     type: object
-  models.CreateBranchCourierModel:
-    properties:
-      branch_id:
-        type: string
-      courier_id:
-        type: string
-    type: object
   models.CreateBranchModel:
     properties:
       address:
@@ -197,8 +197,6 @@ definitions:
     type: object
   models.CreateCourierModel:
     properties:
-      distributor_id:
-        type: string
       first_name:
         type: string
       last_name:
@@ -1401,6 +1399,43 @@ paths:
       summary: Get Branch
       tags:
       - branch
+  /v1/branches/{branch_id}/couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branch couriers
+      parameters:
+      - description: courier_id
+        in: path
+        name: branch_id
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCouriersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Branch Couriers
+      tags:
+      - branch
   /v1/branches/add-courier:
     post:
       consumes:
@@ -1412,7 +1447,7 @@ paths:
         name: courier
         required: true
         schema:
-          $ref: '#/definitions/models.CreateBranchCourierModel'
+          $ref: '#/definitions/models.BranchCourierModel'
       produces:
       - application/json
       responses:
@@ -1493,6 +1528,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Confirm Branch Login
+      tags:
+      - branch
+  /v1/branches/remove-courier:
+    post:
+      consumes:
+      - application/json
+      description: API for removing courier from branch
+      parameters:
+      - description: branch
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.BranchCourierModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Remove Courier From Branch
       tags:
       - branch
   /v1/calc-delivery-cost:
@@ -1905,6 +1970,34 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete Courier
+      tags:
+      - courier
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Courier
       tags:
       - courier
   /v1/couriers/{courier_id}/block:
