@@ -50,7 +50,6 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 		return
 	}
 	order.DeliveryPrice = order.CoDeliveryPrice
-	order.ClientId = userInfo.ID
 	order.ShipperId = userInfo.ID
 	order.CreatorId = userInfo.ID
 	order.CreatorTypeId = userInfo.ID
@@ -733,4 +732,56 @@ func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
 		})
 
 	c.JSON(http.StatusOK, res)
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/order/{order_id}/add-branch [patch]
+// @Summary Add Branch ID to orders
+// @Description API for adding branch_id
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "order_id"
+// @Param branch body models.AddBranchIDModel true "branch"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) AddBranchID(c *gin.Context) {
+	var (
+		model models.AddBranchIDModel
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	orderID := c.Param("order_id")
+
+	err = c.ShouldBindJSON(&model)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code: ErrorBadRequest,
+			},
+		})
+		return
+	}
+
+	_, err = h.grpcClient.OrderService().AddBranchID(
+		context.Background(),
+		&pbo.AddBranchIDRequest{
+			OrderId: orderID,
+			ShipperId: userInfo.ID,
+			BranchId: model.BranchID,
+		})
+
+	if handleInternalWithMessage(c, h.log, err, "error while adding branch_id") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "branch_id added successfully",
+	})
 }
