@@ -84,7 +84,7 @@ func Load() Config {
 	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "delever"))
 	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "delever"))
 
-	c.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "redis"))
+	c.RedisHost = cast.ToString(getOrReturnDefault("REDIS_HOST", "localhost"))
 	c.RedisPort = cast.ToInt(getOrReturnDefault("REDIS_PORT", 6379))
 
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
@@ -94,8 +94,8 @@ func Load() Config {
 	c.GeoServicePort = cast.ToInt(getOrReturnDefault("GEO_SERVICE_PORT", 80))
 
 
-	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "delever_user_service"))
-	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 80))
+	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "localhost"))
+	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 9003))
 
 	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
 	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
@@ -109,8 +109,8 @@ func Load() Config {
 	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
 	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
 
-	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "sms_service"))
-	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 80))
+	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "localhost"))
+	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 2323))
 
 	c.CatalogServiceHost = cast.ToString(getOrReturnDefault("CATALOG_SERVICE_HOST", "catalog_service"))
 	c.CatalogServicePort = cast.ToInt(getOrReturnDefault("CATALOG_SERVICE_PORT", 80))

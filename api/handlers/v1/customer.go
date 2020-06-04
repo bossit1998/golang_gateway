@@ -445,7 +445,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 // @Router /v1/search-customers [get]
 // @Summary Search by phone
 // @Description API for getting phones
-// @Tags user
+// @Tags customer
 // @Accept  json
 // @Produce  json
 // @Param phone query string false "phone"
