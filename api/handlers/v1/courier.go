@@ -1073,35 +1073,34 @@ func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
 }
 
 
-// @Router /v1/couriers/save-vendors [post]
-// @Summary Create Courier
-// @Description API for creating courier vendor
-// @Tags courier
+// @Router /v1/branches/add-courier [post]
+// @Summary Create Branch Courier
+// @Description API for creating branch courier
+// @Tags branch
 // @Accept  json
 // @Produce  json
-// @Param courier body models.SaveCourierVendorsModel true "courier"
-// @Success 200 {object} models.GetCourierModel
+// @Param courier body models.CreateBranchCourierModel true "branch"
+// @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) SaveCourierVendors(c *gin.Context) {
-	fmt.Print("ok")
+func (h *handlerV1) CreateBranchCourier(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		courierVendors pbc.SaveCourierVendorsRequest
+		branchCourier pbc.CreateBranchCourierRequest
 	)
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &courierVendors)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &branchCourier)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
 
-	_, err = h.grpcClient.CourierService().SaveCourierVendors(
-		context.Background(), &courierVendors,
+	_, err = h.grpcClient.CourierService().CreateBranchCourier(
+		context.Background(), &branchCourier,
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while saving courier vendors") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating branch courier") {
 		return
 	}
 
@@ -1109,3 +1108,39 @@ func (h *handlerV1) SaveCourierVendors(c *gin.Context) {
 		"answer": "success",
 	})
 }
+
+
+// @Router /v1/couriers/{courier_id}/branches [get]
+// @Summary Get All Couirer Branch Ids
+// @Description API for getting courier branhes
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.GetAllCourierBranchesModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetAllCourierBranches(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+	res, err := h.grpcClient.CourierService().GetAllCourierBranches(
+		context.Background(),
+		&pbc.GetAllCourierBranchesRequest{
+			CourierId: c.Param("courier_id"),
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+

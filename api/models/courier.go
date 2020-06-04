@@ -17,6 +17,11 @@ type GetAllCouriersModel struct {
 	Couriers []GetCourierModel `json:"couriers"`
 }
 
+//GetAllCourierBranchesModel ...
+type GetAllCourierBranchesModel struct {
+	BranchIds []string `json:"branch_ids"`
+}
+
 //SearchCouriersByModel ...
 type SearchCouriersByPhoneModel struct {
 	Couriers []GetCourierModel `json:"couriers"`
@@ -34,6 +39,12 @@ type CreateCourierModel struct {
 	FirstName 	  string `json:"first_name"`
 	LastName  	  string `json:"last_name"`
 	DistributorID string `json:"distributor_id"`
+}
+
+//CreateBranchCourierModel ...
+type CreateBranchCourierModel struct {
+	BranchID string `json:"branch_id"`
+	CourierID string `json:"courier_id"`
 }
 
 //UpdateCourierModel ...

@@ -162,6 +162,52 @@ var doc = `{
                 }
             }
         },
+        "/v1/branches/add-courier": {
+            "post": {
+                "description": "API for creating branch courier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "branch"
+                ],
+                "summary": "Create Branch Courier",
+                "parameters": [
+                    {
+                        "description": "branch",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateBranchCourierModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches/check-login/": {
             "post": {
                 "description": "API that checks whether branch exists\nand if exists sends sms to their number",
@@ -1115,52 +1161,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/couriers/save-vendors": {
-            "post": {
-                "description": "API for creating courier vendor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "courier"
-                ],
-                "summary": "Create Courier",
-                "parameters": [
-                    {
-                        "description": "courier",
-                        "name": "courier",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SaveCourierVendorsModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetCourierModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/couriers/{courier_id}": {
             "delete": {
                 "description": "API for deleting courier",
@@ -1232,6 +1232,50 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers/{courier_id}/branches": {
+            "get": {
+                "description": "API for getting courier branhes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get All Couirer Branch Ids",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllCourierBranchesModel"
                         }
                     },
                     "404": {
@@ -4017,6 +4061,17 @@ var doc = `{
                 }
             }
         },
+        "models.CreateBranchCourierModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                },
+                "courier_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateBranchModel": {
             "type": "object",
             "properties": {
@@ -4448,6 +4503,17 @@ var doc = `{
                 "count": {
                     "type": "string",
                     "example": "0"
+                }
+            }
+        },
+        "models.GetAllCourierBranchesModel": {
+            "type": "object",
+            "properties": {
+                "branch_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -5323,20 +5389,6 @@ var doc = `{
             "properties": {
                 "message": {
                     "type": "object"
-                }
-            }
-        },
-        "models.SaveCourierVendorsModel": {
-            "type": "object",
-            "properties": {
-                "courier_id": {
-                    "type": "string"
-                },
-                "vendor_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },

@@ -127,6 +127,13 @@ definitions:
       passport_number:
         type: string
     type: object
+  models.CreateBranchCourierModel:
+    properties:
+      branch_id:
+        type: string
+      courier_id:
+        type: string
+    type: object
   models.CreateBranchModel:
     properties:
       address:
@@ -416,6 +423,13 @@ definitions:
       count:
         example: "0"
         type: string
+    type: object
+  models.GetAllCourierBranchesModel:
+    properties:
+      branch_ids:
+        items:
+          type: string
+        type: array
     type: object
   models.GetAllCourierVehiclesModel:
     properties:
@@ -999,15 +1013,6 @@ definitions:
       message:
         type: object
     type: object
-  models.SaveCourierVendorsModel:
-    properties:
-      courier_id:
-        type: string
-      vendor_ids:
-        items:
-          type: string
-        type: array
-    type: object
   models.SearchByPhoneResponse:
     properties:
       id:
@@ -1389,6 +1394,36 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Branch
+      tags:
+      - branch
+  /v1/branches/add-courier:
+    post:
+      consumes:
+      - application/json
+      description: API for creating branch courier
+      parameters:
+      - description: branch
+        in: body
+        name: courier
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateBranchCourierModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Branch Courier
       tags:
       - branch
   /v1/branches/check-login/:
@@ -1896,6 +1931,35 @@ paths:
       summary: Blocking Courier
       tags:
       - courier
+  /v1/couriers/{courier_id}/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier branhes
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllCourierBranchesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Couirer Branch Ids
+      tags:
+      - courier
   /v1/couriers/{courier_id}/courier-details:
     get:
       consumes:
@@ -2104,36 +2168,6 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Update Courier Details
-      tags:
-      - courier
-  /v1/couriers/save-vendors:
-    post:
-      consumes:
-      - application/json
-      description: API for creating courier vendor
-      parameters:
-      - description: courier
-        in: body
-        name: courier
-        required: true
-        schema:
-          $ref: '#/definitions/models.SaveCourierVendorsModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCourierModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Create Courier
       tags:
       - courier
   /v1/customer-addresses/{phone}:
