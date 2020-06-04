@@ -92,6 +92,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/branches/check-login", handlerV1.CheckBranchLogin)
 	r.POST("/v1/branches/confirm-login", handlerV1.ConfirmBranchLogin)
 	r.GET("/v1/nearest-branch",handlerV1.GetNearestBranch)
+	r.POST("/v1/branches/add-courier", handlerV1.CreateBranchCourier)
 
 	//Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
@@ -99,8 +100,8 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
 	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
+	r.GET("/v1/couriers/:courier_id/branches", handlerV1.GetAllCourierBranches)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
-	r.POST("/v1/couriers/save-vendors", handlerV1.SaveCourierVendors)
 	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)
 	r.PATCH("/v1/couriers/:courier_id/block", handlerV1.BlockCourier)
 	r.PATCH("/v1/couriers/:courier_id/unblock", handlerV1.UnblockCourier)

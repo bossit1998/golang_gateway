@@ -142,6 +142,52 @@
                 }
             }
         },
+        "/v1/branches/add-courier": {
+            "post": {
+                "description": "API for creating branch courier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "branch"
+                ],
+                "summary": "Create Branch Courier",
+                "parameters": [
+                    {
+                        "description": "branch",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateBranchCourierModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches/check-login/": {
             "post": {
                 "description": "API that checks whether branch exists\nand if exists sends sms to their number",
@@ -1095,52 +1141,6 @@
                 }
             }
         },
-        "/v1/couriers/save-vendors": {
-            "post": {
-                "description": "API for creating courier vendor",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "courier"
-                ],
-                "summary": "Create Courier",
-                "parameters": [
-                    {
-                        "description": "courier",
-                        "name": "courier",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SaveCourierVendorsModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetCourierModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/couriers/{courier_id}": {
             "delete": {
                 "description": "API for deleting courier",
@@ -1212,6 +1212,50 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers/{courier_id}/branches": {
+            "get": {
+                "description": "API for getting courier branhes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get All Couirer Branch Ids",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllCourierBranchesModel"
                         }
                     },
                     "404": {
@@ -3513,7 +3557,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "customer"
                 ],
                 "summary": "Search by phone",
                 "parameters": [
@@ -4063,6 +4107,17 @@
                 }
             }
         },
+        "models.CreateBranchCourierModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                },
+                "courier_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateBranchModel": {
             "type": "object",
             "properties": {
@@ -4138,7 +4193,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "parent_id": {
                     "type": "string"
@@ -4203,7 +4259,8 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "steps": {
                     "type": "array",
@@ -4223,7 +4280,8 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "location": {
                                 "type": "object",
@@ -4292,7 +4350,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4373,7 +4432,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -4399,13 +4459,15 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -4485,7 +4547,19 @@
                     }
                 },
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
+                }
+            }
+        },
+        "models.GetAllCourierBranchesModel": {
+            "type": "object",
+            "properties": {
+                "branch_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -4563,7 +4637,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "measures": {
                     "type": "array",
@@ -4577,7 +4652,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "orders": {
                     "type": "array",
@@ -4609,7 +4685,8 @@
                                 "type": "string"
                             },
                             "external_order_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "finished_at": {
                                 "type": "string"
@@ -4654,7 +4731,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -4668,7 +4746,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "products": {
                     "type": "array",
@@ -4808,7 +4887,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "orders": {
                     "type": "array",
@@ -4864,7 +4944,8 @@
                                             "type": "string"
                                         },
                                         "external_step_id": {
-                                            "type": "integer"
+                                            "type": "string",
+                                            "example": "0"
                                         },
                                         "id": {
                                             "type": "string"
@@ -5044,7 +5125,8 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "finished_at": {
                     "type": "string"
@@ -5053,7 +5135,8 @@
                     "type": "string"
                 },
                 "order_amount": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "status_id": {
                     "type": "string"
@@ -5079,7 +5162,8 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "id": {
                                 "type": "string"
@@ -5097,8 +5181,8 @@
                                     "type": "object",
                                     "properties": {
                                         "external_product_id": {
-                                            "type": "integer",
-                                            "example": 1234
+                                            "type": "string",
+                                            "example": "1234"
                                         },
                                         "id": {
                                             "type": "string"
@@ -5119,7 +5203,8 @@
                                             "example": 2
                                         },
                                         "total_amount": {
-                                            "type": "integer"
+                                            "type": "string",
+                                            "example": "0"
                                         }
                                     }
                                 }
@@ -5128,7 +5213,8 @@
                                 "type": "string"
                             },
                             "step_amount": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             }
                         }
                     }
@@ -5229,7 +5315,8 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5348,20 +5435,6 @@
             "properties": {
                 "message": {
                     "type": "object"
-                }
-            }
-        },
-        "models.SaveCourierVendorsModel": {
-            "type": "object",
-            "properties": {
-                "courier_id": {
-                    "type": "string"
-                },
-                "vendor_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },
@@ -5606,16 +5679,11 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "id": {
                     "type": "string"
-                },
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateStepModel"
-                    }
                 },
                 "to_address": {
                     "type": "string",
@@ -5653,8 +5721,8 @@
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
                 },
                 "price": {
-                    "type": "integer",
-                    "example": 50000
+                    "type": "string",
+                    "example": "50000"
                 },
                 "product_id": {
                     "type": "string",
@@ -5674,8 +5742,8 @@
             "type": "object",
             "properties": {
                 "external_product_id": {
-                    "type": "integer",
-                    "example": 1234
+                    "type": "string",
+                    "example": "1234"
                 },
                 "name": {
                     "type": "string",
@@ -5695,8 +5763,8 @@
             "type": "object",
             "properties": {
                 "price": {
-                    "type": "integer",
-                    "example": 50000
+                    "type": "string",
+                    "example": "50000"
                 },
                 "product_id": {
                     "type": "string",
@@ -5705,59 +5773,6 @@
                 "quantity": {
                     "type": "number",
                     "example": 5
-                }
-            }
-        },
-        "models.updateProduct": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "integer",
-                    "example": 50000
-                },
-                "product_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "quantity": {
-                    "type": "number",
-                    "example": 5
-                }
-            }
-        },
-        "models.updateStepModel": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "branch_name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "destination_address": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateProduct"
-                    }
                 }
             }
         },
