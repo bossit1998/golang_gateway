@@ -162,7 +162,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateBranchCourierModel"
+                            "$ref": "#/definitions/models.BranchCourierModel"
                         }
                     }
                 ],
@@ -280,6 +280,52 @@
                 }
             }
         },
+        "/v1/branches/remove-courier": {
+            "post": {
+                "description": "API for removing courier from branch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "branch"
+                ],
+                "summary": "Remove Courier From Branch",
+                "parameters": [
+                    {
+                        "description": "branch",
+                        "name": "courier",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BranchCourierModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches/{branch_id}": {
             "get": {
                 "description": "API for getting branch info",
@@ -349,6 +395,62 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/branches/{branch_id}/couriers": {
+            "get": {
+                "description": "API for getting branch couriers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "branch"
+                ],
+                "summary": "Get All Branch Couriers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "branch_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllCouriersModel"
                         }
                     },
                     "404": {
@@ -1142,6 +1244,48 @@
             }
         },
         "/v1/couriers/{courier_id}": {
+            "get": {
+                "description": "API for getting courier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get Courier",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "API for deleting courier",
                 "consumes": [
@@ -4231,6 +4375,17 @@
                 }
             }
         },
+        "models.BranchCourierModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                },
+                "courier_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CalcDeliveryCostRequest": {
             "type": "object",
             "properties": {
@@ -4452,17 +4607,6 @@
                 }
             }
         },
-        "models.CreateBranchCourierModel": {
-            "type": "object",
-            "properties": {
-                "branch_id": {
-                    "type": "string"
-                },
-                "courier_id": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CreateBranchModel": {
             "type": "object",
             "properties": {
@@ -4549,9 +4693,6 @@
         "models.CreateCourierModel": {
             "type": "object",
             "properties": {
-                "distributor_id": {
-                    "type": "string"
-                },
                 "first_name": {
                     "type": "string"
                 },
