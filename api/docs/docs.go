@@ -2965,6 +2965,64 @@ var doc = `{
                 }
             }
         },
+        "/v1/order/{order_id}/add-branch": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for adding branch_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Add Branch ID to orders",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "branch",
+                        "name": "branch",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddBranchIDModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/order/{order_id}/add-courier": {
             "patch": {
                 "description": "API for adding order courier",
@@ -3519,7 +3577,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "customer"
                 ],
                 "summary": "Search by phone",
                 "parameters": [
@@ -3862,6 +3920,14 @@ var doc = `{
         }
     },
     "definitions": {
+        "models.AddBranchIDModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AddCourierRequest": {
             "type": "object",
             "properties": {

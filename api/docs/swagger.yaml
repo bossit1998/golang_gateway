@@ -1,4 +1,9 @@
 definitions:
+  models.AddBranchIDModel:
+    properties:
+      branch_id:
+        type: string
+    type: object
   models.AddCourierRequest:
     properties:
       courier_id:
@@ -3177,6 +3182,43 @@ paths:
       summary: Update Order
       tags:
       - order
+  /v1/order/{order_id}/add-branch:
+    patch:
+      consumes:
+      - application/json
+      description: API for adding branch_id
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: branch
+        in: body
+        name: branch
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddBranchIDModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Add Branch ID to orders
+      tags:
+      - order
   /v1/order/{order_id}/add-courier:
     patch:
       consumes:
@@ -3566,7 +3608,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Search by phone
       tags:
-      - user
+      - customer
   /v1/upload:
     post:
       parameters:
