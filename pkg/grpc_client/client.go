@@ -24,6 +24,7 @@ type GrpcClientI interface {
 	SmsService() pbs.SmsServiceClient
 	CustomerService() pbu.CustomerServiceClient
 	BranchService() pbu.BranchServiceClient
+	ShipperService() pbu.ShipperServiceClient
 	SpecificationService() pb.SpecificationServiceClient
 	ProductKindService() pb.ProductKindServiceClient
 	MeasureService() pb.MeasureServiceClient
@@ -116,6 +117,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"sms_service":           pbs.NewSmsServiceClient(connSms),
 			"customer_service":      pbu.NewCustomerServiceClient(connUser),
 			"branch_service":        pbu.NewBranchServiceClient(connUser),
+			"shipper_service":       pbu.NewShipperServiceClient(connUser),
 			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
 			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
@@ -169,6 +171,7 @@ func (g *GrpcClient) BranchService() pbu.BranchServiceClient {
 func (g *GrpcClient) SpecificationService() pb.SpecificationServiceClient {
 	return g.connections["specification_service"].(pb.SpecificationServiceClient)
 }
+
 //ProductKindService ...
 func (g *GrpcClient) ProductKindService() pb.ProductKindServiceClient {
 	return g.connections["product_kind_service"].(pb.ProductKindServiceClient)
@@ -184,4 +187,9 @@ func (g *GrpcClient) CategortService() pb.CategoryServiceClient {
 
 func (g *GrpcClient) ProductService() pb.ProductServiceClient {
 	return g.connections["product_service"].(pb.ProductServiceClient)
+}
+
+//ShipperService ...
+func (g *GrpcClient) ShipperService() pbu.ShipperServiceClient {
+	return g.connections["shipper_service"].(pbu.ShipperServiceClient)
 }

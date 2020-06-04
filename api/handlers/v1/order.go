@@ -644,7 +644,7 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	}
 
 	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
-		StatusId: config.NewStatusId,
+		StatusId: config.VendorAcceptedStatusId,
 		Page:  page,
 		Limit: limit,
 	})

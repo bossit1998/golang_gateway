@@ -97,6 +97,18 @@ definitions:
     required:
     - name
     type: object
+  models.CheckShipperLoginRequest:
+    properties:
+      phone:
+        type: string
+    type: object
+  models.CheckShipperLoginResponse:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
   models.ConfirmBranchLoginRequest:
     properties:
       code:
@@ -112,6 +124,13 @@ definitions:
         type: string
     type: object
   models.ConfirmLoginRequest:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.ConfirmShipperLoginRequest:
     properties:
       code:
         type: string
@@ -378,6 +397,23 @@ definitions:
       short_name:
         type: string
     type: object
+  models.CreateShipperModel:
+    properties:
+      description:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
   models.CustomerAddress:
     properties:
       address:
@@ -561,6 +597,15 @@ definitions:
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
+        type: array
+    type: object
+  models.GetAllShippersModel:
+    properties:
+      count:
+        type: integer
+      shippers:
+        items:
+          $ref: '#/definitions/models.GetShipperModel'
         type: array
     type: object
   models.GetBranchModel:
@@ -946,6 +991,29 @@ definitions:
       slug:
         type: string
     type: object
+  models.GetShipperModel:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      logo:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
   models.GetStatuses:
     properties:
       statuses:
@@ -1196,6 +1264,25 @@ definitions:
         $ref: '#/definitions/models.LocationModel'
         type: object
       name:
+        type: string
+    type: object
+  models.UpdateShipperModel:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      username:
         type: string
     type: object
   models.getOrderModel:
@@ -3702,6 +3789,217 @@ paths:
       summary: Search by phone
       tags:
       - customer
+  /v1/shippers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting shippers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllShippersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All shippers
+      tags:
+      - shipper
+    post:
+      consumes:
+      - application/json
+      description: API for creating shipper
+      parameters:
+      - description: shipper
+        in: body
+        name: shipper
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateShipperModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetShipperModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Create Shipper
+      tags:
+      - shipper
+    put:
+      consumes:
+      - application/json
+      description: API for updating shipper
+      parameters:
+      - description: shipper
+        in: body
+        name: shipper
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateShipperModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetShipperModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Shipper
+      tags:
+      - shipper
+  /v1/shippers/{shipper_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting shipper
+      parameters:
+      - description: shipper_id
+        in: path
+        name: shipper_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Shipper
+      tags:
+      - shipper
+    get:
+      consumes:
+      - application/json
+      description: API for getting shipper info
+      parameters:
+      - description: shipper_id
+        in: path
+        name: shipper_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetShipperModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Shipper
+      tags:
+      - shipper
+  /v1/shippers/check-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether shipper exists
+        and if exists sends sms to their number
+      parameters:
+      - description: check login
+        in: body
+        name: check_login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CheckShipperLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CheckShipperLoginResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check Shipper Login
+      tags:
+      - shipper
+  /v1/shippers/confirm-login/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether - Shipper entered
+        valid token
+      parameters:
+      - description: confirm login
+        in: body
+        name: confirm_phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmShipperLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetShipperModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm shipper Login
+      tags:
+      - shipper
   /v1/upload:
     post:
       parameters:
