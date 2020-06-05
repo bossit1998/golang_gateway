@@ -188,13 +188,13 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
 		orderID     string
-		model models.GetOrderModel
+		//model models.GetOrderModel
 	)
-	_, err := userInfo(h, c)
-
-	if err != nil {
-		return
-	}
+	//_, err := userInfo(h, c)
+	//
+	//if err != nil {
+	//	return
+	//}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -202,7 +202,7 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 	orderID = c.Param("order_id")
 
 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
-		ShipperId: "48e53b11-c484-4dc2-86eb-4d323faa55aa",
+		ShipperId: "e70deff2-3446-4cc0-872e-79e78af432b9",
 		Id: orderID,
 	})
 
@@ -210,19 +210,19 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(order)
+	//js, err := jspbMarshal.MarshalToString(order)
+	//
+	//if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+	//	return
+	//}
+	//
+	//err = json.Unmarshal([]byte(js), &model)
+	//
+	//if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+	//	return
+	//}
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
-
-	err = json.Unmarshal([]byte(js), &model)
-
-	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
-		return
-	}
-
-	c.JSON(http.StatusOK, model)
+	c.JSON(http.StatusOK, order)
 }
 
 // @Security ApiKeyAuth
