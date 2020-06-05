@@ -210,11 +210,11 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 		return
 	}
 
-	//js, err := jspbMarshal.MarshalToString(order)
-	//
-	//if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-	//	return
-	//}
+	js, err := jspbMarshal.MarshalToString(order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
 	//
 	//err = json.Unmarshal([]byte(js), &model)
 	//
@@ -222,7 +222,8 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 	//	return
 	//}
 
-	c.JSON(http.StatusOK, order)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
 // @Security ApiKeyAuth
