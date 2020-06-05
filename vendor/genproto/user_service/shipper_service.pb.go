@@ -613,7 +613,7 @@ var file_shipper_service_proto_rawDesc = []byte{
 	0x6f, 0x6e, 0x65, 0x22, 0x2f, 0x0a, 0x15, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x53, 0x68, 0x69,
 	0x70, 0x70, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06,
 	0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78,
-	0x69, 0x73, 0x74, 0x73, 0x32, 0xf9, 0x03, 0x0a, 0x0e, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65, 0x72,
+	0x69, 0x73, 0x74, 0x73, 0x32, 0xee, 0x04, 0x0a, 0x0e, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65, 0x72,
 	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x52, 0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74,
 	0x65, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65, 0x72, 0x12, 0x1e, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65,
@@ -645,9 +645,16 @@ var file_shipper_service_proto_rawDesc = []byte{
 	0x68, 0x69, 0x70, 0x70, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e,
 	0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x53,
 	0x68, 0x69, 0x70, 0x70, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x42, 0x17, 0x5a, 0x15, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65,
-	0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x12, 0x34, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x42, 0x79, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x11,
+	0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65,
+	0x72, 0x1a, 0x11, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x68, 0x69,
+	0x70, 0x70, 0x65, 0x72, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x0e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65,
+	0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x11, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x68, 0x69, 0x70, 0x70, 0x65, 0x72, 0x1a, 0x16, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
+	0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x17, 0x5a, 0x15, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -691,14 +698,18 @@ var file_shipper_service_proto_depIdxs = []int32{
 	6,  // 9: genproto.ShipperService.UpdateShipper:input_type -> genproto.UpdateShipperRequest
 	8,  // 10: genproto.ShipperService.DeleteShipper:input_type -> genproto.DeleteShipperRequest
 	9,  // 11: genproto.ShipperService.ExistsShipper:input_type -> genproto.ExistsShipperRequest
-	1,  // 12: genproto.ShipperService.CreateShipper:output_type -> genproto.CreateShipperResponse
-	3,  // 13: genproto.ShipperService.GetShipper:output_type -> genproto.GetShipperResponse
-	5,  // 14: genproto.ShipperService.GetAllShippers:output_type -> genproto.GetAllShippersResponse
-	7,  // 15: genproto.ShipperService.UpdateShipper:output_type -> genproto.UpdateShipperResponse
-	12, // 16: genproto.ShipperService.DeleteShipper:output_type -> google.protobuf.Empty
-	10, // 17: genproto.ShipperService.ExistsShipper:output_type -> genproto.ExistsShipperResponse
-	12, // [12:18] is the sub-list for method output_type
-	6,  // [6:12] is the sub-list for method input_type
+	11, // 12: genproto.ShipperService.GetByLogin:input_type -> genproto.Shipper
+	11, // 13: genproto.ShipperService.ChangePassword:input_type -> genproto.Shipper
+	1,  // 14: genproto.ShipperService.CreateShipper:output_type -> genproto.CreateShipperResponse
+	3,  // 15: genproto.ShipperService.GetShipper:output_type -> genproto.GetShipperResponse
+	5,  // 16: genproto.ShipperService.GetAllShippers:output_type -> genproto.GetAllShippersResponse
+	7,  // 17: genproto.ShipperService.UpdateShipper:output_type -> genproto.UpdateShipperResponse
+	12, // 18: genproto.ShipperService.DeleteShipper:output_type -> google.protobuf.Empty
+	10, // 19: genproto.ShipperService.ExistsShipper:output_type -> genproto.ExistsShipperResponse
+	11, // 20: genproto.ShipperService.GetByLogin:output_type -> genproto.Shipper
+	12, // 21: genproto.ShipperService.ChangePassword:output_type -> google.protobuf.Empty
+	14, // [14:22] is the sub-list for method output_type
+	6,  // [6:14] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
 	6,  // [6:6] is the sub-list for extension extendee
 	0,  // [0:6] is the sub-list for field type_name
@@ -882,6 +893,8 @@ type ShipperServiceClient interface {
 	UpdateShipper(ctx context.Context, in *UpdateShipperRequest, opts ...grpc.CallOption) (*UpdateShipperResponse, error)
 	DeleteShipper(ctx context.Context, in *DeleteShipperRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	ExistsShipper(ctx context.Context, in *ExistsShipperRequest, opts ...grpc.CallOption) (*ExistsShipperResponse, error)
+	GetByLogin(ctx context.Context, in *Shipper, opts ...grpc.CallOption) (*Shipper, error)
+	ChangePassword(ctx context.Context, in *Shipper, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type shipperServiceClient struct {
@@ -946,6 +959,24 @@ func (c *shipperServiceClient) ExistsShipper(ctx context.Context, in *ExistsShip
 	return out, nil
 }
 
+func (c *shipperServiceClient) GetByLogin(ctx context.Context, in *Shipper, opts ...grpc.CallOption) (*Shipper, error) {
+	out := new(Shipper)
+	err := c.cc.Invoke(ctx, "/genproto.ShipperService/GetByLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shipperServiceClient) ChangePassword(ctx context.Context, in *Shipper, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/genproto.ShipperService/ChangePassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShipperServiceServer is the server API for ShipperService service.
 type ShipperServiceServer interface {
 	CreateShipper(context.Context, *CreateShipperRequest) (*CreateShipperResponse, error)
@@ -954,6 +985,8 @@ type ShipperServiceServer interface {
 	UpdateShipper(context.Context, *UpdateShipperRequest) (*UpdateShipperResponse, error)
 	DeleteShipper(context.Context, *DeleteShipperRequest) (*empty.Empty, error)
 	ExistsShipper(context.Context, *ExistsShipperRequest) (*ExistsShipperResponse, error)
+	GetByLogin(context.Context, *Shipper) (*Shipper, error)
+	ChangePassword(context.Context, *Shipper) (*empty.Empty, error)
 }
 
 // UnimplementedShipperServiceServer can be embedded to have forward compatible implementations.
@@ -977,6 +1010,12 @@ func (*UnimplementedShipperServiceServer) DeleteShipper(context.Context, *Delete
 }
 func (*UnimplementedShipperServiceServer) ExistsShipper(context.Context, *ExistsShipperRequest) (*ExistsShipperResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExistsShipper not implemented")
+}
+func (*UnimplementedShipperServiceServer) GetByLogin(context.Context, *Shipper) (*Shipper, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByLogin not implemented")
+}
+func (*UnimplementedShipperServiceServer) ChangePassword(context.Context, *Shipper) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 
 func RegisterShipperServiceServer(s *grpc.Server, srv ShipperServiceServer) {
@@ -1091,6 +1130,42 @@ func _ShipperService_ExistsShipper_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ShipperService_GetByLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Shipper)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShipperServiceServer).GetByLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/genproto.ShipperService/GetByLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShipperServiceServer).GetByLogin(ctx, req.(*Shipper))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ShipperService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Shipper)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShipperServiceServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/genproto.ShipperService/ChangePassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShipperServiceServer).ChangePassword(ctx, req.(*Shipper))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ShipperService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "genproto.ShipperService",
 	HandlerType: (*ShipperServiceServer)(nil),
@@ -1118,6 +1193,14 @@ var _ShipperService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ExistsShipper",
 			Handler:    _ShipperService_ExistsShipper_Handler,
+		},
+		{
+			MethodName: "GetByLogin",
+			Handler:    _ShipperService_GetByLogin_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _ShipperService_ChangePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
