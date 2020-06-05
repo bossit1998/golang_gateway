@@ -631,8 +631,6 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
-	userInfo, err := userInfo(h, c)
-
 	page, err := ParsePageQueryParam(c)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
@@ -646,7 +644,6 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 	}
 	
 	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
-		ShipperId: userInfo.ID,
 		StatusId: config.VendorAcceptedStatusId,
 		Page:  page,
 		Limit: limit,
