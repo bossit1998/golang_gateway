@@ -1,9 +1,11 @@
 package v1
 
 import (
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"context"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strings"
 
@@ -43,35 +45,55 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 		return
 	}
 
+	err = helpers.ValidateLogin(shipper.Username)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	err = helpers.ValidatePassword(shipper.Password)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	passwordHash, err := etc.GeneratePasswordHash(shipper.Password)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while hashing password") {
+		return
+	}
+
 	id, err := uuid.NewRandom()
 	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "Shipper", signingKey)
+	accessToken, err := jwt.GenerateJWT(id.String(), "shipper", signingKey)
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
 
 	shipper.Id = id.String()
+	shipper.Password = string(passwordHash)
 	shipper.AccessToken = accessToken
 
-	res, err := h.grpcClient.ShipperService().CreateShipper(
+	_, err = h.grpcClient.ShipperService().CreateShipper(
 		context.Background(), &pbu.CreateShipperRequest{
 			Shipper: &shipper,
-		},
-	)
+		})
+
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating Shipper") {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.Shipper)
-	if handleInternalWithMessage(c, h.log, err, "Error while marshalling") {
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
+	c.JSON(http.StatusOK, models.Response{
+		ID: id.String(),
+	})
 }
 
 // @Router /v1/shippers [put]
@@ -435,4 +457,91 @@ func (h *handlerV1) ConfirmShipperLogin(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (h *handlerV1) ShipperLogin(c *gin.Context) {
+	var (
+		model models.ShipperLogin
+		isMatch = true
+	)
+	err := c.ShouldBindJSON(&model)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code: ErrorBadRequest,
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	shipper, err := h.grpcClient.ShipperService().GetByLogin(
+		context.Background(),
+		&pbu.Shipper{
+			Username: model.Login,
+		})
+
+	if err != nil {
+		isMatch = false
+	} else {
+		err = bcrypt.CompareHashAndPassword([]byte(shipper.Password), []byte(model.Password))
+		if err != nil {
+			isMatch = false
+		}
+	}
+
+	if !isMatch {
+		 c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code: ErrorBadRequest,
+				Message: "login or password is incorrect",
+			},
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, shipper)
+}
+
+func (h *handlerV1) ChangePassword(c *gin.Context) {
+	var (
+		model models.ShipperChangePassword
+	)
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	err = c.ShouldBindJSON(&model)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code: ErrorBadRequest,
+				Message: err.Error(),
+			},
+		})
+		return
+	}
+
+	passwordHash, err := etc.GeneratePasswordHash(model.Password)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while hashing password") {
+		return
+	}
+
+	_, err = h.grpcClient.ShipperService().ChangePassword(
+		context.Background(),
+		&pbu.Shipper{
+			Id:userInfo.ID,
+			Password:string(passwordHash),
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while changing shipper password") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{Message:"successfully password changed"})
 }

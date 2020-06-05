@@ -62,3 +62,13 @@ type ConfirmShipperLoginResponse struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
 }
+
+//Login Model
+type ShipperLogin struct {
+	Login string `json:"login" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type ShipperChangePassword struct {
+	Password string `json:"password" binding:"required"`
+}
