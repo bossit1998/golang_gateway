@@ -619,7 +619,6 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 // @Tags order
 // @Accept  json
 // @Produce  json
-// @Param courier_id query integer false "courier_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetOrders
