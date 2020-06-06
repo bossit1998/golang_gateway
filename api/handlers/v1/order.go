@@ -98,6 +98,14 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
+	
+	if order.PaymentType != "cash" && order.PaymentType != "payme" && order.PaymentType != "click" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("payment type is not valid", logger.Error(err))
+		return
+	}
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
 	order.CreatorId = userInfo.ID
@@ -615,22 +623,46 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 }
 
 // @Router /v1/new-order [get]
-// @Summary Get New Orders
-// @Description API for getting new orders
+// @Summary Get Courier New Orders
+// @Description API for getting courier new orders
 // @Tags order
 // @Accept  json
 // @Produce  json
+// @Param courier_id query string false "courier_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetOrders
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) NewOrders(c *gin.Context) {
+func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
+		courierID string
 	)
+
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
+
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role == config.RoleCourier {
+		courierID = userInfo.ID
+	} else {
+		courierID = c.Query("courier_id")
+
+		_, err := uuid.Parse(courierID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "courier id is not valid",
+			})
+			return
+		}
+	}
 
 	page, err := ParsePageQueryParam(c)
 
@@ -644,13 +676,14 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 		return
 	}
 	
-	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
+	order, err := h.grpcClient.OrderService().GetCourierNewOrders(context.Background(), &pbo.GetCourierNewOrdersRequest{
+		CourierId: courierID,
 		StatusId: config.VendorAcceptedStatusId,
 		Page:  page,
 		Limit: limit,
 	})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting new orders") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier new orders") {
 		return
 	}
 

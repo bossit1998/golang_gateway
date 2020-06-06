@@ -2707,7 +2707,7 @@ var doc = `{
         },
         "/v1/new-order": {
             "get": {
-                "description": "API for getting new orders",
+                "description": "API for getting courier new orders",
                 "consumes": [
                     "application/json"
                 ],
@@ -2717,8 +2717,14 @@ var doc = `{
                 "tags": [
                     "order"
                 ],
-                "summary": "Get New Orders",
+                "summary": "Get Courier New Orders",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "page",
@@ -4880,6 +4886,9 @@ var doc = `{
                 "description": {
                     "type": "string"
                 },
+                "payment_type": {
+                    "type": "string"
+                },
                 "steps": {
                     "type": "array",
                     "items": {
@@ -5229,6 +5238,9 @@ var doc = `{
                             "order_amount": {
                                 "type": "integer"
                             },
+                            "payment_type": {
+                                "type": "string"
+                            },
                             "status_id": {
                                 "type": "string"
                             },
@@ -5465,6 +5477,9 @@ var doc = `{
                             },
                             "order_amount": {
                                 "type": "integer"
+                            },
+                            "payment_type": {
+                                "type": "string"
                             },
                             "status_id": {
                                 "type": "string"
