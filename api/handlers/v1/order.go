@@ -140,6 +140,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateOrder(c *gin.Context) {
+	
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -147,19 +148,28 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	)
 	userInfo, err := userInfo(h, c)
 	orderID := c.Param("order_id")
-
+	
 	if err != nil {
 		return
 	}
+	
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
-
+ 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
 		})
 		h.log.Error("error while unmarshal", logger.Error(err))
+		return
+	}
+
+	if order.PaymentType != "cash" && order.PaymentType != "payme" && order.PaymentType != "click" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
 	order.Id = orderID
@@ -170,7 +180,6 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
-	fmt.Println(err)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
 		return
