@@ -96,14 +96,9 @@ func (h *handlerV1) Register(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(reg.Phone, code, 1800)
-	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
-		return
-	}
-
-	key := reg.Phone + "name"
+	key := reg.Phone
 	fmt.Println(key)
-	err = h.inMemoryStorage.SetWithTTl(key, reg.Name, 1800)
+	err = h.inMemoryStorage.SetWithTTl(key, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
@@ -121,7 +116,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-// @Router /v1/users/register-confirm/ [post]
+// @Router /v1/customers/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var (
 		rc models.RegisterConfirmModel
@@ -162,7 +157,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 
 	//Getting name from redis
-	key = rc.Phone + "name"
+	key = rc.Phone
 	name, err := redis.String(h.inMemoryStorage.Get(key))
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
