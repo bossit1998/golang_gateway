@@ -159,3 +159,31 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.ResponseOK{Message:"product updated successfully"})
 }
+
+// @Router /v1/product/{product_id} [delete]
+// @Summary Delete Product
+// @Description API for deleting product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product_id path string true "product_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) DeleteProduct(c *gin.Context) {
+	productID := c.Param("product_id")
+
+	_, err := h.grpcClient.ProductService().Delete(
+		context.Background(),
+		&pb.DeleteRequest{
+			Id: productID,
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while deleting product") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "product deleted successfully",
+	})
+}

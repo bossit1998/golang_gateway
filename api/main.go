@@ -204,6 +204,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/product", handlerV1.CreateProduct)
 	r.GET("/v1/product", handlerV1.GetAllProducts)
 	r.PUT("/v1/product/:product_id", handlerV1.UpdateProduct)
+	r.DELETE("/v1/product/:product_id", handlerV1.DeleteProduct)
 
 	//Upload File
 	r.POST("/v1/upload", handlerV1.ImageUpload)
