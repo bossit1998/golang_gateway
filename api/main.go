@@ -199,6 +199,8 @@ func New(cnf Config) *gin.Engine {
 	//Category endpoints
 	r.POST("/v1/category", handlerV1.CreateCategory)
 	r.GET("/v1/category", handlerV1.GetAllCategory)
+	r.PUT("/v1/category/:category_id", handlerV1.UpdateCategory)
+	r.DELETE("/v1/category/:category_id", handlerV1.DeleteCategory)
 
 	//Product Service
 	r.POST("/v1/product", handlerV1.CreateProduct)
