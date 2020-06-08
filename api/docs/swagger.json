@@ -3704,6 +3704,48 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "API for deleting product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Delete Product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
             }
         },
         "/v1/search-couriers": {

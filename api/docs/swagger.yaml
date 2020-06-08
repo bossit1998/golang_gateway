@@ -3757,6 +3757,34 @@ paths:
       tags:
       - product-kind
   /v1/product/{product_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting product
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Product
+      tags:
+      - product
     put:
       consumes:
       - application/json
