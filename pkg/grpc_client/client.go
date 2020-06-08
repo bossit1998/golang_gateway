@@ -181,7 +181,7 @@ func (g *GrpcClient) MeasureService() pb.MeasureServiceClient {
 	return g.connections["measure_service"].(pb.MeasureServiceClient)
 }
 
-func (g *GrpcClient) CategortService() pb.CategoryServiceClient {
+func (g *GrpcClient) CategoryService() pb.CategoryServiceClient {
 	return g.connections["category_service"].(pb.CategoryServiceClient)
 }
 

@@ -209,8 +209,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -251,8 +250,7 @@ definitions:
       description:
         type: string
       external_order_id:
-        example: "0"
-        type: string
+        type: integer
       steps:
         items:
           properties:
@@ -265,8 +263,7 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              example: "0"
-              type: string
+              type: integer
             location:
               $ref: '#/definitions/models.Location'
               type: object
@@ -312,8 +309,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -369,8 +365,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.CreateProductModel:
     properties:
@@ -387,13 +382,11 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -462,8 +455,7 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.GetAllCourierBranchesModel:
     properties:
@@ -520,8 +512,7 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -530,8 +521,7 @@ definitions:
   models.GetAllOrderModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       orders:
         items:
           properties:
@@ -553,8 +543,7 @@ definitions:
             description:
               type: string
             external_order_id:
-              example: "0"
-              type: string
+              type: integer
             finished_at:
               type: string
             id:
@@ -586,8 +575,7 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -596,8 +584,7 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -698,8 +685,7 @@ definitions:
   models.GetCourierOrdersModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       orders:
         items:
           properties:
@@ -738,8 +724,7 @@ definitions:
                   destination_address:
                     type: string
                   external_step_id:
-                    example: "0"
-                    type: string
+                    type: integer
                   id:
                     type: string
                   location:
@@ -859,15 +844,13 @@ definitions:
       description:
         type: string
       external_order_id:
-        example: "0"
-        type: string
+        type: integer
       finished_at:
         type: string
       id:
         type: string
       order_amount:
-        example: "0"
-        type: string
+        type: integer
       status_id:
         type: string
       steps:
@@ -884,8 +867,7 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              example: "0"
-              type: string
+              type: integer
             id:
               type: string
             location:
@@ -897,8 +879,8 @@ definitions:
               items:
                 properties:
                   external_product_id:
-                    example: "1234"
-                    type: string
+                    example: 1234
+                    type: integer
                   id:
                     type: string
                   name:
@@ -913,15 +895,13 @@ definitions:
                     example: 2
                     type: number
                   total_amount:
-                    example: "0"
-                    type: string
+                    type: integer
                 type: object
               type: array
             status:
               type: string
             step_amount:
-              example: "0"
-              type: string
+              type: integer
           type: object
         type: array
       to_address:
@@ -988,8 +968,7 @@ definitions:
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -1249,10 +1228,13 @@ definitions:
       description:
         type: string
       external_order_id:
-        example: "0"
-        type: string
+        type: integer
       id:
         type: string
+      steps:
+        items:
+          $ref: '#/definitions/models.updateStepModel'
+        type: array
       to_address:
         example: Hamid Olimjon maydoni 10A dom 40-kvartira
         type: string
@@ -1297,8 +1279,8 @@ definitions:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
         type: string
       price:
-        example: "50000"
-        type: string
+        example: 50000
+        type: integer
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -1312,8 +1294,8 @@ definitions:
   models.productDemandModel:
     properties:
       external_product_id:
-        example: "1234"
-        type: string
+        example: 1234
+        type: integer
       name:
         example: Choyxona Osh
         type: string
@@ -1327,14 +1309,50 @@ definitions:
   models.productOnDemandModel:
     properties:
       price:
-        example: "50000"
-        type: string
+        example: 50000
+        type: integer
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
       quantity:
         example: 5
         type: number
+    type: object
+  models.updateProduct:
+    properties:
+      id:
+        type: string
+      price:
+        example: 50000
+        type: integer
+      product_id:
+        example: a010f178-da52-4373-aacd-e477d871e27a
+        type: string
+      quantity:
+        example: 5
+        type: number
+    type: object
+  models.updateStepModel:
+    properties:
+      address:
+        type: string
+      branch_name:
+        type: string
+      description:
+        type: string
+      destination_address:
+        type: string
+      id:
+        type: string
+      location:
+        $ref: '#/definitions/models.Location'
+        type: object
+      phone_number:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/models.updateProduct'
+        type: array
     type: object
   v1.Path:
     properties:
@@ -3738,6 +3756,41 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/product/{product_id}:
+    put:
+      consumes:
+      - application/json
+      description: API for updating product
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Product
+      tags:
+      - product
   /v1/search-couriers:
     get:
       consumes:

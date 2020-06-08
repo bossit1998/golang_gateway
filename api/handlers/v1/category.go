@@ -41,7 +41,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.CategortService().Create(
+	resp, err := h.grpcClient.CategoryService().Create(
 		context.Background(),
 		&category,
 	)
@@ -82,7 +82,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.grpcClient.CategortService().GetAll(
+	resp, err := h.grpcClient.CategoryService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
 			Page: int64(page),

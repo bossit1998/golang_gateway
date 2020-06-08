@@ -115,3 +115,47 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 
 	c.JSON(http.StatusOK, model)
 }
+
+// @Router /v1/product/{product_id} [put]
+// @Summary Update Product
+// @Description API for updating product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product_id path string true "product_id"
+// @Param product body models.CreateProductModel true "product"
+// @Success 200 {object} models.ResponseOK
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) UpdateProduct(c *gin.Context) {
+	var (
+		unmarshal jsonpb.Unmarshaler
+		product pb.Product
+	)
+	productID := c.Param("product_id")
+
+	err := unmarshal.Unmarshal(c.Request.Body, &product)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:ErrorBadRequest,
+				Message:"error while parsing json to proto",
+			},
+		})
+		h.log.Error("error while parsing json to proto", logger.Error(err))
+		return
+	}
+	product.Id = productID
+
+	_, err = h.grpcClient.ProductService().Update(
+		context.Background(),
+		&product,
+	)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while updating product") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{Message:"product updated successfully"})
+}
