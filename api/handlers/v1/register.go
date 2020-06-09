@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -96,10 +95,13 @@ func (h *handlerV1) Register(c *gin.Context) {
 		}
 	}
 
-	key := reg.Phone
-	fmt.Println(key)
-	err = h.inMemoryStorage.SetWithTTl(key, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(reg.Phone+"code", code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+		return
+	}
+
+	err = h.inMemoryStorage.SetWithTTl(reg.Phone+"name", reg.Name, 1800)
+	if handleInternalWithMessage(c, h.log, err, "Error while setting map for name") {
 		return
 	}
 
@@ -131,8 +133,8 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	rc.Phone = strings.TrimSpace(rc.Phone)
 
 	//Getting code from redis
-	key := rc.Phone
-	s, err := redis.String(h.inMemoryStorage.Get(key))
+	s, err := redis.String(h.inMemoryStorage.Get(rc.Phone+"code"))
+
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -157,8 +159,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 
 	//Getting name from redis
-	key = rc.Phone
-	name, err := redis.String(h.inMemoryStorage.Get(key))
+	name, err := redis.String(h.inMemoryStorage.Get(rc.Phone+"name"))
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -194,5 +195,5 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, customer)
 }

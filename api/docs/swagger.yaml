@@ -62,18 +62,6 @@ definitions:
       phone:
         type: string
     type: object
-  models.CheckCustomerLoginRequest:
-    properties:
-      phone:
-        type: string
-    type: object
-  models.CheckCustomerLoginResponse:
-    properties:
-      code:
-        type: string
-      phone:
-        type: string
-    type: object
   models.CheckExistsResponse:
     type: object
   models.CheckLoginRequest:
@@ -423,6 +411,11 @@ definitions:
         items:
           $ref: '#/definitions/models.CustomerAddress'
         type: array
+    type: object
+  models.CustomerLoginRequest:
+    properties:
+      phone:
+        type: string
     type: object
   models.GeoDrivingLegs:
     properties:
@@ -2620,38 +2613,6 @@ paths:
       summary: Get Customer
       tags:
       - customer
-  /v1/customers/check-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether customer exists
-        and if exists sends sms to their number
-      parameters:
-      - description: check login
-        in: body
-        name: check_login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckCustomerLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckCustomerLoginResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check Customer Login
-      tags:
-      - customer
   /v1/customers/confirm-login/:
     post:
       consumes:
@@ -2682,6 +2643,34 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Confirm Customer Login
+      tags:
+      - customer
+  /v1/customers/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether customer exists
+        and if exists sends sms to their number
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Customer Login
       tags:
       - customer
   /v1/customers/register-confirm/:

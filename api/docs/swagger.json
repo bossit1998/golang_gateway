@@ -1830,52 +1830,6 @@
                 }
             }
         },
-        "/v1/customers/check-login/": {
-            "post": {
-                "description": "API that checks whether customer exists\nand if exists sends sms to their number",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "customer"
-                ],
-                "summary": "Check Customer Login",
-                "parameters": [
-                    {
-                        "description": "check login",
-                        "name": "check_login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckCustomerLoginRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckCustomerLoginResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/customers/confirm-login/": {
             "post": {
                 "description": "API that checks whether customer entered\nvalid token",
@@ -1907,6 +1861,46 @@
                             "$ref": "#/definitions/models.GetCustomerModel"
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/customers/login": {
+            "post": {
+                "description": "API that checks whether customer exists\nand if exists sends sms to their number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Customer Login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -4653,25 +4647,6 @@
                 }
             }
         },
-        "models.CheckCustomerLoginRequest": {
-            "type": "object",
-            "properties": {
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CheckCustomerLoginResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CheckExistsResponse": {
             "type": "object"
         },
@@ -5201,6 +5176,14 @@
                     "items": {
                         "$ref": "#/definitions/models.CustomerAddress"
                     }
+                }
+            }
+        },
+        "models.CustomerLoginRequest": {
+            "type": "object",
+            "properties": {
+                "phone": {
+                    "type": "string"
                 }
             }
         },

@@ -30,12 +30,12 @@ type GetAllCustomersModel struct {
 }
 
 //CheckCustomerLoginRequest ...
-type CheckCustomerLoginRequest struct {
+type CustomerLoginRequest struct {
 	Phone string `json:"phone"`
 }
 
 //CheckCustomerLoginResponse ...
-type CheckCustomerLoginResponse struct {
+type CustomerLoginResponse struct {
 	Code  string `json:"code"`
 	Phone string `json:"phone"`
 }
