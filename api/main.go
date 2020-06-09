@@ -80,7 +80,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-customers", handlerV1.SearchByPhone)
 	r.GET("/v1/customers/:customer_id", handlerV1.GetCustomer)
 	r.GET("/v1/customers", handlerV1.GetAllCustomers)
-	r.POST("/v1/customers/check-login", handlerV1.CheckCustomerLogin)
+	r.POST("/v1/customers/login", handlerV1.CheckCustomerLogin)
 	r.POST("/v1/customers/confirm-login", handlerV1.ConfirmCustomerLogin)
 
 	//Branch endpoints
