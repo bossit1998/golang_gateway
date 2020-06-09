@@ -372,10 +372,7 @@ func (h *handlerV1) CheckBranchLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckCustomerLoginResponse{
-		Code:  code,
-		Phone: checkBranchLoginModel.Phone,
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Router /v1/branches/confirm-login/ [POST]

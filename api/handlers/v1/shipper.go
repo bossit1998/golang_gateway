@@ -392,10 +392,7 @@ func (h *handlerV1) CheckShipperLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckCustomerLoginResponse{
-		Code:  code,
-		Phone: checkShipperLoginModel.Phone,
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Router /v1/shippers/confirm-login/ [POST]

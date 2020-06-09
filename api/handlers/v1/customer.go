@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -308,33 +309,32 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 
 
 
-// @Router /v1/customers/check-login/ [POST]
-// @Summary Check Customer Login
+// @Router /v1/customers/login [POST]
+// @Summary Customer Login
 // @Description API that checks whether customer exists
 // @Description and if exists sends sms to their number
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param check_login body models.CheckCustomerLoginRequest true "check login"
-// @Success 200 {object} models.CheckCustomerLoginResponse
+// @Param login body models.CustomerLoginRequest true "login"
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 	var (
-		checkCustomerLoginModel models.CheckCustomerLoginRequest
+		customerLoginModel models.CustomerLoginRequest
 		code                string
 	)
 
-	err := c.ShouldBindJSON(&checkCustomerLoginModel)
+	err := c.ShouldBindJSON(&customerLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
 
-	checkCustomerLoginModel.Phone = strings.TrimSpace(checkCustomerLoginModel.Phone)
+	customerLoginModel.Phone = strings.TrimSpace(customerLoginModel.Phone)
 
 	resp, err := h.grpcClient.CustomerService().ExistsCustomer(
 		context.Background(), &pbu.ExistsCustomerRequest{
-			Phone: checkCustomerLoginModel.Phone,
+			Phone: customerLoginModel.Phone,
 		},
 	)
 	if handleStorageErrWithMessage(c, h.log, err, "Error while checking customer") {
@@ -358,8 +358,8 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 		code = etc.GenerateCode(6)
 		_, err = h.grpcClient.SmsService().Send(
 			context.Background(), &pbs.Sms{
-				Text:       code,
-				Recipients: []string{checkCustomerLoginModel.Phone},
+				Text:       fmt.Sprintf("Your code for delever is %s", code),
+				Recipients: []string{customerLoginModel.Phone},
 			},
 		)
 		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
@@ -367,15 +367,12 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(checkCustomerLoginModel.Phone, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(customerLoginModel.Phone, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CheckCustomerLoginResponse{
-		Code:  code,
-		Phone: checkCustomerLoginModel.Phone,
-	})
+	c.Status(http.StatusOK)
 }
 
 // @Router /v1/customers/confirm-login/ [POST]

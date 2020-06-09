@@ -62,18 +62,6 @@ definitions:
       phone:
         type: string
     type: object
-  models.CheckCustomerLoginRequest:
-    properties:
-      phone:
-        type: string
-    type: object
-  models.CheckCustomerLoginResponse:
-    properties:
-      code:
-        type: string
-      phone:
-        type: string
-    type: object
   models.CheckExistsResponse:
     type: object
   models.CheckLoginRequest:
@@ -430,6 +418,11 @@ definitions:
         items:
           $ref: '#/definitions/models.CustomerAddress'
         type: array
+    type: object
+  models.CustomerLoginRequest:
+    properties:
+      phone:
+        type: string
     type: object
   models.GeoDrivingLegs:
     properties:
@@ -1916,6 +1909,69 @@ paths:
       summary: Create Category
       tags:
       - category
+  /v1/category/{category_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting category
+      parameters:
+      - description: category_id
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Category
+      tags:
+      - category
+    put:
+      consumes:
+      - application/json
+      description: API for updating category
+      parameters:
+      - description: category_id
+        in: path
+        name: category_id
+        required: true
+        type: string
+      - description: category
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCategoryModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Category
+      tags:
+      - category
   /v1/courier/order:
     get:
       consumes:
@@ -2539,38 +2595,6 @@ paths:
       summary: Get Customer
       tags:
       - customer
-  /v1/customers/check-login/:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        API that checks whether customer exists
-        and if exists sends sms to their number
-      parameters:
-      - description: check login
-        in: body
-        name: check_login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckCustomerLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckCustomerLoginResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check Customer Login
-      tags:
-      - customer
   /v1/customers/confirm-login/:
     post:
       consumes:
@@ -2603,6 +2627,66 @@ paths:
       summary: Confirm Customer Login
       tags:
       - customer
+  /v1/customers/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        API that checks whether customer exists
+        and if exists sends sms to their number
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Customer Login
+      tags:
+      - customer
+  /v1/customers/register-confirm/:
+    post:
+      consumes:
+      - application/json
+      description: Register - API for confirming and inserting user to DB
+      parameters:
+      - description: register_confirm
+        in: body
+        name: register_confirm
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterConfirmModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCustomerModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Register confirm
+      tags:
+      - register
   /v1/customers/register/:
     post:
       consumes:
@@ -3738,6 +3822,69 @@ paths:
       summary: Create Product Kind
       tags:
       - product-kind
+  /v1/product/{product_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting product
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Delete Product
+      tags:
+      - product
+    put:
+      consumes:
+      - application/json
+      description: API for updating product
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      - description: product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateProductModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Update Product
+      tags:
+      - product
   /v1/search-couriers:
     get:
       consumes:
@@ -4025,38 +4172,6 @@ paths:
             $ref: '#/definitions/v1.Path'
       tags:
       - image
-  /v1/users/register-confirm/:
-    post:
-      consumes:
-      - application/json
-      description: Register - API for confirming and inserting user to DB
-      parameters:
-      - description: register_confirm
-        in: body
-        name: register_confirm
-        required: true
-        schema:
-          $ref: '#/definitions/models.RegisterConfirmModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCustomerModel'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Register confirm
-      tags:
-      - register
   /v1/vehicle:
     post:
       consumes:
