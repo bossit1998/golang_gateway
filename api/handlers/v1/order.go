@@ -125,6 +125,17 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
+	if order.Steps[0].BranchId.GetValue() != "" {
+		values, err := json.Marshal(map[string]string{
+			"order_id": resp.OrderId,
+		})
+			
+		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			fmt.Println("Error while sending order id to vendor bot")
+		}
+	}
+
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -180,10 +191,27 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	order.CreatorTypeId = userInfo.ID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
+	if order.Steps[0].BranchId.GetValue() == "" {
+		order.StatusId = config.NewStatusId
+	} else {
+		order.StatusId = config.VendorAcceptedStatusId
+	}
+
 	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
 		return
+	}
+
+	if order.Steps[0].BranchId.GetValue() != "" {
+		values, err := json.Marshal(map[string]string{
+			"order_id": orderID,
+		})
+			
+		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			fmt.Println("Error while sending order id to vendor bot")
+		}
 	}
 
 	c.JSON(200, models.ResponseOK{
