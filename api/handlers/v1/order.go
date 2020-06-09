@@ -6,6 +6,7 @@ import (
 	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
+	"bytes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -464,6 +465,16 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		return
 	}
 
+	values, err := json.Marshal(map[string]string{
+		"order_id": orderID,
+		"courier_id": addCourierModel.CourierID,
+	})
+		
+	_, err = http.Post("https://bot.delever.uz/send-courier-order/", "application/json", bytes.NewBuffer(values))
+	if err != nil {
+		fmt.Println("Error while sending order id to vendor bot")
+	}
+
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "courier added successfully",
 	})
@@ -819,6 +830,15 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 			ShipperId: userInfo.ID,
 			BranchId: model.BranchID,
 		})
+
+	values, err := json.Marshal(map[string]string{
+		"order_id": orderID,
+	})
+		
+	_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+	if err != nil {
+		fmt.Println("Error while sending order id to vendor bot")
+	}
 
 	if handleInternalWithMessage(c, h.log, err, "error while adding branch_id") {
 		return
