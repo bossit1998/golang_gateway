@@ -4853,7 +4853,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "parent_id": {
                     "type": "string"
@@ -4915,7 +4916,8 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "steps": {
                     "type": "array",
@@ -4935,7 +4937,8 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "location": {
                                 "type": "object",
@@ -5004,7 +5007,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5088,7 +5092,8 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -5114,13 +5119,15 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5234,7 +5241,8 @@
                     }
                 },
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 }
             }
         },
@@ -5323,7 +5331,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "measures": {
                     "type": "array",
@@ -5337,7 +5346,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "orders": {
                     "type": "array",
@@ -5369,7 +5379,8 @@
                                 "type": "string"
                             },
                             "external_order_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "finished_at": {
                                 "type": "string"
@@ -5417,7 +5428,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -5431,7 +5443,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "products": {
                     "type": "array",
@@ -5585,7 +5598,8 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "orders": {
                     "type": "array",
@@ -5644,7 +5658,8 @@
                                             "type": "string"
                                         },
                                         "external_step_id": {
-                                            "type": "integer"
+                                            "type": "string",
+                                            "example": "0"
                                         },
                                         "id": {
                                             "type": "string"
@@ -5824,7 +5839,8 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "finished_at": {
                     "type": "string"
@@ -5833,7 +5849,8 @@
                     "type": "string"
                 },
                 "order_amount": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "status_id": {
                     "type": "string"
@@ -5859,7 +5876,8 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             },
                             "id": {
                                 "type": "string"
@@ -5877,8 +5895,8 @@
                                     "type": "object",
                                     "properties": {
                                         "external_product_id": {
-                                            "type": "integer",
-                                            "example": 1234
+                                            "type": "string",
+                                            "example": "1234"
                                         },
                                         "id": {
                                             "type": "string"
@@ -5899,7 +5917,8 @@
                                             "example": 2
                                         },
                                         "total_amount": {
-                                            "type": "integer"
+                                            "type": "string",
+                                            "example": "0"
                                         }
                                     }
                                 }
@@ -5908,7 +5927,8 @@
                                 "type": "string"
                             },
                             "step_amount": {
-                                "type": "integer"
+                                "type": "string",
+                                "example": "0"
                             }
                         }
                     }
@@ -6009,7 +6029,8 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -6407,16 +6428,11 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "0"
                 },
                 "id": {
                     "type": "string"
-                },
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateStepModel"
-                    }
                 },
                 "to_address": {
                     "type": "string",
@@ -6483,8 +6499,8 @@
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
                 },
                 "price": {
-                    "type": "integer",
-                    "example": 50000
+                    "type": "string",
+                    "example": "50000"
                 },
                 "product_id": {
                     "type": "string",
@@ -6504,8 +6520,8 @@
             "type": "object",
             "properties": {
                 "external_product_id": {
-                    "type": "integer",
-                    "example": 1234
+                    "type": "string",
+                    "example": "1234"
                 },
                 "name": {
                     "type": "string",
@@ -6525,8 +6541,8 @@
             "type": "object",
             "properties": {
                 "price": {
-                    "type": "integer",
-                    "example": 50000
+                    "type": "string",
+                    "example": "50000"
                 },
                 "product_id": {
                     "type": "string",
@@ -6535,59 +6551,6 @@
                 "quantity": {
                     "type": "number",
                     "example": 5
-                }
-            }
-        },
-        "models.updateProduct": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "integer",
-                    "example": 50000
-                },
-                "product_id": {
-                    "type": "string",
-                    "example": "a010f178-da52-4373-aacd-e477d871e27a"
-                },
-                "quantity": {
-                    "type": "number",
-                    "example": 5
-                }
-            }
-        },
-        "models.updateStepModel": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "branch_name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "destination_address": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.Location"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "products": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.updateProduct"
-                    }
                 }
             }
         },
