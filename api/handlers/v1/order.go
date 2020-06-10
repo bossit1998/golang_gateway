@@ -6,6 +6,7 @@ import (
 	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
+	"bytes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -98,6 +99,14 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
+	
+	if order.PaymentType != "cash" && order.PaymentType != "payme" && order.PaymentType != "click" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("payment type is not valid", logger.Error(err))
+		return
+	}
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
 	order.CreatorId = userInfo.ID
@@ -116,6 +125,17 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
+	if order.Steps[0].BranchId.GetValue() != "" {
+		values, err := json.Marshal(map[string]string{
+			"order_id": resp.OrderId,
+		})
+			
+		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			fmt.Println("Error while sending order id to vendor bot")
+		}
+	}
+
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -132,6 +152,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateOrder(c *gin.Context) {
+	
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -139,19 +160,28 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	)
 	userInfo, err := userInfo(h, c)
 	orderID := c.Param("order_id")
-
+	
 	if err != nil {
 		return
 	}
+	
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
-
+ 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
 		})
 		h.log.Error("error while unmarshal", logger.Error(err))
+		return
+	}
+
+	if order.PaymentType != "cash" && order.PaymentType != "payme" && order.PaymentType != "click" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
 	order.Id = orderID
@@ -161,11 +191,27 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	order.CreatorTypeId = userInfo.ID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
+	if order.Steps[0].BranchId.GetValue() == "" {
+		order.StatusId = config.NewStatusId
+	} else {
+		order.StatusId = config.VendorAcceptedStatusId
+	}
+
 	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
-	fmt.Println(err)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
 		return
+	}
+
+	if order.Steps[0].BranchId.GetValue() != "" {
+		values, err := json.Marshal(map[string]string{
+			"order_id": orderID,
+		})
+			
+		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			fmt.Println("Error while sending order id to vendor bot")
+		}
 	}
 
 	c.JSON(200, models.ResponseOK{
@@ -447,6 +493,16 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		return
 	}
 
+	values, err := json.Marshal(map[string]string{
+		"order_id": orderID,
+		"courier_id": addCourierModel.CourierID,
+	})
+		
+	_, err = http.Post("https://bot.delever.uz/send-courier-order/", "application/json", bytes.NewBuffer(values))
+	if err != nil {
+		fmt.Println("Error while sending order id to vendor bot")
+	}
+
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "courier added successfully",
 	})
@@ -615,22 +671,46 @@ func (h *handlerV1) GetCOOrders(c *gin.Context) {
 }
 
 // @Router /v1/new-order [get]
-// @Summary Get New Orders
-// @Description API for getting new orders
+// @Summary Get Courier New Orders
+// @Description API for getting courier new orders
 // @Tags order
 // @Accept  json
 // @Produce  json
+// @Param courier_id query string false "courier_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetOrders
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) NewOrders(c *gin.Context) {
+func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
+		courierID string
 	)
+
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
+
+	userInfo, err := userInfo(h, c)
+
+	if err != nil {
+		return
+	}
+
+	if userInfo.Role == config.RoleCourier {
+		courierID = userInfo.ID
+	} else {
+		courierID = c.Query("courier_id")
+
+		_, err := uuid.Parse(courierID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "courier id is not valid",
+			})
+			return
+		}
+	}
 
 	page, err := ParsePageQueryParam(c)
 
@@ -644,13 +724,14 @@ func (h *handlerV1) NewOrders(c *gin.Context) {
 		return
 	}
 	
-	order, err := h.grpcClient.OrderService().GetOrdersByStatus(context.Background(), &pbo.GetOrdersByStatusRequest{
+	order, err := h.grpcClient.OrderService().GetCourierNewOrders(context.Background(), &pbo.GetCourierNewOrdersRequest{
+		CourierId: courierID,
 		StatusId: config.VendorAcceptedStatusId,
 		Page:  page,
 		Limit: limit,
 	})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting new orders") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier new orders") {
 		return
 	}
 
@@ -777,6 +858,15 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 			ShipperId: userInfo.ID,
 			BranchId: model.BranchID,
 		})
+
+	values, err := json.Marshal(map[string]string{
+		"order_id": orderID,
+	})
+		
+	_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+	if err != nil {
+		fmt.Println("Error while sending order id to vendor bot")
+	}
 
 	if handleInternalWithMessage(c, h.log, err, "error while adding branch_id") {
 		return

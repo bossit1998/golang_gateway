@@ -80,7 +80,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-customers", handlerV1.SearchByPhone)
 	r.GET("/v1/customers/:customer_id", handlerV1.GetCustomer)
 	r.GET("/v1/customers", handlerV1.GetAllCustomers)
-	r.POST("/v1/customers/check-login", handlerV1.CheckCustomerLogin)
+	r.POST("/v1/customers/login", handlerV1.CheckCustomerLogin)
 	r.POST("/v1/customers/confirm-login", handlerV1.ConfirmCustomerLogin)
 
 	//Branch endpoints
@@ -163,7 +163,7 @@ func New(cnf Config) *gin.Engine {
 	r.PUT("/v1/order/:order_id", handlerV1.UpdateOrder)
 	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
 	r.GET("/v1/order", handlerV1.GetOrders)
-	r.GET("/v1/new-order", handlerV1.NewOrders)
+	r.GET("/v1/new-order", handlerV1.CourierNewOrders)
 	r.PATCH("v1/order/:order_id/change-status", handlerV1.ChangeOrderStatus)
 	r.GET("/v1/order-statuses", handlerV1.GetStatuses)
 	r.PATCH("v1/order/:order_id/add-courier", handlerV1.AddCourier)
@@ -199,10 +199,14 @@ func New(cnf Config) *gin.Engine {
 	//Category endpoints
 	r.POST("/v1/category", handlerV1.CreateCategory)
 	r.GET("/v1/category", handlerV1.GetAllCategory)
+	r.PUT("/v1/category/:category_id", handlerV1.UpdateCategory)
+	r.DELETE("/v1/category/:category_id", handlerV1.DeleteCategory)
 
 	//Product Service
 	r.POST("/v1/product", handlerV1.CreateProduct)
 	r.GET("/v1/product", handlerV1.GetAllProducts)
+	r.PUT("/v1/product/:product_id", handlerV1.UpdateProduct)
+	r.DELETE("/v1/product/:product_id", handlerV1.DeleteProduct)
 
 	//Upload File
 	r.POST("/v1/upload", handlerV1.ImageUpload)

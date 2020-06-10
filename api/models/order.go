@@ -57,6 +57,7 @@ type orderOnDemandModel struct {
 	ClientID        	string   			`json:"client_id"`
 	CoDeliveryPrice     float64  			`json:"co_delivery_price" example:"10000"`
 	Description         string   			`json:"description"`
+	PaymentType         string   			`json:"payment_type"`
 }
 
 type CreateOnDemandOrderModel struct {
@@ -100,6 +101,7 @@ type GetAllOrderModel struct {
 		StatusID string `json:"status_id"`
 		CreatedAt string `json:"created_at"`
 		FinishedAt string `json:"finished_at"`
+		PaymentType         string `json:"payment_type"`
 		OrderAmount int64 `json:"order_amount,omitempty"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
