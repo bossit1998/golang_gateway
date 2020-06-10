@@ -116,7 +116,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 	if order.Steps[0].BranchId.GetValue() == "" {
 		order.StatusId = config.NewStatusId
 	} else {
-		order.StatusId = config.VendorAcceptedStatusId
+		order.StatusId = config.OperatorAcceptedStatusId
 	}
 
 	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
@@ -130,7 +130,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 			"order_id": resp.OrderId,
 		})
 			
-		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			fmt.Println("Error while sending order id to vendor bot")
 		}
@@ -194,7 +194,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	if order.Steps[0].BranchId.GetValue() == "" {
 		order.StatusId = config.NewStatusId
 	} else {
-		order.StatusId = config.VendorAcceptedStatusId
+		order.StatusId = config.OperatorAcceptedStatusId
 	}
 
 	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
@@ -208,7 +208,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 			"order_id": orderID,
 		})
 			
-		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			fmt.Println("Error while sending order id to vendor bot")
 		}
@@ -498,7 +498,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		"courier_id": addCourierModel.CourierID,
 	})
 		
-	_, err = http.Post("https://bot.delever.uz/send-courier-order/", "application/json", bytes.NewBuffer(values))
+	_, err = http.Post(config.TelegramBotURL + "/send-courier-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
@@ -863,7 +863,7 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 		"order_id": orderID,
 	})
 		
-	_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+	_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
