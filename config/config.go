@@ -27,7 +27,6 @@ const (
 	TelegramBotURL = "https://bot.delever.uz"
 )
 
-
 // Config ...
 type Config struct {
 	Environment string // develop, staging, production
