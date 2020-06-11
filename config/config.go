@@ -24,7 +24,8 @@ const (
 	CourierPickedUpStatusId  = "84be5a2f-3a92-4469-8283-220ca34a0de4"
 	DeliveredStatusId = "79413606-a56f-45ed-97c3-f3f18e645972"
 	FinishedStatusId  = "e665273d-5415-4243-a329-aee410e39465"
-	TelegramBotURL = "https://bot.delever.uz"
+	// TelegramBotURL = "https://bot.delever.uz"
+	TelegramBotURL = "https://9912bd504979.ngrok.io"
 )
 
 // Config ...
@@ -105,10 +106,8 @@ func Load() Config {
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
 	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 80))
 
-	// c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
-	// c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
-	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "localhost"))
-	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 8002))
+	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
+	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
 
 	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
 	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
