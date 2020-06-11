@@ -58,6 +58,11 @@ type orderOnDemandModel struct {
 	CoDeliveryPrice     float64  			`json:"co_delivery_price" example:"10000"`
 	Description         string   			`json:"description"`
 	PaymentType         string   			`json:"payment_type"`
+	Source         		string   			`json:"source"`
+	Apartment        	string   			`json:"apartment"`
+	Building         	string   			`json:"building"`
+	Floor             	string 				`json:"floor"`
+	ExtraPhoneNumber    string   			`json:"extra_phone_number"`
 }
 
 type CreateOnDemandOrderModel struct {
@@ -76,7 +81,13 @@ type GetOrderModel struct {
 	StatusID string `json:"status_id"`
 	CreatedAt string `json:"created_at"`
 	FinishedAt string `json:"finished_at"`
+	PaymentType string `json:"payment_type"`
 	OrderAmount uint64 `json:"order_amount,string"`
+	Source string `json:"source"`
+	Apartment string `json:"apartment"`
+	Building string `json:"building"`
+	Floor string `json:"floor"`
+	ExtraPhoneNumber string `json:"extra_phone_number"`
 	Steps []struct{
 		stepDemandModel
 		ID string `json:"id"`
@@ -101,7 +112,12 @@ type GetAllOrderModel struct {
 		StatusID string `json:"status_id"`
 		CreatedAt string `json:"created_at"`
 		FinishedAt string `json:"finished_at"`
-		PaymentType         string `json:"payment_type"`
+		PaymentType string `json:"payment_type"`
+		Source string  `json:"source"`
+		Apartment string `json:"apartment"`
+		Building string `json:"building"`
+		Floor string `json:"floor"`
+		ExtraPhoneNumber string `json:"extra_phone_number"`
 		OrderAmount int64 `json:"order_amount,omitempty"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
@@ -145,12 +161,15 @@ type updateStepModel struct {
 
 type updateOrder struct {
 	ID string `json:"id"`
-	orderDemandModel
+	orderOnDemandModel
 }
 
 type UpdateOrder struct {
 	updateOrder
-	steps []updateStepModel `json:"steps"`
+	Steps []struct{
+		stepOnDemandModel
+		Products []productOnDemandModel `json:"products"`
+	} `json:"steps"`
 }
 
 type step struct {

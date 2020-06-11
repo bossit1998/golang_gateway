@@ -5041,6 +5041,12 @@ var doc = `{
         "models.CreateOnDemandOrderModel": {
             "type": "object",
             "properties": {
+                "apartment": {
+                    "type": "string"
+                },
+                "building": {
+                    "type": "string"
+                },
                 "client_id": {
                     "type": "string"
                 },
@@ -5051,7 +5057,16 @@ var doc = `{
                 "description": {
                     "type": "string"
                 },
+                "extra_phone_number": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
+                },
                 "payment_type": {
+                    "type": "string"
+                },
+                "source": {
                     "type": "string"
                 },
                 "steps": {
@@ -5374,6 +5389,12 @@ var doc = `{
                     "items": {
                         "type": "object",
                         "properties": {
+                            "apartment": {
+                                "type": "string"
+                            },
+                            "building": {
+                                "type": "string"
+                            },
                             "client_id": {
                                 "type": "string"
                             },
@@ -5402,7 +5423,13 @@ var doc = `{
                                 "type": "string",
                                 "example": "0"
                             },
+                            "extra_phone_number": {
+                                "type": "string"
+                            },
                             "finished_at": {
+                                "type": "string"
+                            },
+                            "floor": {
                                 "type": "string"
                             },
                             "id": {
@@ -5412,6 +5439,9 @@ var doc = `{
                                 "type": "integer"
                             },
                             "payment_type": {
+                                "type": "string"
+                            },
+                            "source": {
                                 "type": "string"
                             },
                             "status_id": {
@@ -5626,6 +5656,12 @@ var doc = `{
                     "items": {
                         "type": "object",
                         "properties": {
+                            "apartment": {
+                                "type": "string"
+                            },
+                            "building": {
+                                "type": "string"
+                            },
                             "client_id": {
                                 "type": "string"
                             },
@@ -5645,6 +5681,12 @@ var doc = `{
                             "description": {
                                 "type": "string"
                             },
+                            "extra_phone_number": {
+                                "type": "string"
+                            },
+                            "floor": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "string"
                             },
@@ -5652,6 +5694,9 @@ var doc = `{
                                 "type": "integer"
                             },
                             "payment_type": {
+                                "type": "string"
+                            },
+                            "source": {
                                 "type": "string"
                             },
                             "status_id": {
@@ -5834,6 +5879,12 @@ var doc = `{
         "models.GetOrderModel": {
             "type": "object",
             "properties": {
+                "apartment": {
+                    "type": "string"
+                },
+                "building": {
+                    "type": "string"
+                },
                 "client_id": {
                     "type": "string"
                 },
@@ -5862,7 +5913,13 @@ var doc = `{
                     "type": "string",
                     "example": "0"
                 },
+                "extra_phone_number": {
+                    "type": "string"
+                },
                 "finished_at": {
+                    "type": "string"
+                },
+                "floor": {
                     "type": "string"
                 },
                 "id": {
@@ -5871,6 +5928,12 @@ var doc = `{
                 "order_amount": {
                     "type": "string",
                     "example": "0"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
                 },
                 "status_id": {
                     "type": "string"
@@ -6432,13 +6495,14 @@ var doc = `{
         "models.UpdateOrder": {
             "type": "object",
             "properties": {
-                "client_name": {
-                    "type": "string",
-                    "example": "Oybek"
+                "apartment": {
+                    "type": "string"
                 },
-                "client_phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
+                "building": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
                 },
                 "co_delivery_price": {
                     "type": "number",
@@ -6447,12 +6511,40 @@ var doc = `{
                 "description": {
                     "type": "string"
                 },
-                "external_order_id": {
-                    "type": "string",
-                    "example": "0"
+                "extra_phone_number": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "branch_id": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.productOnDemandModel"
+                                }
+                            }
+                        }
+                    }
                 },
                 "to_address": {
                     "type": "string",

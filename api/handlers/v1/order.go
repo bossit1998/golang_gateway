@@ -107,6 +107,16 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
+
+	if order.Source != "admin_panel" && order.Source != "website" && 
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("source type is not valid", logger.Error(err))
+		return
+	}
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
 	order.CreatorId = userInfo.ID
@@ -116,7 +126,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 	if order.Steps[0].BranchId.GetValue() == "" {
 		order.StatusId = config.NewStatusId
 	} else {
-		order.StatusId = config.VendorAcceptedStatusId
+		order.StatusId = config.OperatorAcceptedStatusId
 	}
 
 	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
@@ -130,7 +140,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 			"order_id": resp.OrderId,
 		})
 			
-		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			fmt.Println("Error while sending order id to vendor bot")
 		}
@@ -152,7 +162,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateOrder(c *gin.Context) {
-	
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -184,6 +193,17 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
+
+	if order.Source != "admin_panel" && order.Source != "website" && 
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("source type is not valid", logger.Error(err))
+		return
+	}
+
 	order.Id = orderID
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
@@ -194,7 +214,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	if order.Steps[0].BranchId.GetValue() == "" {
 		order.StatusId = config.NewStatusId
 	} else {
-		order.StatusId = config.VendorAcceptedStatusId
+		order.StatusId = config.OperatorAcceptedStatusId
 	}
 
 	_, err = h.grpcClient.OrderService().Update(context.Background(), &order)
@@ -208,7 +228,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 			"order_id": orderID,
 		})
 			
-		_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			fmt.Println("Error while sending order id to vendor bot")
 		}
@@ -417,23 +437,27 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	var ()
 	m := make(map[string]string)
 	m["new"] = config.NewStatusId
-	m["courier_accepted"] = config.CourierAcceptedStatusId
-	m["courier_picked_up"] = config.CourierPickedUpStatusId
-	m["delivered"] = config.DeliveredStatusId
-	m["finished"] = config.FinishedStatusId
-	m["courier_cancelled"] = config.CourierCancelledStatusId
+	m["operator_accepted"] = config.OperatorAcceptedStatusId
+	m["operator_cancelled"] = config.OperatorCancelledStatusId
 	m["vendor_accepted"] = config.VendorAcceptedStatusId
 	m["vendor_cancelled"] = config.VendorCancelledStatusId
 	m["vendor_ready"] = config.VendorReadyStatusId
+	m["courier_accepted"] = config.CourierAcceptedStatusId
+	m["courier_cancelled"] = config.CourierCancelledStatusId
+	m["courier_picked_up"] = config.CourierPickedUpStatusId
+	m["delivered"] = config.DeliveredStatusId
+	m["finished"] = config.FinishedStatusId
 	m[config.NewStatusId] = "New"
-	m[config.CourierAcceptedStatusId] = "Courier Accepted"
-	m[config.CourierPickedUpStatusId] = "Courier Picked up"
-	m[config.DeliveredStatusId] = "Delivered"
-	m[config.FinishedStatusId] = "Finished"
-	m[config.CourierCancelledStatusId] = "Courier Cancelled"
+	m[config.OperatorAcceptedStatusId] = "Operator Accepted"
+	m[config.OperatorCancelledStatusId] = "Operator Cancelled"
 	m[config.VendorAcceptedStatusId] = "Vendor Accepted"
 	m[config.VendorCancelledStatusId] = "Vendor Cancelled"
 	m[config.VendorReadyStatusId] = "Vendor Ready"
+	m[config.CourierAcceptedStatusId] = "Courier Accepted"
+	m[config.CourierPickedUpStatusId] = "Courier Picked up"
+	m[config.CourierCancelledStatusId] = "Courier Cancelled"
+	m[config.DeliveredStatusId] = "Delivered"
+	m[config.FinishedStatusId] = "Finished"
 
 	//status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
 	//model.Statuses = append(model.Statuses, status)
@@ -498,7 +522,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		"courier_id": addCourierModel.CourierID,
 	})
 		
-	_, err = http.Post("https://bot.delever.uz/send-courier-order/", "application/json", bytes.NewBuffer(values))
+	_, err = http.Post(config.TelegramBotURL + "/send-courier-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
@@ -616,58 +640,6 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model)
-}
-
-func (h *handlerV1) GetCOOrders(c *gin.Context) {
-	var (
-		coID string
-	)
-	userInfo, err := userInfo(h, c)
-
-	if err != nil {
-		return
-	}
-
-	if userInfo.Role == config.RoleCargoOwnerAdmin {
-		coID = userInfo.ID
-	} else {
-		coID = c.Query("co_id")
-
-		_, err := uuid.Parse(coID)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error: "cargo owner id is not valid",
-			})
-			return
-		}
-	}
-
-	page, err := ParsePageQueryParam(c)
-
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
-		return
-	}
-
-	limit, err := ParseLimitQueryParam(c)
-
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
-		return
-	}
-
-	orders, err := h.grpcClient.OrderService().GetCOOrders(
-		context.Background(),
-		&pbo.GetCOOrdersRequest{
-			CoId:  coID,
-			Page:  page,
-			Limit: limit,
-		})
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier orders") {
-		return
-	}
-
-	c.JSON(http.StatusOK, orders)
 }
 
 // @Router /v1/new-order [get]
@@ -863,7 +835,7 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 		"order_id": orderID,
 	})
 		
-	_, err = http.Post("https://bot.delever.uz/send-order/", "application/json", bytes.NewBuffer(values))
+	_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
