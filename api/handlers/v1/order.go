@@ -108,7 +108,9 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Source != "website" && order.Source != "bot" && order.Source != "app" {
+	if order.Source != "admin_panel" && order.Source != "website" && 
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
 		})
@@ -192,7 +194,9 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Source != "website" && order.Source != "bot" && order.Source != "app" {
+	if order.Source != "admin_panel" && order.Source != "website" && 
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
 		})
@@ -433,23 +437,27 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	var ()
 	m := make(map[string]string)
 	m["new"] = config.NewStatusId
-	m["courier_accepted"] = config.CourierAcceptedStatusId
-	m["courier_picked_up"] = config.CourierPickedUpStatusId
-	m["delivered"] = config.DeliveredStatusId
-	m["finished"] = config.FinishedStatusId
-	m["courier_cancelled"] = config.CourierCancelledStatusId
+	m["operator_accepted"] = config.OperatorAcceptedStatusId
+	m["operator_cancelled"] = config.OperatorCancelledStatusId
 	m["vendor_accepted"] = config.VendorAcceptedStatusId
 	m["vendor_cancelled"] = config.VendorCancelledStatusId
 	m["vendor_ready"] = config.VendorReadyStatusId
+	m["courier_accepted"] = config.CourierAcceptedStatusId
+	m["courier_cancelled"] = config.CourierCancelledStatusId
+	m["courier_picked_up"] = config.CourierPickedUpStatusId
+	m["delivered"] = config.DeliveredStatusId
+	m["finished"] = config.FinishedStatusId
 	m[config.NewStatusId] = "New"
-	m[config.CourierAcceptedStatusId] = "Courier Accepted"
-	m[config.CourierPickedUpStatusId] = "Courier Picked up"
-	m[config.DeliveredStatusId] = "Delivered"
-	m[config.FinishedStatusId] = "Finished"
-	m[config.CourierCancelledStatusId] = "Courier Cancelled"
+	m[config.OperatorAcceptedStatusId] = "Operator Accepted"
+	m[config.OperatorCancelledStatusId] = "Operator Cancelled"
 	m[config.VendorAcceptedStatusId] = "Vendor Accepted"
 	m[config.VendorCancelledStatusId] = "Vendor Cancelled"
 	m[config.VendorReadyStatusId] = "Vendor Ready"
+	m[config.CourierAcceptedStatusId] = "Courier Accepted"
+	m[config.CourierPickedUpStatusId] = "Courier Picked up"
+	m[config.CourierCancelledStatusId] = "Courier Cancelled"
+	m[config.DeliveredStatusId] = "Delivered"
+	m[config.FinishedStatusId] = "Finished"
 
 	//status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
 	//model.Statuses = append(model.Statuses, status)
