@@ -107,6 +107,14 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
+
+	if order.Source != "website" && order.Source != "bot" && order.Source != "app" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("source type is not valid", logger.Error(err))
+		return
+	}
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
 	order.CreatorId = userInfo.ID
@@ -152,7 +160,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateOrder(c *gin.Context) {
-	
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -184,6 +191,15 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		h.log.Error("payment type is not valid", logger.Error(err))
 		return
 	}
+
+	if order.Source != "website" && order.Source != "bot" && order.Source != "app" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("source type is not valid", logger.Error(err))
+		return
+	}
+
 	order.Id = orderID
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ID
@@ -616,58 +632,6 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model)
-}
-
-func (h *handlerV1) GetCOOrders(c *gin.Context) {
-	var (
-		coID string
-	)
-	userInfo, err := userInfo(h, c)
-
-	if err != nil {
-		return
-	}
-
-	if userInfo.Role == config.RoleCargoOwnerAdmin {
-		coID = userInfo.ID
-	} else {
-		coID = c.Query("co_id")
-
-		_, err := uuid.Parse(coID)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error: "cargo owner id is not valid",
-			})
-			return
-		}
-	}
-
-	page, err := ParsePageQueryParam(c)
-
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
-		return
-	}
-
-	limit, err := ParseLimitQueryParam(c)
-
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
-		return
-	}
-
-	orders, err := h.grpcClient.OrderService().GetCOOrders(
-		context.Background(),
-		&pbo.GetCOOrdersRequest{
-			CoId:  coID,
-			Page:  page,
-			Limit: limit,
-		})
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier orders") {
-		return
-	}
-
-	c.JSON(http.StatusOK, orders)
 }
 
 // @Router /v1/new-order [get]

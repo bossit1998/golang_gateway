@@ -309,6 +309,10 @@ definitions:
     type: object
   models.CreateOnDemandOrderModel:
     properties:
+      apartment:
+        type: string
+      building:
+        type: string
       client_id:
         type: string
       co_delivery_price:
@@ -316,7 +320,13 @@ definitions:
         type: number
       description:
         type: string
+      extra_phone_number:
+        type: string
+      floor:
+        type: string
       payment_type:
+        type: string
+      source:
         type: string
       steps:
         items:
@@ -528,6 +538,10 @@ definitions:
       orders:
         items:
           properties:
+            apartment:
+              type: string
+            building:
+              type: string
             client_id:
               type: string
             client_name:
@@ -548,13 +562,19 @@ definitions:
             external_order_id:
               example: "0"
               type: string
+            extra_phone_number:
+              type: string
             finished_at:
+              type: string
+            floor:
               type: string
             id:
               type: string
             order_amount:
               type: integer
             payment_type:
+              type: string
+            source:
               type: string
             status_id:
               type: string
@@ -696,6 +716,10 @@ definitions:
       orders:
         items:
           properties:
+            apartment:
+              type: string
+            building:
+              type: string
             client_id:
               type: string
             client_name:
@@ -709,11 +733,17 @@ definitions:
               type: string
             description:
               type: string
+            extra_phone_number:
+              type: string
+            floor:
+              type: string
             id:
               type: string
             order_amount:
               type: integer
             payment_type:
+              type: string
+            source:
               type: string
             status_id:
               type: string
@@ -834,6 +864,10 @@ definitions:
     type: object
   models.GetOrderModel:
     properties:
+      apartment:
+        type: string
+      building:
+        type: string
       client_id:
         type: string
       client_name:
@@ -854,12 +888,20 @@ definitions:
       external_order_id:
         example: "0"
         type: string
+      extra_phone_number:
+        type: string
       finished_at:
+        type: string
+      floor:
         type: string
       id:
         type: string
       order_amount:
         example: "0"
+        type: string
+      payment_type:
+        type: string
+      source:
         type: string
       status_id:
         type: string
