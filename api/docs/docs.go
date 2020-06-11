@@ -6495,13 +6495,14 @@ var doc = `{
         "models.UpdateOrder": {
             "type": "object",
             "properties": {
-                "client_name": {
-                    "type": "string",
-                    "example": "Oybek"
+                "apartment": {
+                    "type": "string"
                 },
-                "client_phone_number": {
-                    "type": "string",
-                    "example": "998998765432"
+                "building": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
                 },
                 "co_delivery_price": {
                     "type": "number",
@@ -6510,12 +6511,40 @@ var doc = `{
                 "description": {
                     "type": "string"
                 },
-                "external_order_id": {
-                    "type": "string",
-                    "example": "0"
+                "extra_phone_number": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "branch_id": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.productOnDemandModel"
+                                }
+                            }
+                        }
+                    }
                 },
                 "to_address": {
                     "type": "string",
