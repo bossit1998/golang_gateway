@@ -161,12 +161,15 @@ type updateStepModel struct {
 
 type updateOrder struct {
 	ID string `json:"id"`
-	orderDemandModel
+	orderOnDemandModel
 }
 
 type UpdateOrder struct {
 	updateOrder
-	steps []updateStepModel `json:"steps"`
+	Steps []struct{
+		stepOnDemandModel
+		Products []productOnDemandModel `json:"products"`
+	} `json:"steps"`
 }
 
 type step struct {
