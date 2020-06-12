@@ -418,6 +418,14 @@ definitions:
     properties:
       address:
         type: string
+      apartment:
+        type: string
+      building:
+        type: string
+      extra_phone_number:
+        type: string
+      floor:
+        type: string
       location:
         $ref: '#/definitions/models.Location'
         type: object

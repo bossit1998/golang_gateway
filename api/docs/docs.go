@@ -5204,6 +5204,18 @@ var doc = `{
                 "address": {
                     "type": "string"
                 },
+                "apartment": {
+                    "type": "string"
+                },
+                "building": {
+                    "type": "string"
+                },
+                "extra_phone_number": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
+                },
                 "location": {
                     "type": "object",
                     "$ref": "#/definitions/models.Location"
