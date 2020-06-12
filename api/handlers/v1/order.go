@@ -777,15 +777,33 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+	)
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
 	phone := c.Param("phone")
 
-	res, _ := h.grpcClient.OrderService().GetCustomerAddresses(
+	res, err := h.grpcClient.OrderService().GetCustomerAddresses(
 		context.Background(),
 		&pbo.GetCustomerAddressesRequest{
 			Phone:phone,
 		})
 
-	c.JSON(http.StatusOK, res)
+	if handleInternalWithMessage(c, h.log, err, "error while getting customer addresses") {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
 // @Security ApiKeyAuth
