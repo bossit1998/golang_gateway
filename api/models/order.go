@@ -233,6 +233,10 @@ type AddCourierRequest struct {
 type CustomerAddress struct {
 	Location Location `json:"location"`
 	Address string `json:"address"`
+	Apartment string `json:"apartment"`
+	Building string `json:"building"`
+	Floor string `json:"floor"`
+	ExtraPhoneNumber string `json:"extra_phone_number"`
 }
 
 type CustomerAddressesModel struct {
