@@ -938,7 +938,7 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 		})
 	}
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all customer order") {
 		return
 	}
 
@@ -1028,7 +1028,7 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 		})
 	}
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all branch order") {
 		return
 	}
 
