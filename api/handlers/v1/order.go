@@ -866,3 +866,183 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 		Message: "branch_id added successfully",
 	})
 }
+
+// @Security ApiKeyAuth
+// @Router /v1/customers/{customer_id}/orders [get]
+// @Summary Get Customer Orders
+// @Description API for getting customer orders
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Param status_id query string false "status_id"
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllOrderModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+		order       *pbo.OrdersResponse
+		statusID    string
+		err         error
+		page        uint64
+		limit       uint64
+		model models.GetAllOrderModel
+	)
+
+	customerID := c.Param("customer_id")
+
+	if err != nil {
+		return
+	}
+
+	jspbMarshal.OrigName = true
+	//jspbMarshal.EmitDefaults = true
+
+	statusID = c.Query("status_id")
+
+	page, err = ParsePageQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+		return
+	}
+
+	limit, err = ParseLimitQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
+		return
+	}
+
+	if statusID == "" {
+		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
+			CustomerId: customerID,
+			Page:  page,
+			Limit: limit,
+		})
+	} else {
+		_, err = uuid.Parse(statusID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "status_id is invalid",
+			})
+			return
+		}
+
+		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
+			CustomerId: customerID,
+			StatusId: statusID,
+			Page:     page,
+			Limit:    limit,
+		})
+	}
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all customer order") {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/branches/{branch_id}/orders [get]
+// @Summary Get Branch Orders
+// @Description API for getting branch orders
+// @Tags branch
+// @Accept json
+// @Produce json
+// @Param status_id query string false "status_id"
+// @Param page query integer false "page"
+// @Param limit query integer false "limit"
+// @Success 200 {object} models.GetAllOrderModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetBranchOrders(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+		order       *pbo.OrdersResponse
+		statusID    string
+		err         error
+		page        uint64
+		limit       uint64
+		model models.GetAllOrderModel
+	)
+
+	branchID := c.Param("branch_id")
+
+	if err != nil {
+		return
+	}
+
+	jspbMarshal.OrigName = true
+	//jspbMarshal.EmitDefaults = true
+
+	statusID = c.Query("status_id")
+
+	page, err = ParsePageQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
+		return
+	}
+
+	limit, err = ParseLimitQueryParam(c)
+
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
+		return
+	}
+
+	if statusID == "" {
+		order, err = h.grpcClient.OrderService().GetBranchOrders(context.Background(), &pbo.GetBranchOrdersRequest{
+			BranchId: branchID,
+			Page:  page,
+			Limit: limit,
+		})
+	} else {
+		_, err = uuid.Parse(statusID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "status_id is invalid",
+			})
+			return
+		}
+
+		order, err = h.grpcClient.OrderService().GetBranchOrders(context.Background(), &pbo.GetBranchOrdersRequest{
+			BranchId: branchID,
+			StatusId: statusID,
+			Page:     page,
+			Limit:    limit,
+		})
+	}
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all branch order") {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
+}
