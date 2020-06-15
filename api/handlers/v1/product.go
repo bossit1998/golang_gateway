@@ -27,15 +27,15 @@ import (
 func (h *handlerV1) CreateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
-		product pb.Product
+		product   pb.Product
 	)
 	err := unmarshal.Unmarshal(c.Request.Body, &product)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing json to proto",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing json to proto",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
@@ -45,7 +45,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 	resp, err := h.grpcClient.ProductService().Create(
 		context.Background(),
 		&product,
-		)
+	)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating product") {
 		return
@@ -67,7 +67,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		model models.GetAllProductsModel
+		model      models.GetAllProductsModel
 	)
 	marshaller.OrigName = true
 
@@ -76,8 +76,8 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing page",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing page",
 			},
 		})
 		h.log.Error("error while parsing page", logger.Error(err))
@@ -87,7 +87,7 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	resp, err := h.grpcClient.ProductService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
-			Page:int64(page),
+			Page: int64(page),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all products") {
@@ -100,9 +100,9 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError {
-				Code:ErrorCodeInternal,
-				Message:"error while parsing proto to struct",
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "error while parsing proto to struct",
 			},
 		})
 		h.log.Error("error while parsing proto to struct", logger.Error(err))
@@ -110,7 +110,9 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	}
 
 	for i, p := range model.Products {
-		model.Products[i].Image = fmt.Sprintf("https://sdn.delever.uz/delever/%s", p.Image)
+		if p.Image != "" {
+			model.Products[i].Image = fmt.Sprintf("https://sdn.delever.uz/delever/%s", p.Image)
+		}
 	}
 
 	c.JSON(http.StatusOK, model)
@@ -130,7 +132,7 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 func (h *handlerV1) UpdateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
-		product pb.Product
+		product   pb.Product
 	)
 	productID := c.Param("product_id")
 
@@ -139,8 +141,8 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code:ErrorBadRequest,
-				Message:"error while parsing json to proto",
+				Code:    ErrorBadRequest,
+				Message: "error while parsing json to proto",
 			},
 		})
 		h.log.Error("error while parsing json to proto", logger.Error(err))
@@ -157,7 +159,7 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ResponseOK{Message:"product updated successfully"})
+	c.JSON(http.StatusOK, models.ResponseOK{Message: "product updated successfully"})
 }
 
 // @Router /v1/product/{product_id} [delete]
