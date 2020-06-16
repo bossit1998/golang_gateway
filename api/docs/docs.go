@@ -4918,6 +4918,20 @@ var doc = `{
                 }
             }
         },
+        "models.CourierModel": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateBranchModel": {
             "type": "object",
             "properties": {
@@ -5542,6 +5556,10 @@ var doc = `{
                                 "type": "number",
                                 "example": 10000
                             },
+                            "courier": {
+                                "type": "object",
+                                "$ref": "#/definitions/models.CourierModel"
+                            },
                             "courier_id": {
                                 "type": "string"
                             },
@@ -6031,6 +6049,10 @@ var doc = `{
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
+                },
+                "courier": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.CourierModel"
                 },
                 "courier_id": {
                     "type": "string"

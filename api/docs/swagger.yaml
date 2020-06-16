@@ -146,6 +146,15 @@ definitions:
       passport_number:
         type: string
     type: object
+  models.CourierModel:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
   models.CreateBranchModel:
     properties:
       address:
@@ -561,6 +570,9 @@ definitions:
             co_delivery_price:
               example: 10000
               type: number
+            courier:
+              $ref: '#/definitions/models.CourierModel'
+              type: object
             courier_id:
               type: string
             created_at:
@@ -887,6 +899,9 @@ definitions:
       co_delivery_price:
         example: 10000
         type: number
+      courier:
+        $ref: '#/definitions/models.CourierModel'
+        type: object
       courier_id:
         type: string
       created_at:
