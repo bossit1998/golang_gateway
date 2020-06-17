@@ -24,7 +24,7 @@ const (
 	CourierPickedUpStatusId   = "84be5a2f-3a92-4469-8283-220ca34a0de4"
 	DeliveredStatusId         = "79413606-a56f-45ed-97c3-f3f18e645972"
 	FinishedStatusId          = "e665273d-5415-4243-a329-aee410e39465"
-	TelegramBotURL            = "https://a7bb8036ad23.ngrok.io"
+	TelegramBotURL            = "https://bot.delever.uz"
 )
 
 // Config ...
@@ -99,8 +99,8 @@ func Load() Config {
 	c.UserServiceHost = cast.ToString(getOrReturnDefault("USER_SERVICE_HOST", "delever_user_service"))
 	c.UserServicePort = cast.ToInt(getOrReturnDefault("USER_SERVICE_PORT", 80))
 
-	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "localhost"))
-	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 9003))
+	c.CourierServiceHost = cast.ToString(getOrReturnDefault("COURIER_SERVICE_HOST", "courier_service"))
+	c.CourierServicePort = cast.ToInt(getOrReturnDefault("COURIER_SERVICE_PORT", 80))
 
 	c.FareServiceHost = cast.ToString(getOrReturnDefault("FARE_SERVICE_HOST", "fare_service"))
 	c.FareServicePort = cast.ToInt(getOrReturnDefault("FARE_SERVICE_PORT", 80))
