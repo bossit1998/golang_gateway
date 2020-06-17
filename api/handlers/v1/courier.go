@@ -474,7 +474,7 @@ func (h *handlerV1) DeleteCourier(c *gin.Context) {
 	})
 }
 
-// @Router /v1/couriers/{courier_id}/block [post]
+// @Router /v1/couriers/{courier_id}/block [patch]
 // @Summary Blocking Courier
 // @Description API for blocking courier
 // @Tags courier
@@ -528,7 +528,7 @@ func (h *handlerV1) BlockCourier(c *gin.Context) {
 	})
 }
 
-// @Router /v1/couriers/{courier_id}/unblock [post]
+// @Router /v1/couriers/{courier_id}/unblock [patch]
 // @Summary Unblocking Courier
 // @Description API for unblocking courier
 // @Tags courier
@@ -1109,7 +1109,7 @@ func (h *handlerV1) CreateBranchCourier(c *gin.Context) {
 
 // @Router /v1/branches/remove-courier [post]
 // @Summary Remove Courier From Branch
-// @Description API for removing courier from branch 
+// @Description API for removing courier from branch
 // @Tags branch
 // @Accept json
 // @Produce json
@@ -1216,8 +1216,8 @@ func (h *handlerV1) GetAllBranchCouriers(c *gin.Context) {
 		context.Background(),
 		&pbc.GetAllBranchCouriersRequest{
 			BranchId: c.Param("branch_id"),
-			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Page:     uint64(page),
+			Limit:    uint64(pageSize),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
