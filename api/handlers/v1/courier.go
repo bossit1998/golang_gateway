@@ -188,8 +188,22 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(courier.FirstName)
-	fmt.Print(courier.LastName)
+	resp, err := h.grpcClient.CourierService().ExistsCourier(
+		context.Background(), &pbc.ExistsCourierRequest{
+			PhoneNumber: courier.Phone,
+		},
+	)
+
+	if resp.Exists {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
+		return
+	}
 
 	id, err := uuid.NewRandom()
 	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
