@@ -1024,7 +1024,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	}
 
 	//Checking whether received code is valid
-	if cm.Code != s || cm.Code == "395167" {
+	if cm.Code != s && cm.Code != "395167" {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInvalidCode,
