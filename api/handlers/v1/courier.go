@@ -332,6 +332,23 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 		return
 	}
 
+	result, err := h.grpcClient.CourierService().GetCourier(
+		context.Background(), &pbc.GetCourierRequest{
+			Id: courier.Phone,
+		},
+	)
+
+	if result != nil && result.Courier.Id != courier.Id {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
+		return
+	}
+
 	res, err := h.grpcClient.CourierService().Update(
 		context.Background(),
 		&courier,

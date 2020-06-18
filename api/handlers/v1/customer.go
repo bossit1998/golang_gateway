@@ -215,7 +215,6 @@ func (h *handlerV1) GetAllCustomers(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateCustomer(c *gin.Context) {
-
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
@@ -233,6 +232,23 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 			},
 		})
 		h.log.Error("Error while unmarshalling data", logger.Error(err))
+		return
+	}
+
+	result, err := h.grpcClient.CustomerService().GetCustomer(
+		context.Background(), &pbu.GetCustomerRequest{
+			Id: customer.Phone,
+		},
+	)
+
+	if result != nil && result.Customer.Id != customer.Id {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
 		return
 	}
 
