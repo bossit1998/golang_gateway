@@ -45,7 +45,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 
 	result, err := h.grpcClient.CustomerService().ExistsCustomer(
 		context.Background(), &pbu.ExistsCustomerRequest{
-			Phone:reg.Phone,
+			Phone: reg.Phone,
 		})
 
 	st, ok := status.FromError(err)
@@ -68,9 +68,9 @@ func (h *handlerV1) Register(c *gin.Context) {
 		})
 		h.log.Error("Error while checking phone", logger.Error(err))
 		return
-		
+
 	} else if st.Code() == codes.Unavailable {
-	
+
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
@@ -121,7 +121,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Router /v1/customers/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var (
-		rc models.RegisterConfirmModel
+		rc       models.RegisterConfirmModel
 		customer pbu.Customer
 	)
 	err := c.ShouldBindJSON(&rc)
@@ -133,7 +133,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	rc.Phone = strings.TrimSpace(rc.Phone)
 
 	//Getting code from redis
-	s, err := redis.String(h.inMemoryStorage.Get(rc.Phone+"code"))
+	s, err := redis.String(h.inMemoryStorage.Get(rc.Phone + "code"))
 
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -159,7 +159,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 
 	//Getting name from redis
-	name, err := redis.String(h.inMemoryStorage.Get(rc.Phone+"name"))
+	name, err := redis.String(h.inMemoryStorage.Get(rc.Phone + "name"))
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -181,15 +181,15 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		return
 	}
 	customer = pbu.Customer{
-		Id:        id.String(),
-		Name:      name,
-		Phone:     rc.Phone,
+		Id:          id.String(),
+		Name:        name,
+		Phone:       rc.Phone,
 		AccessToken: accessToken,
 	}
 	_, err = h.grpcClient.CustomerService().CreateCustomer(
 		context.Background(), &pbu.CreateCustomerRequest{
 			Customer: &customer,
-	},
+		},
 	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a customer") {
 		return

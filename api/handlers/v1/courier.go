@@ -188,8 +188,22 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(courier.FirstName)
-	fmt.Print(courier.LastName)
+	resp, err := h.grpcClient.CourierService().ExistsCourier(
+		context.Background(), &pbc.ExistsCourierRequest{
+			PhoneNumber: courier.Phone,
+		},
+	)
+
+	if resp.Exists {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
+		return
+	}
 
 	id, err := uuid.NewRandom()
 	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
@@ -315,6 +329,23 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 			},
 		})
 		h.log.Error("Error while unmarshalling data", logger.Error(err))
+		return
+	}
+
+	result, err := h.grpcClient.CourierService().GetCourier(
+		context.Background(), &pbc.GetCourierRequest{
+			Id: courier.Phone,
+		},
+	)
+
+	if result != nil && result.Courier.Id != courier.Id {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
 		return
 	}
 
@@ -474,7 +505,7 @@ func (h *handlerV1) DeleteCourier(c *gin.Context) {
 	})
 }
 
-// @Router /v1/couriers/{courier_id}/block [post]
+// @Router /v1/couriers/{courier_id}/block [patch]
 // @Summary Blocking Courier
 // @Description API for blocking courier
 // @Tags courier
@@ -528,7 +559,7 @@ func (h *handlerV1) BlockCourier(c *gin.Context) {
 	})
 }
 
-// @Router /v1/couriers/{courier_id}/unblock [post]
+// @Router /v1/couriers/{courier_id}/unblock [patch]
 // @Summary Unblocking Courier
 // @Description API for unblocking courier
 // @Tags courier
@@ -1109,7 +1140,7 @@ func (h *handlerV1) CreateBranchCourier(c *gin.Context) {
 
 // @Router /v1/branches/remove-courier [post]
 // @Summary Remove Courier From Branch
-// @Description API for removing courier from branch 
+// @Description API for removing courier from branch
 // @Tags branch
 // @Accept json
 // @Produce json
@@ -1216,8 +1247,8 @@ func (h *handlerV1) GetAllBranchCouriers(c *gin.Context) {
 		context.Background(),
 		&pbc.GetAllBranchCouriersRequest{
 			BranchId: c.Param("branch_id"),
-			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Page:     uint64(page),
+			Limit:    uint64(pageSize),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {

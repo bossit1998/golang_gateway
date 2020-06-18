@@ -146,6 +146,15 @@ definitions:
       passport_number:
         type: string
     type: object
+  models.CourierModel:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+    type: object
   models.CreateBranchModel:
     properties:
       address:
@@ -561,6 +570,9 @@ definitions:
             co_delivery_price:
               example: 10000
               type: number
+            courier:
+              $ref: '#/definitions/models.CourierModel'
+              type: object
             courier_id:
               type: string
             created_at:
@@ -887,6 +899,9 @@ definitions:
       co_delivery_price:
         example: 10000
         type: number
+      courier:
+        $ref: '#/definitions/models.CourierModel'
+        type: object
       courier_id:
         type: string
       created_at:
@@ -1588,6 +1603,44 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All Branch Couriers
+      tags:
+      - branch
+  /v1/branches/{branch_id}/orders:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branch orders
+      parameters:
+      - description: status_id
+        in: query
+        name: status_id
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllOrderModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Branch Orders
       tags:
       - branch
   /v1/branches/add-courier:
@@ -2661,6 +2714,44 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Get Customer
+      tags:
+      - customer
+  /v1/customers/{customer_id}/orders:
+    get:
+      consumes:
+      - application/json
+      description: API for getting customer orders
+      parameters:
+      - description: status_id
+        in: query
+        name: status_id
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllOrderModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Customer Orders
       tags:
       - customer
   /v1/customers/confirm-login/:

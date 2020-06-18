@@ -45,6 +45,22 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		return
 	}
 
+	result, err := h.grpcClient.CustomerService().ExistsCustomer(
+		context.Background(), &pbu.ExistsCustomerRequest{
+			Phone: customer.Phone,
+		})
+
+	if result.Exists {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
+		return
+	}
+
 	id, err := uuid.NewRandom()
 	if handleInternalWithMessage(c, h.log, err, "Error while generating UUID") {
 		return
@@ -124,7 +140,7 @@ func (h *handlerV1) GetCustomer(c *gin.Context) {
 		})
 		h.log.Error("Error while getting customer", logger.Error(err))
 		return
-	} 
+	}
 	js, err := jspbMarshal.MarshalToString(res.GetCustomer())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
@@ -199,11 +215,10 @@ func (h *handlerV1) GetAllCustomers(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateCustomer(c *gin.Context) {
-
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		customer        pbu.Customer
+		customer      pbu.Customer
 	)
 
 	jspbMarshal.OrigName = true
@@ -217,6 +232,23 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 			},
 		})
 		h.log.Error("Error while unmarshalling data", logger.Error(err))
+		return
+	}
+
+	result, err := h.grpcClient.CustomerService().GetCustomer(
+		context.Background(), &pbu.GetCustomerRequest{
+			Id: customer.Phone,
+		},
+	)
+
+	if result != nil && result.Customer.Id != customer.Id {
+		c.JSON(http.StatusConflict, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeAlreadyExists,
+				Message: "Phone already exists",
+			},
+		})
+		h.log.Error("Error while checking phone, Already exists", logger.Error(err))
 		return
 	}
 
@@ -251,7 +283,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 	js, err := jspbMarshal.MarshalToString(res.GetCustomer())
 	if err != nil {
 		return
-		
+
 	}
 
 	c.Header("Content-Type", "application/json")
@@ -285,7 +317,7 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 		})
 		h.log.Error("Error while deleting customer, not found", logger.Error(err))
 		return
-	}else if  st.Code() == codes.Internal {
+	} else if st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInternal,
@@ -307,8 +339,6 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-
-
 // @Router /v1/customers/login [POST]
 // @Summary Customer Login
 // @Description API that checks whether customer exists
@@ -322,7 +352,7 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 	var (
 		customerLoginModel models.CustomerLoginRequest
-		code                string
+		code               string
 	)
 
 	err := c.ShouldBindJSON(&customerLoginModel)
