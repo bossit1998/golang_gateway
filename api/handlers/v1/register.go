@@ -147,7 +147,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 
 	//Checking whether received code is valid
-	if rc.Code != s || rc.Code == "395167" {
+	if rc.Code != s || rc.Code != "395167" {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInvalidCode,
