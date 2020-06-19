@@ -1505,7 +1505,7 @@ var doc = `{
             }
         },
         "/v1/couriers/{courier_id}/block": {
-            "post": {
+            "patch": {
                 "description": "API for blocking courier",
                 "consumes": [
                     "application/json"
@@ -1637,7 +1637,7 @@ var doc = `{
             }
         },
         "/v1/couriers/{courier_id}/unblock": {
-            "post": {
+            "patch": {
                 "description": "API for unblocking courier",
                 "consumes": [
                     "application/json"
@@ -3934,6 +3934,48 @@ var doc = `{
             }
         },
         "/v1/product/{product_id}": {
+            "get": {
+                "description": "API for getting a product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Get Product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_id",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetProductModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "API for updating product",
                 "consumes": [

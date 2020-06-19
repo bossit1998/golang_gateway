@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/config"
 	"bitbucket.org/alien_soft/api_getaway/pkg/grpc_client"
 	"bitbucket.org/alien_soft/api_getaway/storage/repo"
+
 	//"bitbucket.org/alien_soft/api_getaway/pkg/http/middleware"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage"
@@ -91,7 +92,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/branches", handlerV1.GetAllBranches)
 	r.POST("/v1/branches/check-login", handlerV1.CheckBranchLogin)
 	r.POST("/v1/branches/confirm-login", handlerV1.ConfirmBranchLogin)
-	r.GET("/v1/nearest-branch",handlerV1.GetNearestBranch)
+	r.GET("/v1/nearest-branch", handlerV1.GetNearestBranch)
 	r.POST("/v1/branches/add-courier", handlerV1.CreateBranchCourier)
 	r.POST("/v1/branches/remove-courier", handlerV1.DeleteBranchCourier)
 	r.GET("/v1/branches/:branch_id/couriers", handlerV1.GetAllBranchCouriers)
@@ -207,6 +208,7 @@ func New(cnf Config) *gin.Engine {
 	//Product Service
 	r.POST("/v1/product", handlerV1.CreateProduct)
 	r.GET("/v1/product", handlerV1.GetAllProducts)
+	r.GET("/v1/product/:product_id", handlerV1.GetProduct)
 	r.PUT("/v1/product/:product_id", handlerV1.UpdateProduct)
 	r.DELETE("/v1/product/:product_id", handlerV1.DeleteProduct)
 
