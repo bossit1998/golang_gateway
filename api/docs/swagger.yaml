@@ -2271,7 +2271,7 @@ paths:
       tags:
       - courier
   /v1/couriers/{courier_id}/block:
-    post:
+    patch:
       consumes:
       - application/json
       description: API for blocking courier
@@ -2358,7 +2358,7 @@ paths:
       tags:
       - courier
   /v1/couriers/{courier_id}/unblock:
-    post:
+    patch:
       consumes:
       - application/json
       description: API for unblocking courier
@@ -4008,6 +4008,34 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete Product
+      tags:
+      - product
+    get:
+      consumes:
+      - application/json
+      description: API for getting a product
+      parameters:
+      - description: product_id
+        in: path
+        name: product_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetProductModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Product
       tags:
       - product
     put:

@@ -118,6 +118,50 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
+// @Router /v1/product/{product_id} [get]
+// @Summary Get Product
+// @Description API for getting a product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product_id path string true "product_id"
+// @Success 200 {object} models.GetProductModel
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetProduct(c *gin.Context) {
+	var (
+		marshaller jsonpb.Marshaler
+	)
+	marshaller.OrigName = true
+	marshaller.EmitDefaults = true
+
+	resp, err := h.grpcClient.ProductService().Get(
+		context.Background(),
+		&pb.GetRequest{
+			Id: c.Param("product_id"),
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting a product") {
+		return
+	}
+
+	js, err := marshaller.MarshalToString(resp)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "err while marshaling",
+			},
+		})
+		h.log.Error("error while parsing proto to struct", logger.Error(err))
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
 // @Router /v1/product/{product_id} [put]
 // @Summary Update Product
 // @Description API for updating product
