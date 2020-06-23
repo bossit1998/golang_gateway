@@ -165,10 +165,10 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
 	r.GET("/v1/order", handlerV1.GetOrders)
 	r.GET("/v1/new-order", handlerV1.CourierNewOrders)
-	r.PATCH("v1/order/:order_id/change-status", handlerV1.ChangeOrderStatus)
+	r.PATCH("/v1/order/:order_id/change-status", handlerV1.ChangeOrderStatus)
 	r.GET("/v1/order-statuses", handlerV1.GetStatuses)
-	r.PATCH("v1/order/:order_id/add-courier", handlerV1.AddCourier)
-	r.PATCH("v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
+	r.PATCH("/v1/order/:order_id/add-courier", handlerV1.AddCourier)
+	r.PATCH("/v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
 	r.GET("/v1/courier/order", handlerV1.GetCourierOrders)
 	r.GET("/v1/customers/:customer_id/orders", handlerV1.GetCustomerOrders)
 	r.GET("/v1/branches/:branch_id/orders", handlerV1.GetBranchOrders)
@@ -214,6 +214,9 @@ func New(cnf Config) *gin.Engine {
 
 	//Upload File
 	r.POST("/v1/upload", handlerV1.ImageUpload)
+
+	//Auth
+	r.POST("/v1/login", handlerV1.Login)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
