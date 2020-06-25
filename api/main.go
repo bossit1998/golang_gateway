@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/pkg/middleware"
 	"net/http"
 
 	//"github.com/casbin/casbin/v2"
@@ -42,7 +41,7 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
-	r.Use(middleware.Authorizer(v1.SigningKey))
+	//r.Use(middleware.Authorizer(v1.SigningKey))
 
 	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
