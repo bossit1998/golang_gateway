@@ -371,7 +371,7 @@ func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
 		return models.UserInfo{}, err
 	}
 
-	h.log.Info("claims", logger.String("", claims))
+	h.log.Info("claims", logger.Any("", claims))
 	userID := claims["sub"].(string)
 	userRole := claims["role"].(string)
 
