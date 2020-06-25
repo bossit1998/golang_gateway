@@ -34,5 +34,6 @@ Temporary Items
 *.log
 *.exe
 .idea
+main.go
 
 !Gopkg.toml
