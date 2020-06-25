@@ -22,6 +22,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/branches [post]
 // @Summary Create Branch
 // @Description API for creating branch
@@ -37,10 +38,18 @@ func (h *handlerV1) CreateBranch(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		branch        pbu.Branch
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
+
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -56,6 +65,7 @@ func (h *handlerV1) CreateBranch(c *gin.Context) {
 	}
 
 	branch.Id = id.String()
+	branch.ShipperId = userInfo.ShipperID
 	branch.AccessToken = accessToken
 
 	res, err := h.grpcClient.BranchService().CreateBranch(

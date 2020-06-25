@@ -98,6 +98,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating branch",
                 "consumes": [
                     "application/json"
@@ -4704,9 +4709,6 @@
                     "items": {
                         "type": "string"
                     }
-                },
-                "shipper_id": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"
