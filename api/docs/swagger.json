@@ -574,281 +574,6 @@
                 }
             }
         },
-        "/v1/cargo-owner": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for creating cargo owner",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Create Cargo Owner",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "co_id",
-                        "name": "co_id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetCO"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "API for creating cargo owner",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Create Cargo Owner",
-                "parameters": [
-                    {
-                        "description": "cargo_owner",
-                        "name": "cargo_owner",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateCargoOwner"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cargo-owner/change-credentials": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for changing cargo owner login and password",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Change Cargo Owner Login And Password",
-                "parameters": [
-                    {
-                        "description": "cargo_owner_credentials",
-                        "name": "cargo_owner_credentials",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ChangeLoginPasswordRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseOK"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cargo-owner/check-login": {
-            "post": {
-                "description": "API for checking cargo owner login exists or not in the table",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Check Cargo Owner Login",
-                "parameters": [
-                    {
-                        "description": "cargo_owner_login",
-                        "name": "cargo_owner_login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckLoginRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckExistsResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cargo-owner/check-name": {
-            "post": {
-                "description": "API for checking cargo owner name exists or not in the table",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Check Cargo Owner Name",
-                "parameters": [
-                    {
-                        "description": "cargo_owner_name",
-                        "name": "cargo_owner_name",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckNameRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.CheckExistsResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/cargo-owner/refresh-token": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for refreshing cargo owner token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cargo-owner"
-                ],
-                "summary": "Refresh Cargo Owner Token",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.RefreshTokenResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/category": {
             "get": {
                 "description": "API for getting all category",
@@ -1081,6 +806,11 @@
         },
         "/v1/couriers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting couriers",
                 "consumes": [
                     "application/json"
@@ -2947,6 +2677,11 @@
         },
         "/v1/new-order": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier new orders",
                 "consumes": [
                     "application/json"
@@ -3168,6 +2903,11 @@
         },
         "/v1/order-statuses": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting order statuses",
                 "consumes": [
                     "application/json"
@@ -3415,6 +3155,11 @@
         },
         "/v1/order/{order_id}/add-courier": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for adding order courier",
                 "consumes": [
                     "application/json"
@@ -3468,6 +3213,11 @@
         },
         "/v1/order/{order_id}/change-status": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for changing order status",
                 "consumes": [
                     "application/json"
@@ -3521,6 +3271,11 @@
         },
         "/v1/order/{order_id}/remove-courier": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for changing order courier",
                 "consumes": [
                     "application/json"
@@ -4767,21 +4522,6 @@
                 }
             }
         },
-        "models.ChangeLoginPasswordRequest": {
-            "type": "object",
-            "required": [
-                "login",
-                "password"
-            ],
-            "properties": {
-                "login": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "models.ChangeStatusRequest": {
             "type": "object",
             "properties": {
@@ -4809,9 +4549,6 @@
                 }
             }
         },
-        "models.CheckExistsResponse": {
-            "type": "object"
-        },
         "models.CheckLoginRequest": {
             "type": "object",
             "required": [
@@ -4830,17 +4567,6 @@
                     "type": "string"
                 },
                 "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CheckNameRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
                     "type": "string"
                 }
             }
@@ -4987,35 +4713,6 @@
                 }
             }
         },
-        "models.CreateCargoOwner": {
-            "type": "object",
-            "required": [
-                "login",
-                "logo",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "login": {
-                    "type": "string"
-                },
-                "logo": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                }
-            }
-        },
         "models.CreateCategoryModel": {
             "type": "object",
             "properties": {
@@ -5029,8 +4726,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -5092,8 +4788,7 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "steps": {
                     "type": "array",
@@ -5113,8 +4808,7 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "string",
-                                "example": "0"
+                                "type": "integer"
                             },
                             "location": {
                                 "type": "object",
@@ -5183,8 +4877,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5283,8 +4976,7 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -5310,15 +5002,13 @@
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "preview_text": {
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -5444,8 +5134,7 @@
                     }
                 },
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 }
             }
         },
@@ -5534,8 +5223,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "measures": {
                     "type": "array",
@@ -5549,8 +5237,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "orders": {
                     "type": "array",
@@ -5592,8 +5279,7 @@
                                 "type": "string"
                             },
                             "external_order_id": {
-                                "type": "string",
-                                "example": "0"
+                                "type": "integer"
                             },
                             "extra_phone_number": {
                                 "type": "string"
@@ -5650,8 +5336,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kinds": {
                     "type": "array",
@@ -5665,8 +5350,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "products": {
                     "type": "array",
@@ -5732,35 +5416,6 @@
                 }
             }
         },
-        "models.GetCO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_active": {
-                    "type": "boolean"
-                },
-                "login": {
-                    "type": "string"
-                },
-                "logo": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "token": {
-                    "type": "string"
-                }
-            }
-        },
         "models.GetCategoryModel": {
             "type": "object",
             "properties": {
@@ -5820,8 +5475,7 @@
             "type": "object",
             "properties": {
                 "count": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "orders": {
                     "type": "array",
@@ -5895,8 +5549,7 @@
                                             "type": "string"
                                         },
                                         "external_step_id": {
-                                            "type": "string",
-                                            "example": "0"
+                                            "type": "integer"
                                         },
                                         "id": {
                                             "type": "string"
@@ -6086,8 +5739,7 @@
                     "type": "string"
                 },
                 "external_order_id": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "extra_phone_number": {
                     "type": "string"
@@ -6102,8 +5754,7 @@
                     "type": "string"
                 },
                 "order_amount": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "payment_type": {
                     "type": "string"
@@ -6135,8 +5786,7 @@
                                 "type": "string"
                             },
                             "external_step_id": {
-                                "type": "string",
-                                "example": "0"
+                                "type": "integer"
                             },
                             "id": {
                                 "type": "string"
@@ -6154,8 +5804,8 @@
                                     "type": "object",
                                     "properties": {
                                         "external_product_id": {
-                                            "type": "string",
-                                            "example": "1234"
+                                            "type": "integer",
+                                            "example": 1234
                                         },
                                         "id": {
                                             "type": "string"
@@ -6176,8 +5826,7 @@
                                             "example": 2
                                         },
                                         "total_amount": {
-                                            "type": "string",
-                                            "example": "0"
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -6186,8 +5835,7 @@
                                 "type": "string"
                             },
                             "step_amount": {
-                                "type": "string",
-                                "example": "0"
+                                "type": "integer"
                             }
                         }
                     }
@@ -6288,8 +5936,7 @@
                     "type": "string"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "product_kind_id": {
                     "type": "string"
@@ -6389,14 +6036,6 @@
                     "items": {
                         "$ref": "#/definitions/models.TripsWaypoint"
                     }
-                }
-            }
-        },
-        "models.RefreshTokenResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
                 }
             }
         },
@@ -6787,8 +6426,8 @@
                     "example": "701dc270-0adc-4d00-ae78-4f2f78d794cc"
                 },
                 "price": {
-                    "type": "string",
-                    "example": "50000"
+                    "type": "integer",
+                    "example": 50000
                 },
                 "product_id": {
                     "type": "string",
@@ -6808,8 +6447,8 @@
             "type": "object",
             "properties": {
                 "external_product_id": {
-                    "type": "string",
-                    "example": "1234"
+                    "type": "integer",
+                    "example": 1234
                 },
                 "name": {
                     "type": "string",
@@ -6829,8 +6468,8 @@
             "type": "object",
             "properties": {
                 "price": {
-                    "type": "string",
-                    "example": "50000"
+                    "type": "integer",
+                    "example": 50000
                 },
                 "product_id": {
                     "type": "string",

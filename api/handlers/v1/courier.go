@@ -111,6 +111,7 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers [get]
 // @Summary Get Couriers
 // @Description API for getting couriers

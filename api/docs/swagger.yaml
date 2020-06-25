@@ -35,16 +35,6 @@ definitions:
       price:
         type: number
     type: object
-  models.ChangeLoginPasswordRequest:
-    properties:
-      login:
-        type: string
-      password:
-        type: string
-    required:
-    - login
-    - password
-    type: object
   models.ChangeStatusRequest:
     properties:
       status_id:
@@ -62,8 +52,6 @@ definitions:
       phone:
         type: string
     type: object
-  models.CheckExistsResponse:
-    type: object
   models.CheckLoginRequest:
     properties:
       login:
@@ -77,13 +65,6 @@ definitions:
         type: string
       phone:
         type: string
-    type: object
-  models.CheckNameRequest:
-    properties:
-      name:
-        type: string
-    required:
-    - name
     type: object
   models.CheckShipperLoginRequest:
     properties:
@@ -177,26 +158,6 @@ definitions:
       username:
         type: string
     type: object
-  models.CreateCargoOwner:
-    properties:
-      description:
-        type: string
-      login:
-        type: string
-      logo:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-    required:
-    - login
-    - logo
-    - name
-    - password
-    type: object
   models.CreateCategoryModel:
     properties:
       description:
@@ -206,8 +167,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -248,8 +208,7 @@ definitions:
       description:
         type: string
       external_order_id:
-        example: "0"
-        type: string
+        type: integer
       steps:
         items:
           properties:
@@ -262,8 +221,7 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              example: "0"
-              type: string
+              type: integer
             location:
               $ref: '#/definitions/models.Location'
               type: object
@@ -309,8 +267,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -376,8 +333,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.CreateProductModel:
     properties:
@@ -394,13 +350,11 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -482,8 +436,7 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        example: "0"
-        type: string
+        type: integer
     type: object
   models.GetAllCourierBranchesModel:
     properties:
@@ -540,8 +493,7 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -550,8 +502,7 @@ definitions:
   models.GetAllOrderModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       orders:
         items:
           properties:
@@ -580,8 +531,7 @@ definitions:
             description:
               type: string
             external_order_id:
-              example: "0"
-              type: string
+              type: integer
             extra_phone_number:
               type: string
             finished_at:
@@ -619,8 +569,7 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -629,8 +578,7 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -673,25 +621,6 @@ definitions:
       username:
         type: string
     type: object
-  models.GetCO:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      is_active:
-        type: boolean
-      login:
-        type: string
-      logo:
-        type: string
-      name:
-        type: string
-      phone_number:
-        type: string
-      token:
-        type: string
-    type: object
   models.GetCategoryModel:
     properties:
       child_categories:
@@ -731,8 +660,7 @@ definitions:
   models.GetCourierOrdersModel:
     properties:
       count:
-        example: "0"
-        type: string
+        type: integer
       orders:
         items:
           properties:
@@ -781,8 +709,7 @@ definitions:
                   destination_address:
                     type: string
                   external_step_id:
-                    example: "0"
-                    type: string
+                    type: integer
                   id:
                     type: string
                   location:
@@ -909,8 +836,7 @@ definitions:
       description:
         type: string
       external_order_id:
-        example: "0"
-        type: string
+        type: integer
       extra_phone_number:
         type: string
       finished_at:
@@ -920,8 +846,7 @@ definitions:
       id:
         type: string
       order_amount:
-        example: "0"
-        type: string
+        type: integer
       payment_type:
         type: string
       source:
@@ -942,8 +867,7 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              example: "0"
-              type: string
+              type: integer
             id:
               type: string
             location:
@@ -955,8 +879,8 @@ definitions:
               items:
                 properties:
                   external_product_id:
-                    example: "1234"
-                    type: string
+                    example: 1234
+                    type: integer
                   id:
                     type: string
                   name:
@@ -971,15 +895,13 @@ definitions:
                     example: 2
                     type: number
                   total_amount:
-                    example: "0"
-                    type: string
+                    type: integer
                 type: object
               type: array
             status:
               type: string
             step_amount:
-              example: "0"
-              type: string
+              type: integer
           type: object
         type: array
       to_address:
@@ -1046,8 +968,7 @@ definitions:
       preview_text:
         type: string
       price:
-        example: "0"
-        type: string
+        type: integer
       product_kind_id:
         type: string
       short_name:
@@ -1113,11 +1034,6 @@ definitions:
         items:
           $ref: '#/definitions/models.TripsWaypoint'
         type: array
-    type: object
-  models.RefreshTokenResponse:
-    properties:
-      token:
-        type: string
     type: object
   models.RegisterConfirmModel:
     properties:
@@ -1373,8 +1289,8 @@ definitions:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
         type: string
       price:
-        example: "50000"
-        type: string
+        example: 50000
+        type: integer
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -1388,8 +1304,8 @@ definitions:
   models.productDemandModel:
     properties:
       external_product_id:
-        example: "1234"
-        type: string
+        example: 1234
+        type: integer
       name:
         example: Choyxona Osh
         type: string
@@ -1403,8 +1319,8 @@ definitions:
   models.productOnDemandModel:
     properties:
       price:
-        example: "50000"
-        type: string
+        example: 50000
+        type: integer
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -1797,182 +1713,6 @@ paths:
       summary: Calculate Delivery Price For Clients
       tags:
       - geo
-  /v1/cargo-owner:
-    get:
-      consumes:
-      - application/json
-      description: API for creating cargo owner
-      parameters:
-      - description: co_id
-        in: query
-        name: co_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCO'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Cargo Owner
-      tags:
-      - cargo-owner
-    post:
-      consumes:
-      - application/json
-      description: API for creating cargo owner
-      parameters:
-      - description: cargo_owner
-        in: body
-        name: cargo_owner
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateCargoOwner'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Create Cargo Owner
-      tags:
-      - cargo-owner
-  /v1/cargo-owner/change-credentials:
-    post:
-      consumes:
-      - application/json
-      description: API for changing cargo owner login and password
-      parameters:
-      - description: cargo_owner_credentials
-        in: body
-        name: cargo_owner_credentials
-        required: true
-        schema:
-          $ref: '#/definitions/models.ChangeLoginPasswordRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.ResponseOK'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Change Cargo Owner Login And Password
-      tags:
-      - cargo-owner
-  /v1/cargo-owner/check-login:
-    post:
-      consumes:
-      - application/json
-      description: API for checking cargo owner login exists or not in the table
-      parameters:
-      - description: cargo_owner_login
-        in: body
-        name: cargo_owner_login
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckLoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckExistsResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check Cargo Owner Login
-      tags:
-      - cargo-owner
-  /v1/cargo-owner/check-name:
-    post:
-      consumes:
-      - application/json
-      description: API for checking cargo owner name exists or not in the table
-      parameters:
-      - description: cargo_owner_name
-        in: body
-        name: cargo_owner_name
-        required: true
-        schema:
-          $ref: '#/definitions/models.CheckNameRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.CheckExistsResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Check Cargo Owner Name
-      tags:
-      - cargo-owner
-  /v1/cargo-owner/refresh-token:
-    post:
-      consumes:
-      - application/json
-      description: API for refreshing cargo owner token
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.RefreshTokenResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Refresh Cargo Owner Token
-      tags:
-      - cargo-owner
   /v1/category:
     get:
       consumes:
@@ -2152,6 +1892,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Couriers
       tags:
       - courier
@@ -3385,6 +3127,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Courier New Orders
       tags:
       - order
@@ -3514,6 +3258,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Possible Order Statuses
       tags:
       - order
@@ -3684,6 +3430,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Add Order Courier
       tags:
       - order
@@ -3719,6 +3467,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Change Order Status
       tags:
       - order
@@ -3748,6 +3498,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Remove Order Courier
       tags:
       - order

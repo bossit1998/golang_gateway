@@ -390,6 +390,7 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order/{order_id}/change-status [patch]
 // @Summary Change Order Status
 // @Description API for changing order status
@@ -439,6 +440,7 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order-statuses [get]
 // @Summary Get All Possible Order Statuses
 // @Description API for getting order statuses
@@ -498,6 +500,7 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	c.JSON(http.StatusOK, m)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order/{order_id}/add-courier [patch]
 // @Summary Add Order Courier
 // @Description API for adding order courier
@@ -555,6 +558,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/order/{order_id}/remove-courier [patch]
 // @Summary Remove Order Courier
 // @Description API for changing order courier
@@ -675,6 +679,7 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/new-order [get]
 // @Summary Get Courier New Orders
 // @Description API for getting courier new orders
