@@ -833,6 +833,7 @@ func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
 	res, err := h.grpcClient.OrderService().GetCustomerAddresses(
 		context.Background(),
 		&pbo.GetCustomerAddressesRequest{
+			ShipperId: userInfo.ShipperID,
 			Phone:phone,
 		})
 
