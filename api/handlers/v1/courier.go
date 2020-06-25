@@ -123,6 +123,15 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCouriers(c *gin.Context) {
+	var (
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -147,6 +156,7 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 	res, err := h.grpcClient.CourierService().GetAllCouriers(
 		context.Background(),
 		&pbc.GetAllCouriersRequest{
+			ShipperId: userInfo.ShipperID,
 			Page:  uint64(page),
 			Limit: uint64(pageSize),
 		},
@@ -1044,7 +1054,13 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 		return
 	}
 
-	access, err := jwt.GenerateJWT(courier.Courier.Id, "courier", signingKey)
+	m := map[interface{}]interface{}{
+		"user_type": "courier",
+		"shipper_id": courier.Courier.ShipperId,
+		"sub": courier.Courier.Id,
+	}
+	access, _,  err := jwt.GenJWT(m, signingKey)
+
 	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
 		return
 	}
