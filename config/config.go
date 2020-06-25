@@ -27,6 +27,10 @@ const (
 	TelegramBotURL            = "https://bot.delever.uz"
 )
 
+var (
+	PaymentTypes = []interface{}{"cash", "payme", "click"}
+)
+
 // Config ...
 type Config struct {
 	Environment string // develop, staging, production

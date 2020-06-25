@@ -17,12 +17,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 		login models.Login
 		isMatch = true
 	)
-	clientID := c.GetHeader("client")
-
-	if clientID == "" {
-		c.Status(http.StatusForbidden)
-		return
-	}
+	clientID := c.GetHeader("client_id")
 
 	err := c.ShouldBindJSON(&login)
 
@@ -79,7 +74,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 	}
 
 	m := map[interface{}]interface{}{
-		"role": res.Role,
+		"user_type": res.Role,
 		"shipper_id": res.Id,
 		"sub": res.Id,
 	}

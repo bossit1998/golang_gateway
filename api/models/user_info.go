@@ -6,5 +6,6 @@ type AuthorizationModel struct {
 
 type UserInfo struct {
 	ID string `json:"id"`
-	Role string `json:"role"`
+	UserType string `json:"role"`
+	ShipperID string `json:"shipper_id"`
 }

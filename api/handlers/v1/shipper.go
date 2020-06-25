@@ -498,14 +498,24 @@ func (h *handlerV1) ShipperLogin(c *gin.Context) {
 		return
 	}
 
+	m := map[interface{}]interface{}{
+		"user_type": "shipper",
+		"shipper_id": shipper.Id,
+		"sub": shipper.Id,
+	}
+	accessToken, _, err := jwt.GenJWT(m, signingKey)
+
+	shipper.AccessToken = accessToken
+
 	c.JSON(http.StatusOK, shipper)
 }
 
 func (h *handlerV1) ChangePassword(c *gin.Context) {
 	var (
 		model models.ShipperChangePassword
+		userInfo models.UserInfo
 	)
-	userInfo, err := userInfo(h, c)
+	err := getUserInfo(h, c, &userInfo)
 
 	if err != nil {
 		return

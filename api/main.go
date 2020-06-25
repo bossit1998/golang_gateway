@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bitbucket.org/alien_soft/api_getaway/pkg/middleware"
 	"net/http"
 
 	//"github.com/casbin/casbin/v2"
@@ -41,6 +42,7 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
+	r.Use(middleware.Authorizer(v1.SigningKey))
 
 	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
@@ -177,12 +179,12 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/order/:order_id/add-branch", handlerV1.AddBranchID)
 
 	//Cargo owner
-	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
-	r.GET("/v1/cargo-owner/", handlerV1.GetCO)
-	r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
-	r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
-	r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
-	r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
+	//r.POST("/v1/cargo-owner", handlerV1.CreateCO)
+	//r.GET("/v1/cargo-owner/", handlerV1.GetCO)
+	//r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
+	//r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
+	//r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
+	//r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
 
 	//Login endpoints
 	r.POST("/v1/check_code/")
