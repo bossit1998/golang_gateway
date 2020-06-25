@@ -401,7 +401,7 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h handlerV1) ChangeOrderStatus(c *gin.Context) {
+func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	var (
 		orderID           string
 		changeStatusModel models.ChangeStatusRequest
@@ -570,7 +570,7 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 		orderID string
 		userInfo models.UserInfo
 	)
-	err := getUserInfo(h, c, userInfo)
+	err := getUserInfo(h, c, &userInfo)
 
 	if err != nil {
 		return
