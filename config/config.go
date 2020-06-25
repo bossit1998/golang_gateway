@@ -27,6 +27,10 @@ const (
 	TelegramBotURL            = "https://bot.delever.uz"
 )
 
+var (
+	PaymentTypes = []interface{}{"cash", "payme", "click"}
+)
+
 // Config ...
 type Config struct {
 	Environment string // develop, staging, production
@@ -63,6 +67,9 @@ type Config struct {
 
 	CatalogServiceHost string
 	CatalogServicePort int
+
+	AuthServiceHost string
+	AuthServicePort int
 
 	LogLevel string
 	HTTPPort string
@@ -116,6 +123,9 @@ func Load() Config {
 
 	c.CatalogServiceHost = cast.ToString(getOrReturnDefault("CATALOG_SERVICE_HOST", "catalog_service"))
 	c.CatalogServicePort = cast.ToInt(getOrReturnDefault("CATALOG_SERVICE_PORT", 80))
+
+	c.AuthServiceHost = cast.ToString(getOrReturnDefault("AUTH_SERVICE_HOST", "auth_service"))
+	c.AuthServicePort = cast.ToInt(getOrReturnDefault("AUTH_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

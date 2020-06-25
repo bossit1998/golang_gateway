@@ -29,8 +29,8 @@ func ValidateLogin(login string) error  {
 	if login == "" {
 		return errors.New("login cannot be blank")
 	}
-	if len(login) < 6 && len(login) > 15 {
-		return errors.New("login length should be 8 to 30 characters")
+	if len(login) < 5 || len(login) > 15 {
+		return errors.New("login length should be 6 to 30 characters")
 	}
 	if validation.Validate(login, validation.Match(regexp.MustCompile("^[A-Za-z0-9$@_.#]+$"))) != nil {
 		return errors.New("login should contain only alphabetic characters, numbers and special characters(@, $, _, ., #)")
