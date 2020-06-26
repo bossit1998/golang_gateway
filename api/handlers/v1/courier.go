@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -1091,6 +1090,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/search-couriers [get]
 // @Summary Search by phone
 // @Description API for getting phones
@@ -1102,16 +1102,25 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
 	phone, _ := c.GetQuery("phone")
-	fmt.Print(phone)
+
 	res, err := h.grpcClient.CourierService().SearchCouriersByPhone(
 		context.Background(),
 		&pbc.SearchCouriersByPhoneRequest{
+			ShipperId: userInfo.ShipperID,
 			Phone: phone,
 		},
 	)

@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pb "genproto/catalog_service"
 	"net/http"
 
@@ -29,8 +28,6 @@ func (h *handlerV1) CreateSpecification(c *gin.Context) {
 	}
 
 	resp, err := h.grpcClient.SpecificationService().Create(context.Background(), &specification)
-
-	fmt.Println(err)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while creating specification") {
 		return

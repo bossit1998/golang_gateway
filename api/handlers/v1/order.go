@@ -147,7 +147,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 			
 		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
-			fmt.Println("Error while sending order id to vendor bot")
+			h.log.Error("Error while sending order id to vendor bot", logger.Error(err))
 		}
 	}
 

@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 	"net/http"
@@ -468,18 +467,23 @@ func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetNearestBranch(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+	 	location pbu.Location
+	)
 
-	var jspbMarshal jsonpb.Marshaler
-	var location pbu.Location
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
+
 	longString,_ := c.GetQuery("long")
-	fmt.Println()
-	long, _ := strconv.ParseFloat(longString,64)
 	latString,_ := c.GetQuery("lat")
+
+	long, _ := strconv.ParseFloat(longString,64)
 	lat, _ := strconv.ParseFloat(latString,64)
+
 	location.Long = long
 	location.Lat = lat
+
 	res, err := h.grpcClient.BranchService().GetNearestBranch(
 		context.Background(),
 		&pbu.GetNearestBranchRequest{

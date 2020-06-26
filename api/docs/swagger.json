@@ -3770,6 +3770,11 @@
         },
         "/v1/search-couriers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting phones",
                 "consumes": [
                     "application/json"
@@ -3814,6 +3819,11 @@
         },
         "/v1/search-customers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting phones",
                 "consumes": [
                     "application/json"

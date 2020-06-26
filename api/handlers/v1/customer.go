@@ -469,6 +469,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/search-customers [get]
 // @Summary Search by phone
 // @Description API for getting phones
@@ -481,7 +482,15 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) SearchByPhone(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
