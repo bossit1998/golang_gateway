@@ -6,53 +6,6 @@
     },
     "paths": {
         "/v1/branches": {
-            "get": {
-                "description": "API for getting branches",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "branch"
-                ],
-                "summary": "Get All Branches",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetAllBranchesModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "API for updating branch",
                 "consumes": [
@@ -907,6 +860,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating courier",
                 "consumes": [
                     "application/json"
@@ -5109,20 +5067,6 @@
                 },
                 "weight": {
                     "type": "number"
-                }
-            }
-        },
-        "models.GetAllBranchesModel": {
-            "type": "object",
-            "properties": {
-                "branches": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.GetBranchModel"
-                    }
-                },
-                "count": {
-                    "type": "integer"
                 }
             }
         },

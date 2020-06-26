@@ -5,6 +5,7 @@ import (
 	"fmt"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
+	"github.com/golang/protobuf/ptypes/wrappers"
 	"net/http"
 	"strings"
 
@@ -175,6 +176,7 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+//@Security ApiKeyAuth
 // @Router /v1/couriers [post]
 // @Summary Create Courier
 // @Description API for creating courier
@@ -190,11 +192,17 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		courier       pbc.Courier
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &courier)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &courier)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -227,6 +235,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	}
 
 	courier.Id = id.String()
+	courier.ShipperId = &wrappers.StringValue{Value:userInfo.ShipperID}
 	courier.AccessToken = accessToken
 
 	res, err := h.grpcClient.CourierService().Create(

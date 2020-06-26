@@ -418,15 +418,6 @@ definitions:
       weight:
         type: number
     type: object
-  models.GetAllBranchesModel:
-    properties:
-      branches:
-        items:
-          $ref: '#/definitions/models.GetBranchModel'
-        type: array
-      count:
-        type: integer
-    type: object
   models.GetAllCategoriesModel:
     properties:
       categories:
@@ -1336,37 +1327,6 @@ info:
   license: {}
 paths:
   /v1/branches:
-    get:
-      consumes:
-      - application/json
-      description: API for getting branches
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetAllBranchesModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      summary: Get All Branches
-      tags:
-      - branch
     post:
       consumes:
       - application/json
@@ -1923,6 +1883,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Courier
       tags:
       - courier
