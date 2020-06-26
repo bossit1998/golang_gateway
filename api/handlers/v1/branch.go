@@ -275,9 +275,18 @@ func (h *handlerV1) GetBranch(c *gin.Context) {
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetAllBranchesModel
 // @Failure 404 {object} models.ResponseError
+
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllBranches(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -301,6 +310,7 @@ func (h *handlerV1) GetAllBranches(c *gin.Context) {
 	res, err := h.grpcClient.BranchService().GetAllBranches(
 		context.Background(),
 		&pbu.GetAllBranchesRequest{
+			ShipperId: userInfo.ShipperID,
 			Page:  uint64(page),
 			Limit: uint64(limit),
 		},
