@@ -1448,6 +1448,11 @@
         },
         "/v1/customers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting customers",
                 "consumes": [
                     "application/json"
@@ -1495,6 +1500,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating customer",
                 "consumes": [
                     "application/json"
@@ -1552,6 +1562,13 @@
                 "summary": "Create Customer",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "customer",
                         "name": "customer",
                         "in": "body",
@@ -1598,6 +1615,13 @@
                 "summary": "Confirm Customer Login",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "confirm login",
                         "name": "confirm_phone",
                         "in": "body",
@@ -1643,6 +1667,13 @@
                 ],
                 "summary": "Customer Login",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "login",
                         "name": "login",
@@ -1763,6 +1794,11 @@
         },
         "/v1/customers/{customer_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting customer info",
                 "consumes": [
                     "application/json"
@@ -1805,6 +1841,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting customer",
                 "consumes": [
                     "application/json"

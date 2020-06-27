@@ -2302,6 +2302,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Customers
       tags:
       - customer
@@ -2310,6 +2312,11 @@ paths:
       - application/json
       description: API for creating customer
       parameters:
+      - description: shipper_id
+        in: header
+        name: shipper_id
+        required: true
+        type: string
       - description: customer
         in: body
         name: customer
@@ -2360,6 +2367,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Customer
       tags:
       - customer
@@ -2389,6 +2398,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Customer
       tags:
       - customer
@@ -2417,6 +2428,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Customer
       tags:
       - customer
@@ -2466,6 +2479,11 @@ paths:
         API that checks whether customer entered
         valid token
       parameters:
+      - description: shipper_id
+        in: header
+        name: shipper_id
+        required: true
+        type: string
       - description: confirm login
         in: body
         name: confirm_phone
@@ -2498,6 +2516,11 @@ paths:
         API that checks whether customer exists
         and if exists sends sms to their number
       parameters:
+      - description: shipper_id
+        in: header
+        name: shipper_id
+        required: true
+        type: string
       - description: login
         in: body
         name: login
