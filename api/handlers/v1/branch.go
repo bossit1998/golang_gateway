@@ -455,6 +455,7 @@ func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+ //@SECURITY ApiKeyAuth
 // @Tags branch
 // @Router /v1/nearest-branch [get]
 // @Summary Get Nearest Branch

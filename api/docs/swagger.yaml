@@ -3076,6 +3076,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Nearest Branch
       tags:
       - branch

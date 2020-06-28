@@ -2632,6 +2632,11 @@
         },
         "/v1/nearest-branch": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branch info",
                 "consumes": [
                     "application/json"
