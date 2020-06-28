@@ -1065,7 +1065,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 
 	m := map[interface{}]interface{}{
 		"user_type": "courier",
-		"shipper_id": courier.Courier.ShipperId,
+		"shipper_id": courier.Courier.ShipperId.GetValue(),
 		"sub": courier.Courier.Id,
 	}
 	access, _,  err := jwt.GenJWT(m, signingKey)
