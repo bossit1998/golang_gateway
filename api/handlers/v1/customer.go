@@ -38,7 +38,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
 	)
-	shipperID := c.GetHeader("shipper_id")
+	shipperID := c.Request.Header.Get("shipper_id")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -368,7 +368,7 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 		code               string
 		shipperID string
 	)
-	shipperID = c.GetHeader("shipper_id")
+	shipperID = c.Request.Header.Get("shipper_id")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -445,7 +445,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	var (
 		cm models.ConfirmCustomerLoginRequest
 	)
-	shipperID := c.GetHeader("shipper_id")
+	shipperID := c.Request.Header.Get("shipper_id")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
