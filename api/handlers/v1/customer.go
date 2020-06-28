@@ -27,7 +27,7 @@ import (
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param shipper_id header string true "shipper_id"
+// @Param Shipper header string true "shipper"
 // @Param customer body models.CreateCustomerModel true "customer"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
@@ -38,14 +38,12 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
 	)
-	logger.Any("header", c.Request.Header)
-	shipperID := c.Request.Header.Get("shipper_id")
+	shipperID := c.Request.Header.Get("shipper")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "shipper_id not found in header",
 			"code": ErrorBadRequest,
-			"header": c.Request.Header,
 		})
 		return
 	}

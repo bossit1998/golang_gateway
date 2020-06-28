@@ -2312,9 +2312,9 @@ paths:
       - application/json
       description: API for creating customer
       parameters:
-      - description: shipper_id
+      - description: shipper
         in: header
-        name: shipper_id
+        name: Shipper
         required: true
         type: string
       - description: customer
