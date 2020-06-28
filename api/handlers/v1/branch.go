@@ -470,7 +470,13 @@ func (h *handlerV1) GetNearestBranch(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
 	 	location pbu.Location
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -487,41 +493,12 @@ func (h *handlerV1) GetNearestBranch(c *gin.Context) {
 	res, err := h.grpcClient.BranchService().GetNearestBranch(
 		context.Background(),
 		&pbu.GetNearestBranchRequest{
+			ShipperId: userInfo.ShipperID,
 			Location : &location,
 			},
 		)
-	if handleGRPCErr(c, h.log, err) {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting branches") {
 		return 
-	}
-
-	st, ok := status.FromError(err)
-	if st.Code() == codes.NotFound {
-		c.JSON(http.StatusConflict, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Branch Not Found",
-			},
-		})
-		h.log.Error("Error while getting branch, Branch Not Found", logger.Error(err))
-		return
-	} else if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Server unavailable",
-			},
-		})
-		h.log.Error("Error while getting branch, service unavailable", logger.Error(err))
-		return
-	} else if !ok || st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while getting branch", logger.Error(err))
-		return
 	}
 
 	js, err := jspbMarshal.MarshalToString(res)
