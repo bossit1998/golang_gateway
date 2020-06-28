@@ -27,6 +27,7 @@ import (
 // @Tags customer
 // @Accept  json
 // @Produce  json
+// @Param Shipper header string true "shipper"
 // @Param customer body models.CreateCustomerModel true "customer"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
@@ -37,6 +38,15 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
 	)
+	shipperID := c.Request.Header.Get("shipper")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper_id not found in header",
+			"code": ErrorBadRequest,
+		})
+		return
+	}
 
 	jspbMarshal.OrigName = true
 
@@ -47,8 +57,14 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	result, err := h.grpcClient.CustomerService().ExistsCustomer(
 		context.Background(), &pbu.ExistsCustomerRequest{
+			ShipperId:shipperID,
 			Phone: customer.Phone,
 		})
+
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	if result.Exists {
 		c.JSON(http.StatusConflict, models.ResponseError{
@@ -66,12 +82,18 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "user", signingKey)
+	m := map[interface{}]interface{}{
+		"user_type": "customer",
+		"sub": id.String(),
+		"shipper_id": shipperID,
+	}
+	accessToken, _, err := jwt.GenJWT(m, signingKey)
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
 
 	customer.Id = id.String()
+	customer.ShipperId = shipperID
 	customer.AccessToken = accessToken
 
 	res, err := h.grpcClient.CustomerService().CreateCustomer(
@@ -92,6 +114,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Tags customer
 // @Router /v1/customers/{customer_id} [get]
 // @Summary Get Customer
@@ -103,54 +126,46 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetCustomer(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+		customer *pbu.GetCustomerResponse
+		err  error
+	)
+	err = getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-	res, err := h.grpcClient.CustomerService().GetCustomer(
-		context.Background(), &pbu.GetCustomerRequest{
-			Id: c.Param("customer_id"),
-		},
-	)
 
-	st, ok := status.FromError(err)
-	if st.Code() == codes.NotFound {
-		c.JSON(http.StatusConflict, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Customer Not Found",
-			},
-		})
-		h.log.Error("Error while getting customer, Customer Not Found", logger.Error(err))
-		return
-	} else if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Server unavailable",
-			},
-		})
-		h.log.Error("Error while getting customer, service unavailable", logger.Error(err))
-		return
-	} else if !ok || st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while getting customer", logger.Error(err))
-		return
-	}
-	js, err := jspbMarshal.MarshalToString(res.GetCustomer())
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+	if userInfo.UserType == "customer" {
+		customer, err = h.grpcClient.CustomerService().GetCustomer(
+			context.Background(), &pbu.GetCustomerRequest{
+				ShipperId: userInfo.ShipperID,
+				Id: userInfo.ID,
+			})
+	} else if userInfo.UserType == "shipper" {
+		customer, err = h.grpcClient.CustomerService().GetCustomer(
+			context.Background(), &pbu.GetCustomerRequest{
+				ShipperId: userInfo.ShipperID,
+				Id: c.Param("customer_id"),
+			})
+	} else {
+		c.Status(http.StatusForbidden)
 		return
 	}
 
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting customer") {
+		return
+	}
+
+	c.JSON(http.StatusOK, customer)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/customers [get]
 // @Summary Get All Customers
 // @Description API for getting customers
@@ -163,7 +178,15 @@ func (h *handlerV1) GetCustomer(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCustomers(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -187,6 +210,7 @@ func (h *handlerV1) GetAllCustomers(c *gin.Context) {
 	res, err := h.grpcClient.CustomerService().GetAllCustomers(
 		context.Background(),
 		&pbu.GetAllCustomersRequest{
+			ShipperId: userInfo.ShipperID,
 			Page:  uint64(page),
 			Limit: uint64(limit),
 		},
@@ -204,6 +228,7 @@ func (h *handlerV1) GetAllCustomers(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/customers [put]
 // @Summary Update Customer
 // @Description API for updating customer
@@ -290,6 +315,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Tags customer
 // @Router /v1/customers/{customer_id} [delete]
 // @Summary Delete Customer
@@ -301,41 +327,27 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteCustomer(c *gin.Context) {
-	_, err := h.grpcClient.CustomerService().DeleteCustomer(
+	var (
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
+	_, err = h.grpcClient.CustomerService().DeleteCustomer(
 		context.Background(),
 		&pbu.DeleteCustomerRequest{
+			ShipperId: userInfo.ShipperID,
 			Id: c.Param("customer_id"),
 		},
 	)
-	st, ok := status.FromError(err)
-	if !ok || st.Code() == codes.NotFound {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Customer Not found",
-			},
-		})
-		h.log.Error("Error while deleting customer, not found", logger.Error(err))
-		return
-	} else if st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while deleting customer", logger.Error(err))
-		return
-	} else if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while deleting customer, service unavailable", logger.Error(err))
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while deleting customer") {
 		return
 	}
+
 	c.Status(http.StatusOK)
 }
 
@@ -346,6 +358,7 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 // @Tags customer
 // @Accept  json
 // @Produce  json
+// @Param shipper_id header string true "shipper_id"
 // @Param login body models.CustomerLoginRequest true "login"
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -353,7 +366,17 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 	var (
 		customerLoginModel models.CustomerLoginRequest
 		code               string
+		shipperID string
 	)
+	shipperID = c.Request.Header.Get("shipper_id")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper_id not found in header",
+			"code": ErrorBadRequest,
+		})
+		return
+	}
 
 	err := c.ShouldBindJSON(&customerLoginModel)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
@@ -364,6 +387,7 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 
 	resp, err := h.grpcClient.CustomerService().ExistsCustomer(
 		context.Background(), &pbu.ExistsCustomerRequest{
+			ShipperId: shipperID,
 			Phone: customerLoginModel.Phone,
 		},
 	)
@@ -397,7 +421,7 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 		}
 	}
 
-	err = h.inMemoryStorage.SetWithTTl(customerLoginModel.Phone, code, 1800)
+	err = h.inMemoryStorage.SetWithTTl(shipperID+customerLoginModel.Phone, code, 1800)
 	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
 		return
 	}
@@ -412,6 +436,7 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 // @Tags customer
 // @Accept  json
 // @Produce  json
+// @Param shipper_id header string true "shipper_id"
 // @Param confirm_phone body models.ConfirmCustomerLoginRequest true "confirm login"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
@@ -420,6 +445,15 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	var (
 		cm models.ConfirmCustomerLoginRequest
 	)
+	shipperID := c.Request.Header.Get("shipper_id")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper_id not found in header",
+			"code": ErrorBadRequest,
+		})
+		return
+	}
 
 	err := c.ShouldBindJSON(&cm)
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
@@ -429,8 +463,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	cm.Code = strings.TrimSpace(cm.Code)
 
 	//Getting code from redis
-	key := cm.Phone
-	s, err := redis.String(h.inMemoryStorage.Get(key))
+	s, err := redis.String(h.inMemoryStorage.Get(shipperID + cm.Phone))
 	if err != nil || s == "" {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -443,7 +476,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	}
 
 	//Checking whether received code is valid
-	if cm.Code != s && cm.Code != "395167" {
+	if cm.Code != s {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeInvalidCode,
@@ -456,6 +489,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 
 	customer, err := h.grpcClient.CustomerService().GetCustomer(
 		context.Background(), &pbu.GetCustomerRequest{
+			ShipperId: shipperID,
 			Id: cm.Phone,
 		},
 	)
@@ -463,12 +497,22 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(customer.Customer)
+	m := map[interface{}]interface{}{
+		"sub": customer.Customer.Id,
+		"user_type": "customer",
+		"shipper_id": shipperID,
+	}
+
+	accessToken, _, err := jwt.GenJWT(m, signingKey)
+
 	c.JSON(http.StatusOK, &models.ConfirmCustomerLoginResponse{
 		ID:          customer.Customer.Id,
-		AccessToken: customer.Customer.AccessToken,
+		AccessToken: accessToken,
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/search-customers [get]
 // @Summary Search by phone
 // @Description API for getting phones
@@ -481,7 +525,15 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) SearchByPhone(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -497,6 +549,7 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 	res, err := h.grpcClient.CustomerService().SearchCustomersByPhone(
 		context.Background(),
 		&pbu.SearchCustomersByPhoneRequest{
+			ShipperId: userInfo.ShipperID,
 			Phone: phone,
 			Limit: limit,
 		},

@@ -2,7 +2,6 @@ package models
 
 //CreateBranchModel ...
 type CreateBranchModel struct {
-	ShipperID   string   `json:"shipper_id"`
 	Name        string   `json:"name"`
 	UserName    string   `json:"username"`
 	Password    string   `json:"password"`

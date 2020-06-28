@@ -2,9 +2,9 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
+	"github.com/golang/protobuf/ptypes/wrappers"
 	"net/http"
 	"strings"
 
@@ -111,6 +111,7 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers [get]
 // @Summary Get Couriers
 // @Description API for getting couriers
@@ -123,6 +124,15 @@ func (h *handlerV1) GetCourierDetails(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllCouriers(c *gin.Context) {
+	var (
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -147,6 +157,7 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 	res, err := h.grpcClient.CourierService().GetAllCouriers(
 		context.Background(),
 		&pbc.GetAllCouriersRequest{
+			ShipperId: userInfo.ShipperID,
 			Page:  uint64(page),
 			Limit: uint64(pageSize),
 		},
@@ -164,6 +175,7 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+//@Security ApiKeyAuth
 // @Router /v1/couriers [post]
 // @Summary Create Courier
 // @Description API for creating courier
@@ -179,11 +191,17 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		courier       pbc.Courier
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &courier)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &courier)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
@@ -216,6 +234,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	}
 
 	courier.Id = id.String()
+	courier.ShipperId = &wrappers.StringValue{Value:userInfo.ShipperID}
 	courier.AccessToken = accessToken
 
 	res, err := h.grpcClient.CourierService().Create(
@@ -1044,7 +1063,13 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 		return
 	}
 
-	access, err := jwt.GenerateJWT(courier.Courier.Id, "courier", signingKey)
+	m := map[interface{}]interface{}{
+		"user_type": "courier",
+		"shipper_id": courier.Courier.ShipperId.GetValue(),
+		"sub": courier.Courier.Id,
+	}
+	access, _,  err := jwt.GenJWT(m, signingKey)
+
 	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
 		return
 	}
@@ -1065,6 +1090,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/search-couriers [get]
 // @Summary Search by phone
 // @Description API for getting phones
@@ -1076,16 +1102,25 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
 	phone, _ := c.GetQuery("phone")
-	fmt.Print(phone)
+
 	res, err := h.grpcClient.CourierService().SearchCouriersByPhone(
 		context.Background(),
 		&pbc.SearchCouriersByPhoneRequest{
+			ShipperId: userInfo.ShipperID,
 			Phone: phone,
 		},
 	)

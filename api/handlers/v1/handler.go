@@ -71,6 +71,7 @@ const (
 
 var (
 	signingKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
+	SigningKey = []byte("FfLbN7pIEYe8@!EqrttOLiwa(H8)7Ddo")
 )
 
 //New ...
@@ -364,21 +365,19 @@ func getOptimizedTrip(tripData models.TripsDataModel, cfg config.Config) models.
 	return optimizedTrip
 }
 
-func userInfo(h *handlerV1, c *gin.Context) (models.UserInfo, error) {
+func getUserInfo(h *handlerV1, c *gin.Context, info *models.UserInfo) error {
 	claims, err := GetClaims(h, c)
+	fmt.Println(err)
 
 	if err != nil {
-		return models.UserInfo{}, err
+		return err
 	}
 
-	h.log.Info("claims", logger.Any("", claims))
-	userID := claims["sub"].(string)
-	userRole := claims["role"].(string)
+	info.ID= claims["sub"].(string)
+	info.UserType = claims["user_type"].(string)
+	info.ShipperID = claims["shipper_id"].(string)
 
-	return models.UserInfo{
-		ID:   userID,
-		Role: userRole,
-	}, nil
+	return nil
 }
 
 func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
@@ -408,4 +407,21 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 	}
 
 	return claims, nil
+}
+
+func Contains(arr []interface{}, value interface{}) bool {
+	if len(arr) == 0 {
+		return false
+	}
+
+	if fmt.Sprintf("%T", arr[0]) != fmt.Sprintf("%T", value) {
+		return false
+	}
+
+	for _, item := range arr {
+		if item == value {
+			return true
+		}
+	}
+	return false
 }

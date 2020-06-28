@@ -41,6 +41,7 @@ func New(cnf Config) *gin.Engine {
 	r.Use(gin.Logger())
 
 	r.Use(gin.Recovery())
+	//r.Use(middleware.Authorizer(v1.SigningKey))
 
 	//r.Use(middleware.NewAuthorizer(cnf.CasbinEnforcer))
 
@@ -49,6 +50,7 @@ func New(cnf Config) *gin.Engine {
 	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 	config.AllowHeaders = append(config.AllowHeaders, "image/jpeg")
 	config.AllowHeaders = append(config.AllowHeaders, "image/png")
+	config.AllowHeaders = append(config.AllowHeaders, "shipper")
 
 	r.Use(cors.New(config))
 
@@ -165,10 +167,10 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/order/:order_id", handlerV1.GetOrder)
 	r.GET("/v1/order", handlerV1.GetOrders)
 	r.GET("/v1/new-order", handlerV1.CourierNewOrders)
-	r.PATCH("v1/order/:order_id/change-status", handlerV1.ChangeOrderStatus)
+	r.PATCH("/v1/order/:order_id/change-status", handlerV1.ChangeOrderStatus)
 	r.GET("/v1/order-statuses", handlerV1.GetStatuses)
-	r.PATCH("v1/order/:order_id/add-courier", handlerV1.AddCourier)
-	r.PATCH("v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
+	r.PATCH("/v1/order/:order_id/add-courier", handlerV1.AddCourier)
+	r.PATCH("/v1/order/:order_id/remove-courier", handlerV1.RemoveCourier)
 	r.GET("/v1/courier/order", handlerV1.GetCourierOrders)
 	r.GET("/v1/customers/:customer_id/orders", handlerV1.GetCustomerOrders)
 	r.GET("/v1/branches/:branch_id/orders", handlerV1.GetBranchOrders)
@@ -177,12 +179,12 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/order/:order_id/add-branch", handlerV1.AddBranchID)
 
 	//Cargo owner
-	r.POST("/v1/cargo-owner", handlerV1.CreateCO)
-	r.GET("/v1/cargo-owner/", handlerV1.GetCO)
-	r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
-	r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
-	r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
-	r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
+	//r.POST("/v1/cargo-owner", handlerV1.CreateCO)
+	//r.GET("/v1/cargo-owner/", handlerV1.GetCO)
+	//r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
+	//r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
+	//r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
+	//r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
 
 	//Login endpoints
 	r.POST("/v1/check_code/")
@@ -214,6 +216,9 @@ func New(cnf Config) *gin.Engine {
 
 	//Upload File
 	r.POST("/v1/upload", handlerV1.ImageUpload)
+
+	//Auth
+	r.POST("/v1/login", handlerV1.Login)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

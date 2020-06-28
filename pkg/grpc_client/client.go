@@ -9,6 +9,7 @@ import (
 	pbo "genproto/order_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
+	pba "genproto/auth_service"
 
 	"google.golang.org/grpc"
 
@@ -30,6 +31,7 @@ type GrpcClientI interface {
 	MeasureService() pb.MeasureServiceClient
 	CategoryService() pb.CategoryServiceClient
 	ProductService() pb.ProductServiceClient
+	AuthService() pba.AuthServiceClient
 }
 
 //GrpcClient ...
@@ -106,6 +108,21 @@ func New(cfg config.Config) (*GrpcClient, error) {
 		grpc.WithInsecure(),
 	)
 
+	if err != nil {
+		return nil, fmt.Errorf("catalog service dial host: %s port:%d err: %s",
+			cfg.CatalogServiceHost, cfg.CatalogServicePort, err)
+	}
+
+	connAuth, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.AuthServiceHost, cfg.AuthServicePort),
+		grpc.WithInsecure(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("auth service dial host: %s port:%d err: %s",
+			cfg.AuthServiceHost, cfg.AuthServicePort, err)
+	}
+
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
@@ -123,6 +140,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
 			"category_service":      pb.NewCategoryServiceClient(connCatalog),
 			"product_service":       pb.NewProductServiceClient(connCatalog),
+			"auth_service":       	 pba.NewAuthServiceClient(connAuth),
 		},
 	}, nil
 }
@@ -192,4 +210,8 @@ func (g *GrpcClient) ProductService() pb.ProductServiceClient {
 //ShipperService ...
 func (g *GrpcClient) ShipperService() pbu.ShipperServiceClient {
 	return g.connections["shipper_service"].(pbu.ShipperServiceClient)
+}
+
+func (g *GrpcClient) AuthService() pba.AuthServiceClient {
+	return g.connections["auth_service"].(pba.AuthServiceClient)
 }
