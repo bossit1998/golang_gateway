@@ -40,7 +40,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		userInfo models.UserInfo
 		shipperID string
 	)
-	err := getUserInfo(h, c, &userInfo)
+	err := getUserInfoWithoutResponse(c, &userInfo)
 
 	if err != nil {
 		shipperID = c.Request.Header.Get("shipper")
