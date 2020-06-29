@@ -45,7 +45,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	if shipperID == "" && err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper not foundgss",
+			"message": "shipper not found",
 			"code": ErrorBadRequest,
 		})
 		return
@@ -53,7 +53,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
