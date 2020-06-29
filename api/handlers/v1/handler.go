@@ -409,6 +409,32 @@ func GetClaims(h *handlerV1, c *gin.Context) (jwtg.MapClaims, error) {
 	return claims, nil
 }
 
+func getUserInfoWithoutResponse(c *gin.Context, info *models.UserInfo) error {
+	var (
+		ErrUnauthorized = errors.New("unauthorized")
+		claims          jwtg.MapClaims
+		err             error
+	)
+
+	token := c.GetHeader("Authorization")
+
+	if token == "" {
+		return ErrUnauthorized
+	}
+
+	claims, err = jwt.ExtractClaims(token, signingKey)
+
+	if err != nil {
+		return err
+	}
+
+	info.ID= claims["sub"].(string)
+	info.UserType = claims["user_type"].(string)
+	info.ShipperID = claims["shipper_id"].(string)
+
+	return nil
+}
+
 func Contains(arr []interface{}, value interface{}) bool {
 	if len(arr) == 0 {
 		return false
