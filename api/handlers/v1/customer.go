@@ -38,12 +38,17 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
 		userInfo models.UserInfo
+		shipperID string
 	)
 	err := getUserInfo(h, c, &userInfo)
 
-	shipperID := c.Request.Header.Get("shipper")
+	if err != nil {
+		shipperID = c.Request.Header.Get("shipper")
+	} else {
+		shipperID = userInfo.ShipperID
+	}
 
-	if shipperID == "" && err != nil {
+	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "shipper not found",
 			"code": ErrorBadRequest,
