@@ -5317,6 +5317,12 @@
                             }
                         }
                     }
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.stepDemandModel"
+                    }
                 }
             }
         },
@@ -6480,6 +6486,33 @@
                 "quantity": {
                     "type": "number",
                     "example": 5
+                }
+            }
+        },
+        "models.stepDemandModel": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "branch_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "destination_address": {
+                    "type": "string"
+                },
+                "external_step_id": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.Location"
+                },
+                "phone_number": {
+                    "type": "string"
                 }
             }
         },
