@@ -37,12 +37,15 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
 	shipperID := c.Request.Header.Get("shipper")
 
-	if shipperID == "" {
+	if shipperID == "" && err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper_id not found in header",
+			"message": "shipper not foundgss",
 			"code": ErrorBadRequest,
 		})
 		return
