@@ -5307,6 +5307,12 @@
                             "status_id": {
                                 "type": "string"
                             },
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.stepDemandModel"
+                                }
+                            },
                             "to_address": {
                                 "type": "string",
                                 "example": "Hamid Olimjon maydoni 10A dom 40-kvartira"
@@ -5316,12 +5322,6 @@
                                 "$ref": "#/definitions/models.Location"
                             }
                         }
-                    }
-                },
-                "steps": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.stepDemandModel"
                     }
                 }
             }

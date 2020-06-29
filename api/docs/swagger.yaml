@@ -537,6 +537,10 @@ definitions:
               type: string
             status_id:
               type: string
+            steps:
+              items:
+                $ref: '#/definitions/models.stepDemandModel'
+              type: array
             to_address:
               example: Hamid Olimjon maydoni 10A dom 40-kvartira
               type: string
@@ -544,10 +548,6 @@ definitions:
               $ref: '#/definitions/models.Location'
               type: object
           type: object
-        type: array
-      steps:
-        items:
-          $ref: '#/definitions/models.stepDemandModel'
         type: array
     type: object
   models.GetAllParksModel:
