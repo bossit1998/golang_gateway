@@ -127,6 +127,7 @@ type GetAllOrderModel struct {
 		Floor            string       `json:"floor"`
 		ExtraPhoneNumber string       `json:"extra_phone_number"`
 		OrderAmount      int64        `json:"order_amount,omitempty"`
+		Steps []stepDemandModel `json:"steps"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
 }
