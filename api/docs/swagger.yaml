@@ -616,12 +616,15 @@ definitions:
     type: object
   models.GetCategoryModel:
     properties:
+      child_categories:
+        items:
+          $ref: '#/definitions/models.GetCategoryModel'
+        type: array
       description:
         type: string
       id:
         type: string
       image:
-        description: ChildCategories []GetCategoryModel `json:"child_categories"`
         type: string
       name:
         type: string

@@ -5519,6 +5519,12 @@
         "models.GetCategoryModel": {
             "type": "object",
             "properties": {
+                "child_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetCategoryModel"
+                    }
+                },
                 "description": {
                     "type": "string"
                 },
@@ -5526,7 +5532,6 @@
                     "type": "string"
                 },
                 "image": {
-                    "description": "ChildCategories []GetCategoryModel `json:\"child_categories\"`",
                     "type": "string"
                 },
                 "name": {
