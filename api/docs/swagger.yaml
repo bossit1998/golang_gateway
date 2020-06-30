@@ -616,15 +616,12 @@ definitions:
     type: object
   models.GetCategoryModel:
     properties:
-      child_categories:
-        items:
-          $ref: '#/definitions/models.GetCategoryModel'
-        type: array
       description:
         type: string
       id:
         type: string
       image:
+        description: ChildCategories []GetCategoryModel `json:"child_categories"`
         type: string
       name:
         type: string
@@ -1720,6 +1717,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Category
       tags:
       - category
@@ -1749,6 +1748,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Category
       tags:
       - category
@@ -1778,7 +1779,39 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Category
+      tags:
+      - category
+    get:
+      consumes:
+      - application/json
+      description: API for getting a category
+      parameters:
+      - description: category_id
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCategoryModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Category
       tags:
       - category
     put:
@@ -1812,6 +1845,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Category
       tags:
       - category
@@ -3653,6 +3688,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Product
       tags:
       - product
@@ -3682,6 +3719,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Product
       tags:
       - product
@@ -3768,6 +3807,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Product
       tags:
       - product
@@ -3796,6 +3837,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Product
       tags:
       - product
@@ -3830,6 +3873,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Product
       tags:
       - product
