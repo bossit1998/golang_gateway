@@ -182,8 +182,8 @@ func (h *handlerV1) GetProduct(c *gin.Context) {
 			return
 		}
 		shipperId = userInfo.ShipperID
-	} else if c.GetHeader("Shippper") != "" {
-		shipperId = c.GetHeader("Shippper")
+	} else if c.GetHeader("Shipper") != "" {
+		shipperId = c.GetHeader("Shipper")
 	}
 
 	marshaller.OrigName = true
