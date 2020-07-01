@@ -2576,9 +2576,9 @@ paths:
         API that checks whether customer exists
         and if exists sends sms to their number
       parameters:
-      - description: shipper_id
+      - description: shipper
         in: header
-        name: shipper_id
+        name: Shipper
         required: true
         type: string
       - description: login

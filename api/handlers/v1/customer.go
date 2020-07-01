@@ -366,7 +366,7 @@ func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param shipper_id header string true "shipper_id"
+// @Param Shipper header string true "shipper"
 // @Param login body models.CustomerLoginRequest true "login"
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
