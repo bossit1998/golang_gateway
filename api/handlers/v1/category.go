@@ -13,6 +13,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/category [post]
 // @Summary Create Category
 // @Description API for creating category
@@ -27,8 +28,15 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		category  pb.Category
+		userInfo models.UserInfo
 	)
-	err := unmarshal.Unmarshal(c.Request.Body, &category)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
+	err = unmarshal.Unmarshal(c.Request.Body, &category)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -40,6 +48,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 		h.log.Error("error while parsing json to proto", logger.Error(err))
 		return
 	}
+	category.ShipperId = userInfo.ShipperID
 
 	resp, err := h.grpcClient.CategoryService().Create(
 		context.Background(),
@@ -53,6 +62,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/category [get]
 // @Summary Get All Category
 // @Description API for getting all category
@@ -67,7 +77,14 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
 		model models.GetAllCategoriesModel
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	marshaller.OrigName = true
 	page, err := ParsePageQueryParam(c)
 
@@ -85,6 +102,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	resp, err := h.grpcClient.CategoryService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
+			ShipperId: userInfo.ShipperID,
 			Page: int64(page),
 		})
 
@@ -110,6 +128,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/category/{category_id} [put]
 // @Summary Update Category
 // @Description API for updating category
@@ -125,10 +144,17 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		category  pb.Category
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	categoryID := c.Param("category_id")
 
-	err := unmarshal.Unmarshal(c.Request.Body, &category)
+	err = unmarshal.Unmarshal(c.Request.Body, &category)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -141,6 +167,7 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 		return
 	}
 	category.Id = categoryID
+	category.ShipperId = userInfo.ShipperID
 
 	_, err = h.grpcClient.CategoryService().Update(
 		context.Background(),
@@ -154,6 +181,7 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, models.ResponseOK{Message:"category updated successfully"})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/category/{category_id} [delete]
 // @Summary Delete Category
 // @Description API for deleting category
@@ -165,11 +193,21 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteCategory(c *gin.Context) {
+	var (
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	categoryID := c.Param("category_id")
 
-	_, err := h.grpcClient.CategoryService().Delete(
+	_, err = h.grpcClient.CategoryService().Delete(
 		context.Background(),
 		&pb.DeleteRequest{
+			ShipperId: userInfo.ShipperID,
 			Id: categoryID,
 		})
 
@@ -180,4 +218,57 @@ func (h *handlerV1) DeleteCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "category deleted successfully",
 	})
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/category/{category_id} [get]
+// @Summary Get Category
+// @Description API for getting a category
+// @Tags category
+// @Accept  json
+// @Produce  json
+// @Param category_id path string true "category_id"
+// @Success 200 {object} models.GetCategoryModel
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCategory(c *gin.Context) {
+	var (
+		marshaller jsonpb.Marshaler
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
+	marshaller.OrigName = true
+	marshaller.EmitDefaults = true
+
+	resp, err := h.grpcClient.CategoryService().Get(
+		context.Background(),
+		&pb.GetRequest{
+			ShipperId: userInfo.ShipperID,
+			Id: c.Param("category_id"),
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting a category") {
+		return
+	}
+
+	js, err := marshaller.MarshalToString(resp)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "err while marshaling",
+			},
+		})
+		h.log.Error("error while parsing proto to struct", logger.Error(err))
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }

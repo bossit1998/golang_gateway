@@ -14,6 +14,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/product [post]
 // @Summary Create Product
 // @Description API for creating product
@@ -28,8 +29,15 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		product   pb.Product
+		userInfo models.UserInfo
 	)
-	err := unmarshal.Unmarshal(c.Request.Body, &product)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
+	err = unmarshal.Unmarshal(c.Request.Body, &product)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -41,6 +49,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 		h.log.Error("error while parsing json to proto", logger.Error(err))
 		return
 	}
+	product.ShipperId = userInfo.ShipperID
 
 	resp, err := h.grpcClient.ProductService().Create(
 		context.Background(),
@@ -54,6 +63,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/product [get]
 // @Summary Get All Product
 // @Description API for getting all product
@@ -68,7 +78,14 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
 		model      models.GetAllProductsModel
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	marshaller.OrigName = true
 
 	page, err := ParsePageQueryParam(c)
@@ -87,6 +104,7 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	resp, err := h.grpcClient.ProductService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
+			ShipperId: userInfo.ShipperID,
 			Page: int64(page),
 		})
 
@@ -118,6 +136,7 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, model)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/product/{product_id} [get]
 // @Summary Get Product
 // @Description API for getting a product
@@ -131,13 +150,21 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 func (h *handlerV1) GetProduct(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	marshaller.OrigName = true
 	marshaller.EmitDefaults = true
 
 	resp, err := h.grpcClient.ProductService().Get(
 		context.Background(),
 		&pb.GetRequest{
+			ShipperId: userInfo.ShipperID,
 			Id: c.Param("product_id"),
 		})
 
@@ -162,6 +189,7 @@ func (h *handlerV1) GetProduct(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/product/{product_id} [put]
 // @Summary Update Product
 // @Description API for updating product
@@ -177,10 +205,17 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		product   pb.Product
+		userInfo models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	productID := c.Param("product_id")
 
-	err := unmarshal.Unmarshal(c.Request.Body, &product)
+	err = unmarshal.Unmarshal(c.Request.Body, &product)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -193,6 +228,7 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 		return
 	}
 	product.Id = productID
+	product.ShipperId = userInfo.ShipperID
 
 	_, err = h.grpcClient.ProductService().Update(
 		context.Background(),
@@ -206,6 +242,7 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ResponseOK{Message: "product updated successfully"})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/product/{product_id} [delete]
 // @Summary Delete Product
 // @Description API for deleting product
@@ -217,11 +254,21 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) DeleteProduct(c *gin.Context) {
+	var (
+		userInfo models.UserInfo
+	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
+
 	productID := c.Param("product_id")
 
-	_, err := h.grpcClient.ProductService().Delete(
+	_, err = h.grpcClient.ProductService().Delete(
 		context.Background(),
 		&pb.DeleteRequest{
+			ShipperId: userInfo.ShipperID,
 			Id: productID,
 		})
 

@@ -534,6 +534,11 @@
         },
         "/v1/category": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting all category",
                 "consumes": [
                     "application/json"
@@ -575,6 +580,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating category",
                 "consumes": [
                     "application/json"
@@ -620,7 +630,59 @@
             }
         },
         "/v1/category/{category_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting a category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "Get Category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category_id",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCategoryModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating category",
                 "consumes": [
                     "application/json"
@@ -672,6 +734,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting category",
                 "consumes": [
                     "application/json"
@@ -1616,8 +1683,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
+                        "description": "shipper",
+                        "name": "shipper",
                         "in": "header",
                         "required": true
                     },
@@ -1669,8 +1736,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
+                        "description": "shipper",
+                        "name": "Shipper",
                         "in": "header",
                         "required": true
                     },
@@ -3505,6 +3572,11 @@
         },
         "/v1/product": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting all product",
                 "consumes": [
                     "application/json"
@@ -3546,6 +3618,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating product",
                 "consumes": [
                     "application/json"
@@ -3679,6 +3756,11 @@
         },
         "/v1/product/{product_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting a product",
                 "consumes": [
                     "application/json"
@@ -3721,6 +3803,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating product",
                 "consumes": [
                     "application/json"
@@ -3772,6 +3859,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting product",
                 "consumes": [
                     "application/json"
