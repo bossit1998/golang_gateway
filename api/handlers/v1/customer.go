@@ -376,11 +376,11 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 		code               string
 		shipperID string
 	)
-	shipperID = c.Request.Header.Get("shipper_id")
+	shipperID = c.Request.Header.Get("shipper")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper_id not found in header",
+			"message": "shipper not found in header",
 			"code": ErrorBadRequest,
 		})
 		return
