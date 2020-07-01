@@ -1683,8 +1683,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
+                        "description": "shipper",
+                        "name": "shipper",
                         "in": "header",
                         "required": true
                     },

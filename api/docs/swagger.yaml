@@ -2539,9 +2539,9 @@ paths:
         API that checks whether customer entered
         valid token
       parameters:
-      - description: shipper_id
+      - description: shipper
         in: header
-        name: shipper_id
+        name: shipper
         required: true
         type: string
       - description: confirm login

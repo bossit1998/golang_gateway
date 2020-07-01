@@ -444,7 +444,7 @@ func (h *handlerV1) CheckCustomerLogin(c *gin.Context) {
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param shipper_id header string true "shipper_id"
+// @Param shipper header string true "shipper"
 // @Param confirm_phone body models.ConfirmCustomerLoginRequest true "confirm login"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError
@@ -453,11 +453,11 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	var (
 		cm models.ConfirmCustomerLoginRequest
 	)
-	shipperID := c.Request.Header.Get("shipper_id")
+	shipperID := c.Request.Header.Get("shipper")
 
 	if shipperID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper_id not found in header",
+			"message": "shipper not found in header",
 			"code": ErrorBadRequest,
 		})
 		return
