@@ -28,7 +28,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		category  pb.Category
-		userInfo models.UserInfo
+		userInfo  models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -76,13 +76,28 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		model models.GetAllCategoriesModel
-		userInfo models.UserInfo
+		model      models.GetAllCategoriesModel
+		userInfo   models.UserInfo
+		shipperId  string
 	)
-	err := getUserInfo(h, c, &userInfo)
 
-	if err != nil {
+	if c.GetHeader("Authorization") == "" && c.GetHeader("Shipper") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: Authorization or shipper id have to be on the header")
 		return
+	}
+
+	if c.GetHeader("Authorization") != "" {
+		err := getUserInfo(h, c, &userInfo)
+
+		if err != nil {
+			return
+		}
+		shipperId = userInfo.ShipperID
+	} else if c.GetHeader("Shipper") != "" {
+		shipperId = c.GetHeader("Shipper")
 	}
 
 	marshaller.OrigName = true
@@ -102,8 +117,8 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 	resp, err := h.grpcClient.CategoryService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
-			ShipperId: userInfo.ShipperID,
-			Page: int64(page),
+			ShipperId: shipperId,
+			Page:      int64(page),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all categories") {
@@ -144,7 +159,7 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		category  pb.Category
-		userInfo models.UserInfo
+		userInfo  models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -178,7 +193,7 @@ func (h *handlerV1) UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.ResponseOK{Message:"category updated successfully"})
+	c.JSON(http.StatusCreated, models.ResponseOK{Message: "category updated successfully"})
 }
 
 // @Security ApiKeyAuth
@@ -208,7 +223,7 @@ func (h *handlerV1) DeleteCategory(c *gin.Context) {
 		context.Background(),
 		&pb.DeleteRequest{
 			ShipperId: userInfo.ShipperID,
-			Id: categoryID,
+			Id:        categoryID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while deleting category") {
@@ -234,12 +249,27 @@ func (h *handlerV1) DeleteCategory(c *gin.Context) {
 func (h *handlerV1) GetCategory(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		userInfo models.UserInfo
+		userInfo   models.UserInfo
+		shipperId  string
 	)
-	err := getUserInfo(h, c, &userInfo)
 
-	if err != nil {
+	if c.GetHeader("Authorization") == "" && c.GetHeader("Shipper") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: Authorization or shipper id have to be on the header")
 		return
+	}
+
+	if c.GetHeader("Authorization") != "" {
+		err := getUserInfo(h, c, &userInfo)
+
+		if err != nil {
+			return
+		}
+		shipperId = userInfo.ShipperID
+	} else if c.GetHeader("Shipper") != "" {
+		shipperId = c.GetHeader("Shipper")
 	}
 
 	marshaller.OrigName = true
@@ -248,8 +278,8 @@ func (h *handlerV1) GetCategory(c *gin.Context) {
 	resp, err := h.grpcClient.CategoryService().Get(
 		context.Background(),
 		&pb.GetRequest{
-			ShipperId: userInfo.ShipperID,
-			Id: c.Param("category_id"),
+			ShipperId: shipperId,
+			Id:        c.Param("category_id"),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting a category") {
