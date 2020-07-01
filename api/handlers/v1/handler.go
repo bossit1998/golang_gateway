@@ -367,13 +367,12 @@ func getOptimizedTrip(tripData models.TripsDataModel, cfg config.Config) models.
 
 func getUserInfo(h *handlerV1, c *gin.Context, info *models.UserInfo) error {
 	claims, err := GetClaims(h, c)
-	fmt.Println(err)
 
 	if err != nil {
 		return err
 	}
 
-	info.ID= claims["sub"].(string)
+	info.ID = claims["sub"].(string)
 	info.UserType = claims["user_type"].(string)
 	info.ShipperID = claims["shipper_id"].(string)
 
@@ -428,7 +427,7 @@ func getUserInfoWithoutResponse(c *gin.Context, info *models.UserInfo) error {
 		return err
 	}
 
-	info.ID= claims["sub"].(string)
+	info.ID = claims["sub"].(string)
 	info.UserType = claims["user_type"].(string)
 	info.ShipperID = claims["shipper_id"].(string)
 

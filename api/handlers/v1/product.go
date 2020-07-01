@@ -29,7 +29,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		product   pb.Product
-		userInfo models.UserInfo
+		userInfo  models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -78,14 +78,28 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
 		model      models.GetAllProductsModel
-		userInfo models.UserInfo
+		userInfo   models.UserInfo
+		shipperId  string
 	)
-	err := getUserInfo(h, c, &userInfo)
-
-	if err != nil {
+	if c.GetHeader("Authorization") == "" && c.GetHeader("Shipper") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: Authorization or shipper id have to be on the header")
 		return
 	}
 
+	if c.GetHeader("Authorization") != "" {
+		err := getUserInfo(h, c, &userInfo)
+
+		if err != nil {
+			return
+		}
+		shipperId = userInfo.ShipperID
+	} else if c.GetHeader("Shipper") != "" {
+		shipperId = c.GetHeader("Shipper")
+	}
+	fmt.Println(shipperId)
 	marshaller.OrigName = true
 
 	page, err := ParsePageQueryParam(c)
@@ -104,8 +118,8 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	resp, err := h.grpcClient.ProductService().GetAll(
 		context.Background(),
 		&pb.GetAllRequest{
-			ShipperId: userInfo.ShipperID,
-			Page: int64(page),
+			ShipperId: shipperId,
+			Page:      int64(page),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all products") {
@@ -150,12 +164,26 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 func (h *handlerV1) GetProduct(c *gin.Context) {
 	var (
 		marshaller jsonpb.Marshaler
-		userInfo models.UserInfo
+		userInfo   models.UserInfo
+		shipperId  string
 	)
-	err := getUserInfo(h, c, &userInfo)
-
-	if err != nil {
+	if c.GetHeader("Authorization") == "" && c.GetHeader("Shipper") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		h.log.Error("Unauthorized request: Authorization or shipper id have to be on the header")
 		return
+	}
+
+	if c.GetHeader("Authorization") != "" {
+		err := getUserInfo(h, c, &userInfo)
+
+		if err != nil {
+			return
+		}
+		shipperId = userInfo.ShipperID
+	} else if c.GetHeader("Shipper") != "" {
+		shipperId = c.GetHeader("Shipper")
 	}
 
 	marshaller.OrigName = true
@@ -164,8 +192,8 @@ func (h *handlerV1) GetProduct(c *gin.Context) {
 	resp, err := h.grpcClient.ProductService().Get(
 		context.Background(),
 		&pb.GetRequest{
-			ShipperId: userInfo.ShipperID,
-			Id: c.Param("product_id"),
+			ShipperId: shipperId,
+			Id:        c.Param("product_id"),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting a product") {
@@ -205,7 +233,7 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 	var (
 		unmarshal jsonpb.Unmarshaler
 		product   pb.Product
-		userInfo models.UserInfo
+		userInfo  models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -269,7 +297,7 @@ func (h *handlerV1) DeleteProduct(c *gin.Context) {
 		context.Background(),
 		&pb.DeleteRequest{
 			ShipperId: userInfo.ShipperID,
-			Id: productID,
+			Id:        productID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while deleting product") {
