@@ -1976,6 +1976,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "customer_id",
+                        "name": "customer_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "status_id",
                         "name": "status_id",
                         "in": "query"

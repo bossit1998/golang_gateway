@@ -2499,6 +2499,11 @@ paths:
       - application/json
       description: API for getting customer orders
       parameters:
+      - description: customer_id
+        in: path
+        name: customer_id
+        required: true
+        type: string
       - description: status_id
         in: query
         name: status_id

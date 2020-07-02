@@ -925,6 +925,7 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 // @Tags customer
 // @Accept json
 // @Produce json
+// @Param customer_id path string true "customer_id"
 // @Param status_id query string false "status_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
