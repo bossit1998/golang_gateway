@@ -941,7 +941,13 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 		page        uint64
 		limit       uint64
 		model models.GetAllOrderModel
+		userInfo models.UserInfo
 	)
+	err = getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	customerID := c.Param("customer_id")
 
@@ -968,6 +974,7 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
+			ShipperId: userInfo.ShipperID,
 			CustomerId: customerID,
 			Page:  page,
 			Limit: limit,
@@ -983,6 +990,7 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 		}
 
 		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
+			ShipperId: userInfo.ShipperID,
 			CustomerId: customerID,
 			StatusId: statusID,
 			Page:     page,
