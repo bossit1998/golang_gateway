@@ -530,6 +530,10 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		Id:        orderID,
 	})
 
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+		return
+	}
+
 	if order.CourierId.Value != "" {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
