@@ -534,7 +534,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		return
 	}
 
-	if order.CourierId.Value != "" {
+	if order.CourierId.GetValue() != "" {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
 		})
