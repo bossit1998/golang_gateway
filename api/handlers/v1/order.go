@@ -421,14 +421,14 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
-	fmt.Println(changeStatusModel)
 
 	_, err = h.grpcClient.OrderService().ChangeStatus(
 		context.Background(),
 		&pbo.ChangeStatusRequest{
-			ShipperId: userInfo.ShipperID,
-			Id:        orderID,
-			StatusId:  changeStatusModel.StatusID,
+			ShipperId:   userInfo.ShipperID,
+			Id:          orderID,
+			StatusId:    changeStatusModel.StatusID,
+			Description: changeStatusModel.Description,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
