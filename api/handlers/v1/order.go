@@ -1,12 +1,12 @@
 package v1
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
-	"bytes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -33,7 +33,7 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		order         pbo.Order
-		userInfo 	  models.UserInfo
+		userInfo      models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -83,7 +83,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		order         pbo.Order
-		userInfo 	  models.UserInfo
+		userInfo      models.UserInfo
 	)
 	fmt.Println(Contains(config.PaymentTypes, "123"))
 
@@ -113,8 +113,8 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Source != "admin_panel" && order.Source != "website" && 
-		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+	if order.Source != "admin_panel" && order.Source != "website" &&
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios" {
 
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -144,8 +144,8 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		values, err := json.Marshal(map[string]string{
 			"order_id": resp.OrderId,
 		})
-			
-		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
+
+		_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			h.log.Error("Error while sending order id to vendor bot", logger.Error(err))
 		}
@@ -171,7 +171,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		order         pbo.Order
-		userInfo models.UserInfo
+		userInfo      models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -180,11 +180,11 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	
+
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
- 
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -201,8 +201,8 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Source != "admin_panel" && order.Source != "website" && 
-		order.Source != "bot" && order.Source != "android" && order.Source != "ios"{
+	if order.Source != "admin_panel" && order.Source != "website" &&
+		order.Source != "bot" && order.Source != "android" && order.Source != "ios" {
 
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -234,8 +234,8 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		values, err := json.Marshal(map[string]string{
 			"order_id": orderID,
 		})
-			
-		_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
+
+		_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
 		if err != nil {
 			fmt.Println("Error while sending order id to vendor bot")
 		}
@@ -261,7 +261,7 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
 		orderID     string
-		userInfo models.UserInfo
+		userInfo    models.UserInfo
 		//model models.GetOrderModel
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -277,7 +277,7 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 
 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
 		ShipperId: userInfo.ShipperID,
-		Id: orderID,
+		Id:        orderID,
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
@@ -321,8 +321,8 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		err         error
 		page        uint64
 		limit       uint64
-		model models.GetAllOrderModel
-		userInfo models.UserInfo
+		model       models.GetAllOrderModel
+		userInfo    models.UserInfo
 	)
 	err = getUserInfo(h, c, &userInfo)
 
@@ -349,9 +349,9 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-			ShipperId:userInfo.ShipperID,
-			Page:  page,
-			Limit: limit,
+			ShipperId: userInfo.ShipperID,
+			Page:      page,
+			Limit:     limit,
 		})
 	} else {
 		_, err = uuid.Parse(statusID)
@@ -365,9 +365,9 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 
 		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 			ShipperId: userInfo.ShipperID,
-			StatusId: statusID,
-			Page:     page,
-			Limit:    limit,
+			StatusId:  statusID,
+			Page:      page,
+			Limit:     limit,
 		})
 	}
 
@@ -406,7 +406,7 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	var (
 		orderID           string
 		changeStatusModel models.ChangeStatusRequest
-		userInfo models.UserInfo
+		userInfo          models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -427,8 +427,8 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 		context.Background(),
 		&pbo.ChangeStatusRequest{
 			ShipperId: userInfo.ShipperID,
-			Id:       orderID,
-			StatusId: changeStatusModel.StatusID,
+			Id:        orderID,
+			StatusId:  changeStatusModel.StatusID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
@@ -516,7 +516,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	var (
 		orderID         string
 		addCourierModel models.AddCourierRequest
-		userInfo models.UserInfo
+		userInfo        models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -525,6 +525,23 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	}
 
 	orderID = c.Param("order_id")
+	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
+		ShipperId: userInfo.ShipperID,
+		Id:        orderID,
+	})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+		return
+	}
+
+	if order.CourierId.GetValue() != "" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("Courier have been already assigned", logger.Error(err))
+		return
+	}
+
 	err = c.ShouldBindJSON(&addCourierModel)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
@@ -544,11 +561,11 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	}
 
 	values, err := json.Marshal(map[string]string{
-		"order_id": orderID,
+		"order_id":   orderID,
 		"courier_id": addCourierModel.CourierID,
 	})
-		
-	_, err = http.Post(config.TelegramBotURL + "/send-courier-order/", "application/json", bytes.NewBuffer(values))
+
+	_, err = http.Post(config.TelegramBotURL+"/send-courier-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
@@ -571,7 +588,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) RemoveCourier(c *gin.Context) {
 	var (
-		orderID string
+		orderID  string
 		userInfo models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -586,7 +603,7 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 		context.Background(),
 		&pbo.RemoveCourierRequest{
 			ShipperId: userInfo.ShipperID,
-			OrderId: orderID,
+			OrderId:   orderID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while removing order courier") {
@@ -612,9 +629,9 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		courierID string
-		model models.GetCourierOrdersModel
-		userInfo models.UserInfo
+		courierID   string
+		model       models.GetCourierOrdersModel
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -695,8 +712,8 @@ func (h *handlerV1) GetCourierOrders(c *gin.Context) {
 func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		courierID string
-		userInfo models.UserInfo
+		courierID   string
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -706,7 +723,6 @@ func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-
 
 	if userInfo.UserType == config.RoleCourier {
 		courierID = userInfo.ID
@@ -734,13 +750,13 @@ func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
 		return
 	}
-	
+
 	order, err := h.grpcClient.OrderService().GetCourierNewOrders(context.Background(), &pbo.GetCourierNewOrdersRequest{
 		ShipperId: userInfo.ShipperID,
 		CourierId: courierID,
-		StatusId: config.VendorAcceptedStatusId,
-		Page:  page,
-		Limit: limit,
+		StatusId:  config.VendorAcceptedStatusId,
+		Page:      page,
+		Limit:     limit,
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting courier new orders") {
@@ -822,7 +838,7 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		userInfo models.UserInfo
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -839,7 +855,7 @@ func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
 		context.Background(),
 		&pbo.GetCustomerAddressesRequest{
 			ShipperId: userInfo.ShipperID,
-			Phone:phone,
+			Phone:     phone,
 		})
 
 	if handleInternalWithMessage(c, h.log, err, "error while getting customer addresses") {
@@ -870,7 +886,7 @@ func (h *handlerV1) GetCustomerAddresses(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) AddBranchID(c *gin.Context) {
 	var (
-		model models.AddBranchIDModel
+		model    models.AddBranchIDModel
 		userInfo models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -895,16 +911,16 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().AddBranchID(
 		context.Background(),
 		&pbo.AddBranchIDRequest{
-			OrderId: orderID,
+			OrderId:   orderID,
 			ShipperId: userInfo.ShipperID,
-			BranchId: model.BranchID,
+			BranchId:  model.BranchID,
 		})
 
 	values, err := json.Marshal(map[string]string{
 		"order_id": orderID,
 	})
-		
-	_, err = http.Post(config.TelegramBotURL + "/send-order/", "application/json", bytes.NewBuffer(values))
+
+	_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
 	if err != nil {
 		fmt.Println("Error while sending order id to vendor bot")
 	}
@@ -940,8 +956,8 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 		err         error
 		page        uint64
 		limit       uint64
-		model models.GetAllOrderModel
-		userInfo models.UserInfo
+		model       models.GetAllOrderModel
+		userInfo    models.UserInfo
 	)
 	err = getUserInfo(h, c, &userInfo)
 
@@ -974,10 +990,10 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
-			ShipperId: userInfo.ShipperID,
+			ShipperId:  userInfo.ShipperID,
 			CustomerId: customerID,
-			Page:  page,
-			Limit: limit,
+			Page:       page,
+			Limit:      limit,
 		})
 	} else {
 		_, err = uuid.Parse(statusID)
@@ -990,11 +1006,11 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 		}
 
 		order, err = h.grpcClient.OrderService().GetCustomerOrders(context.Background(), &pbo.GetCustomerOrdersRequest{
-			ShipperId: userInfo.ShipperID,
+			ShipperId:  userInfo.ShipperID,
 			CustomerId: customerID,
-			StatusId: statusID,
-			Page:     page,
-			Limit:    limit,
+			StatusId:   statusID,
+			Page:       page,
+			Limit:      limit,
 		})
 	}
 
@@ -1038,8 +1054,8 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 		err         error
 		page        uint64
 		limit       uint64
-		model models.GetAllOrderModel
-		userInfo models.UserInfo
+		model       models.GetAllOrderModel
+		userInfo    models.UserInfo
 	)
 	err = getUserInfo(h, c, &userInfo)
 
@@ -1073,8 +1089,8 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetBranchOrders(context.Background(), &pbo.GetBranchOrdersRequest{
 			BranchId: branchID,
-			Page:  page,
-			Limit: limit,
+			Page:     page,
+			Limit:    limit,
 		})
 	} else {
 		_, err = uuid.Parse(statusID)
@@ -1088,10 +1104,10 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 
 		order, err = h.grpcClient.OrderService().GetBranchOrders(context.Background(), &pbo.GetBranchOrdersRequest{
 			ShipperId: userInfo.ShipperID,
-			BranchId: branchID,
-			StatusId: statusID,
-			Page:     page,
-			Limit:    limit,
+			BranchId:  branchID,
+			StatusId:  statusID,
+			Page:      page,
+			Limit:     limit,
 		})
 	}
 
