@@ -165,7 +165,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       parent_id:
         type: string
     type: object
@@ -206,7 +207,8 @@ definitions:
       description:
         type: string
       external_order_id:
-        type: integer
+        example: "0"
+        type: string
       steps:
         items:
           properties:
@@ -219,7 +221,8 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              type: integer
+              example: "0"
+              type: string
             location:
               $ref: '#/definitions/models.Location'
               type: object
@@ -265,7 +268,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
@@ -331,7 +335,8 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
     type: object
   models.CreateProductModel:
     properties:
@@ -348,11 +353,13 @@ definitions:
       name:
         type: string
       order_no:
-        type: integer
+        example: "0"
+        type: string
       preview_text:
         type: string
       price:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
@@ -425,7 +432,8 @@ definitions:
           $ref: '#/definitions/models.GetCategoryModel'
         type: array
       count:
-        type: integer
+        example: "0"
+        type: string
     type: object
   models.GetAllCourierBranchesModel:
     properties:
@@ -482,7 +490,8 @@ definitions:
   models.GetAllMeasuresModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       measures:
         items:
           $ref: '#/definitions/models.GetMeasureModel'
@@ -491,7 +500,8 @@ definitions:
   models.GetAllOrderModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       orders:
         items:
           properties:
@@ -520,7 +530,8 @@ definitions:
             description:
               type: string
             external_order_id:
-              type: integer
+              example: "0"
+              type: string
             extra_phone_number:
               type: string
             finished_at:
@@ -562,7 +573,8 @@ definitions:
   models.GetAllProductKindsModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       product_kinds:
         items:
           $ref: '#/definitions/models.GetProductKindModel'
@@ -571,7 +583,8 @@ definitions:
   models.GetAllProductsModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       products:
         items:
           $ref: '#/definitions/models.GetProductModel'
@@ -653,7 +666,8 @@ definitions:
   models.GetCourierOrdersModel:
     properties:
       count:
-        type: integer
+        example: "0"
+        type: string
       orders:
         items:
           properties:
@@ -702,7 +716,8 @@ definitions:
                   destination_address:
                     type: string
                   external_step_id:
-                    type: integer
+                    example: "0"
+                    type: string
                   id:
                     type: string
                   location:
@@ -764,6 +779,21 @@ definitions:
       name:
         type: string
       phone:
+        type: string
+    type: object
+  models.GetExchangeRatesModel:
+    properties:
+      cb_price:
+        type: string
+      code:
+        type: string
+      date:
+        type: string
+      nbu_buy_price:
+        type: string
+      nbu_cell_price:
+        type: string
+      title:
         type: string
     type: object
   models.GetFareModel:
@@ -829,7 +859,8 @@ definitions:
       description:
         type: string
       external_order_id:
-        type: integer
+        example: "0"
+        type: string
       extra_phone_number:
         type: string
       finished_at:
@@ -839,7 +870,8 @@ definitions:
       id:
         type: string
       order_amount:
-        type: integer
+        example: "0"
+        type: string
       payment_type:
         type: string
       source:
@@ -860,7 +892,8 @@ definitions:
             destination_address:
               type: string
             external_step_id:
-              type: integer
+              example: "0"
+              type: string
             id:
               type: string
             location:
@@ -872,8 +905,8 @@ definitions:
               items:
                 properties:
                   external_product_id:
-                    example: 1234
-                    type: integer
+                    example: "1234"
+                    type: string
                   id:
                     type: string
                   name:
@@ -888,13 +921,15 @@ definitions:
                     example: 2
                     type: number
                   total_amount:
-                    type: integer
+                    example: "0"
+                    type: string
                 type: object
               type: array
             status:
               type: string
             step_amount:
-              type: integer
+              example: "0"
+              type: string
           type: object
         type: array
       to_address:
@@ -961,7 +996,8 @@ definitions:
       preview_text:
         type: string
       price:
-        type: integer
+        example: "0"
+        type: string
       product_kind_id:
         type: string
       short_name:
@@ -1282,8 +1318,8 @@ definitions:
         example: 701dc270-0adc-4d00-ae78-4f2f78d794cc
         type: string
       price:
-        example: 50000
-        type: integer
+        example: "50000"
+        type: string
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -1297,8 +1333,8 @@ definitions:
   models.productDemandModel:
     properties:
       external_product_id:
-        example: 1234
-        type: integer
+        example: "1234"
+        type: string
       name:
         example: Choyxona Osh
         type: string
@@ -1312,8 +1348,8 @@ definitions:
   models.productOnDemandModel:
     properties:
       price:
-        example: 50000
-        type: integer
+        example: "50000"
+        type: string
       product_id:
         example: a010f178-da52-4373-aacd-e477d871e27a
         type: string
@@ -1332,7 +1368,8 @@ definitions:
       destination_address:
         type: string
       external_step_id:
-        type: integer
+        example: "0"
+        type: string
       location:
         $ref: '#/definitions/models.Location'
         type: object
@@ -2908,6 +2945,29 @@ paths:
       summary: Get All Distributor Parks
       tags:
       - distributor
+  /v1/exchange-rates:
+    get:
+      consumes:
+      - application/json
+      description: API for getting exchange rates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetExchangeRatesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Exchange rates
+      tags:
+      - exchange
   /v1/fares:
     get:
       consumes:
