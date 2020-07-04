@@ -219,7 +219,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/upload", handlerV1.ImageUpload)
 
 	// NBU currency exchange rates
-	r.GET("/v1/currency-rates", handlerV1.GetExchangeRate)
+	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
 	//Auth
 	r.POST("/v1/login", handlerV1.Login)
