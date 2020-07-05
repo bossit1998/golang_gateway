@@ -5975,6 +5975,9 @@ var doc = `{
                     "items": {
                         "type": "object",
                         "properties": {
+                            "created_at": {
+                                "type": "string"
+                            },
                             "description": {
                                 "type": "string"
                             },

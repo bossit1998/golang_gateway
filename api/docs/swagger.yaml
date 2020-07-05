@@ -883,6 +883,8 @@ definitions:
       status_notes:
         items:
           properties:
+            created_at:
+              type: string
             description:
               type: string
             id:
