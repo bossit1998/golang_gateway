@@ -112,6 +112,7 @@ type GetOrderModel struct {
 		ID          string `json:"id"`
 		Description string `json:"description"`
 		StatusID    string `json:"status_id"`
+		CreatedAt   string `json:"created_at"`
 	} `json:"status_notes"`
 }
 
