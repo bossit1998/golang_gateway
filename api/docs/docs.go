@@ -2414,6 +2414,41 @@ var doc = `{
                 }
             }
         },
+        "/v1/exchange-rates": {
+            "get": {
+                "description": "API for getting exchange rates",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exchange"
+                ],
+                "summary": "Get Exchange rates",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetExchangeRatesModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/fares": {
             "get": {
                 "description": "API for getting fares",
@@ -5787,6 +5822,29 @@ var doc = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetExchangeRatesModel": {
+            "type": "object",
+            "properties": {
+                "cb_price": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "nbu_buy_price": {
+                    "type": "string"
+                },
+                "nbu_cell_price": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

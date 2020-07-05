@@ -783,6 +783,21 @@ definitions:
       phone:
         type: string
     type: object
+  models.GetExchangeRatesModel:
+    properties:
+      cb_price:
+        type: string
+      code:
+        type: string
+      date:
+        type: string
+      nbu_buy_price:
+        type: string
+      nbu_cell_price:
+        type: string
+      title:
+        type: string
+    type: object
   models.GetFareModel:
     properties:
       created_at:
@@ -2943,6 +2958,29 @@ paths:
       summary: Get All Distributor Parks
       tags:
       - distributor
+  /v1/exchange-rates:
+    get:
+      consumes:
+      - application/json
+      description: API for getting exchange rates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetExchangeRatesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get Exchange rates
+      tags:
+      - exchange
   /v1/fares:
     get:
       consumes:

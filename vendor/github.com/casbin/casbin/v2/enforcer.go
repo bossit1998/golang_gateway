@@ -366,10 +366,7 @@ func (e *Enforcer) enforce(matcher string, explains *[]string, rvals ...interfac
 		return true, nil
 	}
 
-	functions := model.FunctionMap{}
-	for k, v := range e.fm {
-		functions[k] = v
-	}
+	functions := e.fm.GetFunctions()
 	if _, ok := e.model["g"]; ok {
 		for key, ast := range e.model["g"] {
 			rm := ast.RM
@@ -380,7 +377,7 @@ func (e *Enforcer) enforce(matcher string, explains *[]string, rvals ...interfac
 	if matcher == "" {
 		expString = e.model["m"]["m"].Value
 	} else {
-		expString = matcher
+		expString = util.RemoveComments(util.EscapeAssertion(matcher))
 	}
 
 	var expression *govaluate.EvaluableExpression
