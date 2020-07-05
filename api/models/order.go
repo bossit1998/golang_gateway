@@ -108,6 +108,11 @@ type GetOrderModel struct {
 			TotalAmount uint64 `json:"total_amount,string"`
 		} `json:"products"`
 	} `json:"steps"`
+	StatusNotes []struct {
+		ID          string `json:"id"`
+		Description string `json:"description"`
+		StatusID    string `json:"status_id"`
+	} `json:"status_notes"`
 }
 
 type GetAllOrderModel struct {

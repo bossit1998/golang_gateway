@@ -404,20 +404,19 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	var (
-		orderID           string
-		changeStatusModel models.ChangeStatusRequest
-		userInfo          models.UserInfo
+		jspbUnmarshal jsonpb.Unmarshaler
+		statusNote    pbo.StatusNote
+		userInfo      models.UserInfo
 	)
+
 	err := getUserInfo(h, c, &userInfo)
 
 	if err != nil {
 		return
 	}
 
-	orderID = c.Param("order_id")
-
-	err = c.ShouldBindJSON(&changeStatusModel)
-
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &statusNote)
+	statusNote.OrderId = c.Param("order_id")
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
 		return
 	}
@@ -425,10 +424,8 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().ChangeStatus(
 		context.Background(),
 		&pbo.ChangeStatusRequest{
-			ShipperId:   userInfo.ShipperID,
-			Id:          orderID,
-			StatusId:    changeStatusModel.StatusID,
-			Description: changeStatusModel.Description,
+			ShipperId:  userInfo.ShipperID,
+			StatusNote: &statusNote,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
