@@ -865,6 +865,17 @@ definitions:
         type: string
       status_id:
         type: string
+      status_notes:
+        items:
+          properties:
+            description:
+              type: string
+            id:
+              type: string
+            status_id:
+              type: string
+          type: object
+        type: array
       steps:
         items:
           properties:

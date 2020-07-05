@@ -5912,6 +5912,23 @@ var doc = `{
                 "status_id": {
                     "type": "string"
                 },
+                "status_notes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "status_id": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
                 "steps": {
                     "type": "array",
                     "items": {
