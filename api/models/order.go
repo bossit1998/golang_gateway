@@ -108,26 +108,32 @@ type GetOrderModel struct {
 			TotalAmount uint64 `json:"total_amount,string"`
 		} `json:"products"`
 	} `json:"steps"`
+	StatusNotes []struct {
+		ID          string `json:"id"`
+		Description string `json:"description"`
+		StatusID    string `json:"status_id"`
+		CreatedAt   string `json:"created_at"`
+	} `json:"status_notes"`
 }
 
 type GetAllOrderModel struct {
 	Orders []struct {
 		orderDemandModel
-		ID               string       `json:"id"`
-		ClientID         string       `json:"client_id"`
-		CourierID        string       `json:"courier_id"`
-		Courier          CourierModel `json:"courier,omitempty"`
-		StatusID         string       `json:"status_id"`
-		CreatedAt        string       `json:"created_at"`
-		FinishedAt       string       `json:"finished_at"`
-		PaymentType      string       `json:"payment_type"`
-		Source           string       `json:"source"`
-		Apartment        string       `json:"apartment"`
-		Building         string       `json:"building"`
-		Floor            string       `json:"floor"`
-		ExtraPhoneNumber string       `json:"extra_phone_number"`
-		OrderAmount      int64        `json:"order_amount,omitempty"`
-		Steps []stepDemandModel `json:"steps"`
+		ID               string            `json:"id"`
+		ClientID         string            `json:"client_id"`
+		CourierID        string            `json:"courier_id"`
+		Courier          CourierModel      `json:"courier,omitempty"`
+		StatusID         string            `json:"status_id"`
+		CreatedAt        string            `json:"created_at"`
+		FinishedAt       string            `json:"finished_at"`
+		PaymentType      string            `json:"payment_type"`
+		Source           string            `json:"source"`
+		Apartment        string            `json:"apartment"`
+		Building         string            `json:"building"`
+		Floor            string            `json:"floor"`
+		ExtraPhoneNumber string            `json:"extra_phone_number"`
+		OrderAmount      int64             `json:"order_amount,omitempty"`
+		Steps            []stepDemandModel `json:"steps"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
 }
@@ -223,7 +229,8 @@ type GetOrders struct {
 }
 
 type ChangeStatusRequest struct {
-	StatusID string `json:"status_id"`
+	StatusID    string `json:"status_id"`
+	Description string `json:"description"`
 }
 
 type Status struct {
