@@ -71,6 +71,9 @@ type Config struct {
 	AuthServiceHost string
 	AuthServicePort int
 
+	NotificationServiceHost string
+	NotificationServicePort int
+
 	LogLevel string
 	HTTPPort string
 
@@ -126,6 +129,9 @@ func Load() Config {
 
 	c.AuthServiceHost = cast.ToString(getOrReturnDefault("AUTH_SERVICE_HOST", "auth_service"))
 	c.AuthServicePort = cast.ToInt(getOrReturnDefault("AUTH_SERVICE_PORT", 80))
+
+	c.NotificationServiceHost = cast.ToString(getOrReturnDefault("NOTIFICATION_SERVICE_HOST", "notification_service"))
+	c.NotificationServicePort = cast.ToInt(getOrReturnDefault("NOTIFICATION_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 
