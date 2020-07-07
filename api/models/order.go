@@ -262,3 +262,8 @@ type CustomerAddressesModel struct {
 type AddBranchIDModel struct {
 	BranchID string `json:"branch_id"`
 }
+
+type GetAllBranchOrdersModel struct{
+	BranchID string `json:"branch_id"`
+	Quantity uint64 `json:"quantity"`
+}
