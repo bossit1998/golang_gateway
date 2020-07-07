@@ -2,14 +2,15 @@ package grpc_client
 
 import (
 	"fmt"
+	pba "genproto/auth_service"
 	pb "genproto/catalog_service"
 	pbco "genproto/co_service"
 	pbc "genproto/courier_service"
 	pbf "genproto/fare_service"
+	pbn "genproto/notification_service"
 	pbo "genproto/order_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
-	pba "genproto/auth_service"
 
 	"google.golang.org/grpc"
 
@@ -32,6 +33,7 @@ type GrpcClientI interface {
 	CategoryService() pb.CategoryServiceClient
 	ProductService() pb.ProductServiceClient
 	AuthService() pba.AuthServiceClient
+	NotificationService() pbn.NotificationServiceClient
 }
 
 //GrpcClient ...
@@ -123,6 +125,16 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.AuthServiceHost, cfg.AuthServicePort, err)
 	}
 
+	connNotification, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.NotificationServiceHost, cfg.NotificationServicePort),
+		grpc.WithInsecure(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("notification service dial host: %s port:%d err: %s",
+			cfg.NotificationServiceHost, cfg.NotificationServicePort, err)
+	}
+
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
@@ -140,7 +152,8 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
 			"category_service":      pb.NewCategoryServiceClient(connCatalog),
 			"product_service":       pb.NewProductServiceClient(connCatalog),
-			"auth_service":       	 pba.NewAuthServiceClient(connAuth),
+			"auth_service":          pba.NewAuthServiceClient(connAuth),
+			"notification_service":  pbn.NewNotificationServiceClient(connNotification),
 		},
 	}, nil
 }
@@ -214,4 +227,8 @@ func (g *GrpcClient) ShipperService() pbu.ShipperServiceClient {
 
 func (g *GrpcClient) AuthService() pba.AuthServiceClient {
 	return g.connections["auth_service"].(pba.AuthServiceClient)
+}
+
+func (g *GrpcClient) NotificationService() pbn.NotificationServiceClient {
+	return g.connections["notification_service"].(pbn.NotificationServiceClient)
 }

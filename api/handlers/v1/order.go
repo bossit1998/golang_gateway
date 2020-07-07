@@ -85,7 +85,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		order         pbo.Order
 		userInfo      models.UserInfo
 	)
-	fmt.Println(Contains(config.PaymentTypes, "123"))
 
 	err := getUserInfo(h, c, &userInfo)
 
@@ -431,6 +430,27 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
 		return
 	}
+
+	// if statusNote.StatusId == config.VendorAcceptedStatusId {
+	// 	// send notification
+
+	// 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
+	// 		ShipperId: userInfo.ShipperID,
+	// 		Id:        statusNote.OrderId,
+	// 	})
+
+	// 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+	// 		return
+	// 	}
+
+	// 	couriers, err := h.grpcClient.CourierService().GetAllBranchCouriers(
+	// 		context.Background(),
+	// 		&pbc.GetAllBranchCouriersRequest{
+	// 			BranchId: order.Id,
+	// 			Limit:    1000,
+	// 			Page:     1,
+	// 		})
+	// }
 
 	c.JSON(200, models.ResponseOK{
 		Message: "changing order status successfully",
