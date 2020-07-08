@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
 	"net/http"
@@ -1065,9 +1064,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
 		return
 	}
-	fmt.Println("==========")
-	fmt.Println(cm.FcmToken)
-	fmt.Println("==========")
+
 	// check courier fcm token
 	if courier.Courier.FcmToken.GetValue() != cm.FcmToken {
 		_, err := h.grpcClient.CourierService().UpdateFcmToken(
