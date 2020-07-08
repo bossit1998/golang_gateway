@@ -29,14 +29,14 @@ type SearchCouriersByPhoneModel struct {
 
 //CreateCourierModel ...
 type CreateCourierModel struct {
-	Phone     	  string `json:"phone"`
-	FirstName 	  string `json:"first_name"`
-	LastName  	  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 //BranchCourierModel ...
 type BranchCourierModel struct {
-	BranchID string `json:"branch_id"`
+	BranchID  string `json:"branch_id"`
 	CourierID string `json:"courier_id"`
 }
 
@@ -90,18 +90,19 @@ type UpdateCourierVehicleModel struct {
 
 //CheckLoginResponse ...
 type CheckLoginResponse struct {
-	Code string `json:"code"`
+	Code  string `json:"code"`
 	Phone string `json:"phone"`
 }
 
 //ConfirmLoginRequest ...
 type ConfirmLoginRequest struct {
-	Code string `json:"code"`
-	Phone string `json:"phone"`
+	Code     string `json:"code"`
+	Phone    string `json:"phone"`
+	FcmToken string `json:"fcm_token"`
 }
 
 //ConfirmLoginResponse ...
 type ConfirmLoginResponse struct {
-	ID string `json:"id"`
+	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
 }

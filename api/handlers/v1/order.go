@@ -85,7 +85,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		order         pbo.Order
 		userInfo      models.UserInfo
 	)
-	fmt.Println(Contains(config.PaymentTypes, "123"))
 
 	err := getUserInfo(h, c, &userInfo)
 
@@ -431,6 +430,27 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
 		return
 	}
+
+	// if statusNote.StatusId == config.VendorAcceptedStatusId {
+	// 	// send notification
+
+	// 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
+	// 		ShipperId: userInfo.ShipperID,
+	// 		Id:        statusNote.OrderId,
+	// 	})
+
+	// 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+	// 		return
+	// 	}
+
+	// 	couriers, err := h.grpcClient.CourierService().GetAllBranchCouriers(
+	// 		context.Background(),
+	// 		&pbc.GetAllBranchCouriersRequest{
+	// 			BranchId: order.Id,
+	// 			Limit:    1000,
+	// 			Page:     1,
+	// 		})
+	// }
 
 	c.JSON(200, models.ResponseOK{
 		Message: "changing order status successfully",
@@ -1125,4 +1145,53 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model)
+}
+
+
+// @Security ApiKeyAuth
+// @Router /v1/branch/:shipper_id/orders/all [get]
+// @Summary Get All Branch Orders
+// @Description API for getting all branch orders
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param shipper_id path string true "shipper_id"
+// @Success 200 {object} models.GetAllBranchOrdersModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetAllBranchOrders(c *gin.Context) {
+	var (
+		jspbMarshal jsonpb.Marshaler
+		// orderID     string
+		// userInfo    models.UserInfo
+		// //model models.GetOrderModel
+	)
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	shipperID := c.Param("shipper_id")
+
+	orders, err := h.grpcClient.OrderService().GetAllBranchOrders(context.Background(), &pbo.GetAllBranchOrdersRequest{
+		ShipperId: shipperID,
+	})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting orders") {
+		return
+	}
+
+	js, err := jspbMarshal.MarshalToString(orders)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+	//
+	//err = json.Unmarshal([]byte(js), &model)
+	//
+	//if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+	//	return
+	//}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }

@@ -25,6 +25,55 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1/branch/:shipper_id/orders/all": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting all branch orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get All Branch Orders",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllBranchOrdersModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches": {
             "put": {
                 "description": "API for updating branch",
@@ -4794,6 +4843,9 @@ var doc = `{
                 "code": {
                     "type": "string"
                 },
+                "fcm_token": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 }
@@ -5287,6 +5339,17 @@ var doc = `{
                 },
                 "weight": {
                     "type": "number"
+                }
+            }
+        },
+        "models.GetAllBranchOrdersModel": {
+            "type": "object",
+            "properties": {
+                "branch_id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
                 }
             }
         },

@@ -4,9 +4,10 @@ import (
 	"context"
 	pbc "genproto/courier_service"
 	pbs "genproto/sms_service"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"net/http"
 	"strings"
+
+	"github.com/golang/protobuf/ptypes/wrappers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -158,8 +159,8 @@ func (h *handlerV1) GetAllCouriers(c *gin.Context) {
 		context.Background(),
 		&pbc.GetAllCouriersRequest{
 			ShipperId: userInfo.ShipperID,
-			Page:  uint64(page),
-			Limit: uint64(pageSize),
+			Page:      uint64(page),
+			Limit:     uint64(pageSize),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
@@ -191,7 +192,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		courier       pbc.Courier
-		userInfo models.UserInfo
+		userInfo      models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -234,7 +235,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	}
 
 	courier.Id = id.String()
-	courier.ShipperId = &wrappers.StringValue{Value:userInfo.ShipperID}
+	courier.ShipperId = &wrappers.StringValue{Value: userInfo.ShipperID}
 	courier.AccessToken = accessToken
 
 	res, err := h.grpcClient.CourierService().Create(
@@ -1059,16 +1060,31 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 			Id: cm.Phone,
 		},
 	)
+
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
 		return
 	}
 
-	m := map[interface{}]interface{}{
-		"user_type": "courier",
-		"shipper_id": courier.Courier.ShipperId.GetValue(),
-		"sub": courier.Courier.Id,
+	// check courier fcm token
+	if courier.Courier.FcmToken.GetValue() != cm.FcmToken {
+		_, err := h.grpcClient.CourierService().UpdateFcmToken(
+			context.Background(), &pbc.UpdateFcmTokenRequest{
+				Id:       courier.Courier.Id,
+				FcmToken: cm.FcmToken,
+			},
+		)
+
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while requesting to courier service") {
+			return
+		}
 	}
-	access, _,  err := jwt.GenJWT(m, signingKey)
+
+	m := map[interface{}]interface{}{
+		"user_type":  "courier",
+		"shipper_id": courier.Courier.ShipperId.GetValue(),
+		"sub":        courier.Courier.Id,
+	}
+	access, _, err := jwt.GenJWT(m, signingKey)
 
 	if handleInternalWithMessage(c, h.log, err, "Error while generating token") {
 		return
@@ -1104,7 +1120,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		userInfo models.UserInfo
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -1121,7 +1137,7 @@ func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
 		context.Background(),
 		&pbc.SearchCouriersByPhoneRequest{
 			ShipperId: userInfo.ShipperID,
-			Phone: phone,
+			Phone:     phone,
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
