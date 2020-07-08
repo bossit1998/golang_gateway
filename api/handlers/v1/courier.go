@@ -1061,10 +1061,13 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 			Id: cm.Phone,
 		},
 	)
+
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting courier") {
 		return
 	}
+	fmt.Println("==========")
 	fmt.Println(cm.FcmToken)
+	fmt.Println("==========")
 	// check courier fcm token
 	if courier.Courier.FcmToken.GetValue() != cm.FcmToken {
 		_, err := h.grpcClient.CourierService().UpdateFCMToken(
@@ -1074,7 +1077,7 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 			},
 		)
 
-		if handleGrpcErrWithMessage(c, h.log, err, "Error while updating courier fcm token") {
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while requesting to courier service") {
 			return
 		}
 	}
