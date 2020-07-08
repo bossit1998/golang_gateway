@@ -4843,6 +4843,9 @@ var doc = `{
                 "code": {
                     "type": "string"
                 },
+                "fcm_token": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 }
