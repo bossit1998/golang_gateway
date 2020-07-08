@@ -1070,8 +1070,8 @@ func (h *handlerV1) ConfirmCourierLogin(c *gin.Context) {
 	fmt.Println("==========")
 	// check courier fcm token
 	if courier.Courier.FcmToken.GetValue() != cm.FcmToken {
-		_, err := h.grpcClient.CourierService().UpdateFCMToken(
-			context.Background(), &pbc.UpdateFCMTokenRequest{
+		_, err := h.grpcClient.CourierService().UpdateFcmToken(
+			context.Background(), &pbc.UpdateFcmTokenRequest{
 				Id:       courier.Courier.Id,
 				FcmToken: cm.FcmToken,
 			},
