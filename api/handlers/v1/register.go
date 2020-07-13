@@ -133,8 +133,9 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Router /v1/customers/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var (
-		rc       models.RegisterConfirmModel
-		customer pbu.Customer
+		rc        models.RegisterConfirmModel
+		customer  pbu.Customer
+		shipperID string
 	)
 
 	shipperID = c.Request.Header.Get("shipper")
@@ -205,7 +206,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 	customer = pbu.Customer{
 		Id:          id.String(),
-		ShipperId:   ShipperID,
+		ShipperId:   shipperID,
 		Name:        name,
 		Phone:       rc.Phone,
 		AccessToken: accessToken,
