@@ -1105,9 +1105,10 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 
 	if statusID == "" {
 		order, err = h.grpcClient.OrderService().GetBranchOrders(context.Background(), &pbo.GetBranchOrdersRequest{
-			BranchId: branchID,
-			Page:     page,
-			Limit:    limit,
+			ShipperId: userInfo.ShipperID,
+			BranchId:  branchID,
+			Page:      page,
+			Limit:     limit,
 		})
 	} else {
 		_, err = uuid.Parse(statusID)
@@ -1146,7 +1147,6 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 
 	c.JSON(http.StatusOK, model)
 }
-
 
 // @Security ApiKeyAuth
 // @Router /v1/branch/:shipper_id/orders/all [get]
