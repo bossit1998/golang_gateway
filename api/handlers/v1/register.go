@@ -31,9 +31,20 @@ import (
 // @Router /v1/customers/register/ [post]
 func (h *handlerV1) Register(c *gin.Context) {
 	var (
-		reg  models.RegisterModel
-		code string
+		reg       models.RegisterModel
+		code      string
+		shipperID string
 	)
+
+	shipperID = c.Request.Header.Get("shipper")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper not found",
+			"code":    ErrorBadRequest,
+		})
+		return
+	}
 
 	err := c.ShouldBindJSON(&reg)
 	if handleBadRequestErrWithMessage(c, h.log, err, "Error binding json") {
@@ -45,7 +56,8 @@ func (h *handlerV1) Register(c *gin.Context) {
 
 	result, err := h.grpcClient.CustomerService().ExistsCustomer(
 		context.Background(), &pbu.ExistsCustomerRequest{
-			Phone: reg.Phone,
+			Phone:     reg.Phone,
+			ShipperId: shipperID,
 		})
 
 	st, ok := status.FromError(err)
@@ -121,9 +133,21 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Router /v1/customers/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var (
-		rc       models.RegisterConfirmModel
-		customer pbu.Customer
+		rc        models.RegisterConfirmModel
+		customer  pbu.Customer
+		shipperID string
 	)
+
+	shipperID = c.Request.Header.Get("shipper")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper not found",
+			"code":    ErrorBadRequest,
+		})
+		return
+	}
+
 	err := c.ShouldBindJSON(&rc)
 	if handleBadRequestErrWithMessage(c, h.log, err, "Error binding json") {
 		return
@@ -182,6 +206,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	}
 	customer = pbu.Customer{
 		Id:          id.String(),
+		ShipperId:   shipperID,
 		Name:        name,
 		Phone:       rc.Phone,
 		AccessToken: accessToken,
