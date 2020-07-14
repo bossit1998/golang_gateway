@@ -10,8 +10,8 @@ import (
 //GenerateJWT - generates jwt jokens
 func GenerateJWT(id, role string, signinigKey []byte) (access string, err error) {
 	var (
-		accessToken  *jwt.Token
-		claims       jwt.MapClaims
+		accessToken *jwt.Token
+		claims      jwt.MapClaims
 	)
 	accessToken = jwt.New(jwt.SigningMethodHS256)
 
@@ -32,8 +32,8 @@ func GenerateJWT(id, role string, signinigKey []byte) (access string, err error)
 
 func GenJWT(m map[interface{}]interface{}, key []byte) (access, refresh string, err error) {
 	var (
-		accessToken, refreshToken  *jwt.Token
-		claims      jwt.MapClaims
+		accessToken, refreshToken *jwt.Token
+		claims                    jwt.MapClaims
 	)
 	accessToken = jwt.New(jwt.SigningMethodHS256)
 	refreshToken = jwt.New(jwt.SigningMethodHS256)
@@ -48,11 +48,11 @@ func GenJWT(m map[interface{}]interface{}, key []byte) (access, refresh string, 
 
 	claims["iss"] = "user"
 	claims["iat"] = time.Now().Unix()
-	claims["exp"] = time.Now().AddDate(0,0,3).Unix()
+	claims["exp"] = time.Now().AddDate(0, 0, 30).Unix()
 
 	rClaims["iss"] = "user"
 	rClaims["iat"] = time.Now().Unix()
-	rClaims["exp"] = time.Now().AddDate(0,0,15).Unix()
+	rClaims["exp"] = time.Now().AddDate(0, 0, 15).Unix()
 
 	accessTokenString, err := accessToken.SignedString(key)
 
@@ -75,7 +75,7 @@ func GenJWT(m map[interface{}]interface{}, key []byte) (access, refresh string, 
 func ExtractClaims(tokenStr string, signinigKey []byte) (jwt.MapClaims, error) {
 	var (
 		token *jwt.Token
-		err error
+		err   error
 	)
 	token, err = jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		// check token signing method etc
