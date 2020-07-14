@@ -811,10 +811,10 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 		return
 	}
 
-	if userInfo.UserType != config.RoleCourier {
-		c.JSON(http.StatusForbidden, "")
-		return
-	}
+	// if userInfo.UserType != config.RoleCourier {
+	// 	c.JSON(http.StatusForbidden, "")
+	// 	return
+	// }
 
 	stepID := c.Param("step_id")
 
@@ -829,7 +829,8 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().ChangeStatusStep(
 		context.Background(),
 		&pbo.ChangeStatusStepRequest{
-			StepId: stepID,
+			StepId:    stepID,
+			ShipperId: userInfo.ShipperID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while taking order step") {
