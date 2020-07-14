@@ -829,7 +829,8 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 	_, err = h.grpcClient.OrderService().ChangeStatusStep(
 		context.Background(),
 		&pbo.ChangeStatusStepRequest{
-			StepId: stepID,
+			StepId:    stepID,
+			ShipperId: userInfo.ShipperID,
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while taking order step") {
