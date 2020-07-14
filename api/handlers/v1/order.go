@@ -811,10 +811,10 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 		return
 	}
 
-	// if userInfo.UserType != config.RoleCourier {
-	// 	c.JSON(http.StatusForbidden, "")
-	// 	return
-	// }
+	if userInfo.UserType != config.RoleCourier {
+		c.JSON(http.StatusForbidden, "")
+		return
+	}
 
 	stepID := c.Param("step_id")
 
