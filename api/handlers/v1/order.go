@@ -309,6 +309,8 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 // @Param status_id query string false "status_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
+// @Param branch_ids query []string false "branch_ids"
+// @Param customer_phone query string false "customer_phone"
 // @Success 200 {object} models.GetAllOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -334,6 +336,17 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 
 	statusID = c.Query("status_id")
 
+	if statusID != "" {
+		_, err = uuid.Parse(statusID)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, models.ResponseError{
+				Error: "status_id is invalid",
+			})
+			return
+		}
+	}
+
 	page, err = ParsePageQueryParam(c)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing page") {
@@ -345,30 +358,14 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
 		return
 	}
-
-	if statusID == "" {
-		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-			ShipperId: userInfo.ShipperID,
-			Page:      page,
-			Limit:     limit,
-		})
-	} else {
-		_, err = uuid.Parse(statusID)
-
-		if err != nil {
-			c.JSON(http.StatusBadRequest, models.ResponseError{
-				Error: "status_id is invalid",
-			})
-			return
-		}
-
-		order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-			ShipperId: userInfo.ShipperID,
-			StatusId:  statusID,
-			Page:      page,
-			Limit:     limit,
-		})
-	}
+	order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
+		ShipperId:     userInfo.ShipperID,
+		StatusId:      statusID,
+		Page:          page,
+		Limit:         limit,
+		CustomerPhone: c.Query("customer_phone"),
+		BranchIds:     c.QueryArray("branch_ids"),
+	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
 		return
