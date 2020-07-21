@@ -3064,6 +3064,21 @@ var doc = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "branch_ids",
+                        "name": "branch_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "customer_phone",
+                        "name": "customer_phone",
+                        "in": "query"
                     }
                 ],
                 "responses": {
