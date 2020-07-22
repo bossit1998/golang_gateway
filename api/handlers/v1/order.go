@@ -358,13 +358,14 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while parsing limit") {
 		return
 	}
+
 	order, err = h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 		ShipperId:     userInfo.ShipperID,
 		StatusId:      statusID,
 		Page:          page,
 		Limit:         limit,
 		CustomerPhone: c.Query("customer_phone"),
-		BranchIds:     c.QueryArray("branch_ids"),
+		BranchIds:     c.QueryArray("branch_ids[]"),
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
