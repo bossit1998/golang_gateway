@@ -3385,6 +3385,16 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: branch_ids
+        in: query
+        items:
+          type: string
+        name: branch_ids
+        type: array
+      - description: customer_phone
+        in: query
+        name: customer_phone
+        type: string
       produces:
       - application/json
       responses:
