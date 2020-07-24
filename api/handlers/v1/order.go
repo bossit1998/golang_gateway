@@ -56,7 +56,7 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 	order.CreatorId = userInfo.ShipperID
 	order.CreatorTypeId = userInfo.ShipperID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
-	order.StatusId = config.VendorAcceptedStatusId
+	order.StatusId = config.NewStatusId
 
 	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
 
@@ -479,6 +479,7 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	m["courier_picked_up"] = config.CourierPickedUpStatusId
 	m["delivered"] = config.DeliveredStatusId
 	m["finished"] = config.FinishedStatusId
+	m["server_cancelled"] = config.ServerCancelledStatusId
 	m[config.NewStatusId] = "New"
 	m[config.OperatorAcceptedStatusId] = "Operator Accepted"
 	m[config.OperatorCancelledStatusId] = "Operator Cancelled"
@@ -490,6 +491,7 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	m[config.CourierCancelledStatusId] = "Courier Cancelled"
 	m[config.DeliveredStatusId] = "Delivered"
 	m[config.FinishedStatusId] = "Finished"
+	m[config.ServerCancelledStatusId] = "Server Cancelled"
 
 	//status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
 	//model.Statuses = append(model.Statuses, status)

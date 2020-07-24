@@ -19,6 +19,8 @@ RUN export CGO_ENABLED=0 && \
 
 FROM alpine
 COPY --from=builder api_gateway .
+RUN apk add --no-cache tzdata
+ENV TZ Asia/Tashkent
 RUN mkdir config
 COPY ./config/rbac_model.conf ./config/rbac_model.conf
 COPY ./config/AuthKey_5RAX23V6QP.p8 ./config/AuthKey_5RAX23V6QP.p8

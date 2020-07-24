@@ -37,7 +37,7 @@ func (h *handlerV1) CreateBranch(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		branch        pbu.Branch
-		userInfo models.UserInfo
+		userInfo      models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -96,16 +96,21 @@ func (h *handlerV1) CreateBranch(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) UpdateBranch(c *gin.Context) {
-
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		branch        pbu.Branch
+		userInfo      models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &branch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -117,36 +122,19 @@ func (h *handlerV1) UpdateBranch(c *gin.Context) {
 		return
 	}
 
+	branch.ShipperId = userInfo.ShipperID
 	res, err := h.grpcClient.BranchService().UpdateBranch(
 		context.Background(),
 		&pbu.UpdateBranchRequest{
 			Branch: &branch,
 		},
 	)
-	st, ok := status.FromError(err)
-	if !ok || st.Code() == codes.Internal {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while updating branch", logger.Error(err))
-		return
-	}
-	if st.Code() == codes.Unavailable {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Error while updating branch, service unavailable", logger.Error(err))
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating branch") {
 		return
 	}
 
 	js, err := jspbMarshal.MarshalToString(res.GetBranch())
-	if err != nil {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while updating branch") {
 		return
 	}
 
@@ -279,7 +267,7 @@ func (h *handlerV1) GetBranch(c *gin.Context) {
 func (h *handlerV1) GetAllBranches(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-		userInfo models.UserInfo
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -310,8 +298,8 @@ func (h *handlerV1) GetAllBranches(c *gin.Context) {
 		context.Background(),
 		&pbu.GetAllBranchesRequest{
 			ShipperId: userInfo.ShipperID,
-			Page:  uint64(page),
-			Limit: uint64(limit),
+			Page:      uint64(page),
+			Limit:     uint64(limit),
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
@@ -455,7 +443,7 @@ func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
- //@SECURITY ApiKeyAuth
+//@SECURITY ApiKeyAuth
 // @Tags branch
 // @Router /v1/nearest-branch [get]
 // @Summary Get Nearest Branch
@@ -470,8 +458,8 @@ func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 func (h *handlerV1) GetNearestBranch(c *gin.Context) {
 	var (
 		jspbMarshal jsonpb.Marshaler
-	 	location pbu.Location
-		userInfo models.UserInfo
+		location    pbu.Location
+		userInfo    models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -482,11 +470,11 @@ func (h *handlerV1) GetNearestBranch(c *gin.Context) {
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
 
-	longString,_ := c.GetQuery("long")
-	latString,_ := c.GetQuery("lat")
+	longString, _ := c.GetQuery("long")
+	latString, _ := c.GetQuery("lat")
 
-	long, _ := strconv.ParseFloat(longString,64)
-	lat, _ := strconv.ParseFloat(latString,64)
+	long, _ := strconv.ParseFloat(longString, 64)
+	lat, _ := strconv.ParseFloat(latString, 64)
 
 	location.Long = long
 	location.Lat = lat
@@ -495,11 +483,11 @@ func (h *handlerV1) GetNearestBranch(c *gin.Context) {
 		context.Background(),
 		&pbu.GetNearestBranchRequest{
 			ShipperId: userInfo.ShipperID,
-			Location : &location,
-			},
-		)
+			Location:  &location,
+		},
+	)
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting branches") {
-		return 
+		return
 	}
 
 	js, err := jspbMarshal.MarshalToString(res)

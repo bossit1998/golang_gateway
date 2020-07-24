@@ -20,6 +20,7 @@ type productDemandModel struct {
 
 type stepDemandModel struct {
 	BranchName         string   `json:"branch_name"`
+	BranchID           string   `json:"branch_id"`
 	PhoneNumber        string   `json:"phone_number"`
 	Address            string   `json:"address"`
 	DestinationAddress string   `json:"destination_address"`
@@ -32,6 +33,7 @@ type orderDemandModel struct {
 	ToLocation        Location `json:"to_location"`
 	ToAddress         string   `json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
 	ClientName        string   `json:"client_name" example:"Oybek"`
+	ClientId          string   `json:"client_id"`
 	ClientPhoneNumber string   `json:"client_phone_number" example:"998998765432"`
 	CoDeliveryPrice   float64  `json:"co_delivery_price" example:"10000"`
 	Description       string   `json:"description"`
@@ -263,7 +265,7 @@ type AddBranchIDModel struct {
 	BranchID string `json:"branch_id"`
 }
 
-type GetAllBranchOrdersModel struct{
+type GetAllBranchOrdersModel struct {
 	BranchID string `json:"branch_id"`
 	Quantity uint64 `json:"quantity"`
 }

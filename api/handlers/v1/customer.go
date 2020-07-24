@@ -252,11 +252,17 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		customer      pbu.Customer
+		userInfo      models.UserInfo
 	)
+	err := getUserInfo(h, c, &userInfo)
+
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -268,9 +274,11 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
+	customer.ShipperId = userInfo.ShipperID
 	result, err := h.grpcClient.CustomerService().GetCustomer(
 		context.Background(), &pbu.GetCustomerRequest{
-			Id: customer.Phone,
+			ShipperId: userInfo.ShipperID,
+			Id:        customer.Phone,
 		},
 	)
 
