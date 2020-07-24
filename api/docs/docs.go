@@ -5013,6 +5013,9 @@ var doc = `{
         "models.CreateDemandOrderModel": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
                 "client_name": {
                     "type": "string",
                     "example": "Oybek"
@@ -5038,6 +5041,9 @@ var doc = `{
                         "type": "object",
                         "properties": {
                             "address": {
+                                "type": "string"
+                            },
+                            "branch_id": {
                                 "type": "string"
                             },
                             "branch_name": {
@@ -6792,6 +6798,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "branch_id": {
                     "type": "string"
                 },
                 "branch_name": {
