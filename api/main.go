@@ -72,6 +72,11 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"data": "Api gateway"})
 	})
+
+	// Excel report endpoints
+	r.GET("/v1/branches-report-excel", handlerV1.GetBranchesReport)
+	r.GET("/v1/couriers-report-excel", handlerV1.GetCouriersReport)
+
 	// Register endpoints
 	r.POST("/v1/customers/register", handlerV1.Register)
 	r.POST("/v1/customers/register-confirm", handlerV1.RegisterConfirm)

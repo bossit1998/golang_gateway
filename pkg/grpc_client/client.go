@@ -9,6 +9,7 @@ import (
 	pbf "genproto/fare_service"
 	pbn "genproto/notification_service"
 	pbo "genproto/order_service"
+	pbr "genproto/report_service"
 	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
 
@@ -34,6 +35,7 @@ type GrpcClientI interface {
 	ProductService() pb.ProductServiceClient
 	AuthService() pba.AuthServiceClient
 	NotificationService() pbn.NotificationServiceClient
+	ReportService() pbr.ReportServiceClient
 }
 
 //GrpcClient ...
@@ -135,6 +137,16 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			cfg.NotificationServiceHost, cfg.NotificationServicePort, err)
 	}
 
+	connReport, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", cfg.ReportServiceHost, cfg.ReportServicePort),
+		grpc.WithInsecure(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("Report service dial host: %s port:%d err: %s",
+			cfg.ReportServiceHost, cfg.ReportServicePort, err)
+	}
+
 	return &GrpcClient{
 		cfg: cfg,
 		connections: map[string]interface{}{
@@ -154,6 +166,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"product_service":       pb.NewProductServiceClient(connCatalog),
 			"auth_service":          pba.NewAuthServiceClient(connAuth),
 			"notification_service":  pbn.NewNotificationServiceClient(connNotification),
+			"report_service":        pbr.NewReportServiceClient(connReport),
 		},
 	}, nil
 }
@@ -231,4 +244,8 @@ func (g *GrpcClient) AuthService() pba.AuthServiceClient {
 
 func (g *GrpcClient) NotificationService() pbn.NotificationServiceClient {
 	return g.connections["notification_service"].(pbn.NotificationServiceClient)
+}
+
+func (g *GrpcClient) ReportService() pbr.ReportServiceClient {
+	return g.connections["report_service"].(pbr.ReportServiceClient)
 }

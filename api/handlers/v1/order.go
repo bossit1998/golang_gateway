@@ -104,6 +104,14 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
+	if order.ToLocation == nil || order.ToLocation.Lat == 0 || order.ToLocation.Long == 0 {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("Location is not valid", logger.Error(err))
+		return
+	}
+
 	if order.PaymentType != "cash" && order.PaymentType != "payme" && order.PaymentType != "click" {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
