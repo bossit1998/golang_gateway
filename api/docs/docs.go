@@ -169,6 +169,54 @@ var doc = `{
                 }
             }
         },
+        "/v1/branches-report-excel/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting branches report excel",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Branches Report Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date",
+                        "name": "date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetReportModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches/add-courier": {
             "post": {
                 "description": "API for creating branch courier",
@@ -1028,6 +1076,54 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetCourierModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers-report-excel/": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting couriers report excel",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Couriers Report Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "date",
+                        "name": "date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetReportModel"
                         }
                     },
                     "404": {
@@ -6258,6 +6354,14 @@ var doc = `{
                     "type": "string"
                 },
                 "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetReportModel": {
+            "type": "object",
+            "properties": {
+                "file": {
                     "type": "string"
                 }
             }
