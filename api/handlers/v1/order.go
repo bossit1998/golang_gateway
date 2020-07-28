@@ -180,13 +180,13 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		order         pbo.Order
 		userInfo      models.UserInfo
 	)
+
 	err := getUserInfo(h, c, &userInfo)
-
-	orderID := c.Param("order_id")
-
 	if err != nil {
 		return
 	}
+
+	orderID := c.Param("order_id")
 
 	jspbMarshal.OrigName = true
 

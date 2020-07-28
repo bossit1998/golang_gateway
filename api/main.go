@@ -54,13 +54,6 @@ func New(cnf Config) *gin.Engine {
 
 	r.Use(cors.New(config))
 
-	//r.Use(func(context *gin.Context) {
-	//	context.Header("Access-Control-Allow-Origin", "*")
-	//	context.Header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH")
-	//	context.Header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
-	//	context.Header("Access-Control-Allow-Credentials", "true")
-	//})
-
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Storage:         cnf.Storage,
 		InMemoryStorage: cnf.InMemoryStorage,
@@ -81,7 +74,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/customers/register", handlerV1.Register)
 	r.POST("/v1/customers/register-confirm", handlerV1.RegisterConfirm)
 
-	//Customer endpoints
+	// Customer endpoints
 	r.POST("/v1/customers", handlerV1.CreateCustomer)
 	r.PUT("/v1/customers", handlerV1.UpdateCustomer)
 	r.DELETE("/v1/customers/:customer_id", handlerV1.DeleteCustomer)
@@ -91,7 +84,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/customers/login", handlerV1.CheckCustomerLogin)
 	r.POST("/v1/customers/confirm-login", handlerV1.ConfirmCustomerLogin)
 
-	//Branch endpoints
+	// Branch endpoints
 	r.POST("/v1/branches", handlerV1.CreateBranch)
 	r.PUT("/v1/branches", handlerV1.UpdateBranch)
 	r.DELETE("/v1/branches/:branch_id", handlerV1.DeleteBranch)
@@ -104,7 +97,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/branches/remove-courier", handlerV1.DeleteBranchCourier)
 	r.GET("/v1/branches/:branch_id/couriers", handlerV1.GetAllBranchCouriers)
 
-	//Shipper endpoints
+	// Shipper endpoints
 	r.POST("/v1/shippers", handlerV1.CreateShipper)
 	r.PUT("/v1/shippers", handlerV1.UpdateShipper)
 	r.DELETE("/v1/shippers/:shipper_id", handlerV1.DeleteShipper)
@@ -115,7 +108,7 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/shippers/change-password", handlerV1.ChangePassword)
 	r.POST("/v1/shippers/login", handlerV1.ShipperLogin)
 
-	//Courier endpoints
+	// Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
 	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
 	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
@@ -132,13 +125,13 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/couriers/check-login", handlerV1.CheckCourierLogin)
 	r.POST("/v1/couriers/confirm-login", handlerV1.ConfirmCourierLogin)
 
-	//Vehicle endpoints
+	// Vehicle endpoints
 	r.GET("/v1/vehicles/:vehicle_id", handlerV1.GetCourierVehicle)
 	r.POST("/v1/vehicles", handlerV1.CreateCourierVehicle)
 	r.PUT("/v1/vehicles", handlerV1.UpdateCourierVehicle)
 	r.DELETE("/v1/vehicles/:vehicle_id", handlerV1.DeleteCourierVehicle)
 
-	//Distributor endpoints
+	// Distributor endpoints
 	r.GET("/v1/distributors", handlerV1.GetAllDistributors)
 	r.GET("/v1/distributors/:distributor_id", handlerV1.GetDistributor)
 	r.GET("/v1/distributors/:distributor_id/couriers", handlerV1.GetAllDistributorCouriers)
@@ -147,25 +140,26 @@ func New(cnf Config) *gin.Engine {
 	r.PUT("/v1/distributors", handlerV1.UpdateDistributor)
 	r.DELETE("/v1/distributors/:distributor_id", handlerV1.DeleteDistributor)
 
-	//Park endpoints
+	// Park endpoints
 	r.GET("/v1/parks/:park_id", handlerV1.GetPark)
 	r.POST("/v1/parks", handlerV1.CreatePark)
 	r.PUT("/v1/parks", handlerV1.UpdatePark)
 	r.DELETE("/v1/parks/:park_id", handlerV1.DeletePark)
 
-	//GetDistanse
+	// GetDistanse
 	r.POST("/v1/calc-delivery-cost", handlerV1.CalcDeliveryCost)
-	//GetOptimizedTrips
+
+	// GetOptimizedTrips
 	r.POST("/v1/optimized-trip", handlerV1.OptimizedTrip)
 
-	//Fare endpoints
+	// Fare endpoints
 	r.GET("/v1/fares/:fare_id", handlerV1.GetFare)
 	r.GET("/v1/fares", handlerV1.GetAllFares)
 	r.POST("/v1/fares", handlerV1.CreateFare)
 	r.PUT("/v1/fares", handlerV1.UpdateFare)
 	r.DELETE("/v1/fares/:fare_id", handlerV1.DeleteFare)
 
-	//Order endpoints
+	// Order endpoints
 	r.POST("/v1/demand-order", handlerV1.CreateDemandOrder)
 	r.POST("/v1/ondemand-order", handlerV1.CreateOnDemandOrder)
 	r.PUT("/v1/order/:order_id", handlerV1.UpdateOrder)
@@ -184,50 +178,42 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/order/:order_id/add-branch", handlerV1.AddBranchID)
 	r.GET("/v1/branch/:shipper_id/orders/all", handlerV1.GetAllBranchOrders)
 
-	//Cargo owner
-	//r.POST("/v1/cargo-owner", handlerV1.CreateCO)
-	//r.GET("/v1/cargo-owner/", handlerV1.GetCO)
-	//r.POST("/v1/cargo-owner/check-name", handlerV1.CheckCOName)
-	//r.POST("/v1/cargo-owner/check-login", handlerV1.CheckLogin)
-	//r.POST("/v1/cargo-owner/refresh-token", handlerV1.RefreshToken)
-	//r.POST("/v1/cargo-owner/change-credentials", handlerV1.ChangeLoginPassword)
-
-	//Login endpoints
+	// Login endpoints
 	r.POST("/v1/check_code/")
 
-	//Specification endpoints
+	// Specification endpoints
 	r.POST("/v1/specification", handlerV1.CreateSpecification)
 	r.GET("/v1/specification", handlerV1.GetAllSpecification)
 
-	//Product kind endpoints
+	// Product kind endpoints
 	r.POST("/v1/product-kind", handlerV1.CreateProductKind)
 	r.GET("/v1/product-kind", handlerV1.GetAllProductKind)
 
-	//Measure endpoints
+	// Measure endpoints
 	r.POST("/v1/measure", handlerV1.CreateMeasure)
 	r.GET("/v1/measure", handlerV1.GetAllMeasure)
 
-	//Category endpoints
+	// Category endpoints
 	r.POST("/v1/category", handlerV1.CreateCategory)
 	r.GET("/v1/category/:category_id", handlerV1.GetCategory)
 	r.GET("/v1/category", handlerV1.GetAllCategory)
 	r.PUT("/v1/category/:category_id", handlerV1.UpdateCategory)
 	r.DELETE("/v1/category/:category_id", handlerV1.DeleteCategory)
 
-	//Product Service
+	// Product Service
 	r.POST("/v1/product", handlerV1.CreateProduct)
 	r.GET("/v1/product", handlerV1.GetAllProducts)
 	r.GET("/v1/product/:product_id", handlerV1.GetProduct)
 	r.PUT("/v1/product/:product_id", handlerV1.UpdateProduct)
 	r.DELETE("/v1/product/:product_id", handlerV1.DeleteProduct)
 
-	//Upload File
+	// Upload File
 	r.POST("/v1/upload", handlerV1.ImageUpload)
 
 	// NBU currency exchange rates
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
-	//Auth
+	// Auth
 	r.POST("/v1/login", handlerV1.Login)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
