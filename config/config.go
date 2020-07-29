@@ -75,6 +75,9 @@ type Config struct {
 	NotificationServiceHost string
 	NotificationServicePort int
 
+	ReportServiceHost string
+	ReportServicePort int
+
 	LogLevel string
 	HTTPPort string
 
@@ -119,9 +122,6 @@ func Load() Config {
 	c.OrderServiceHost = cast.ToString(getOrReturnDefault("ORDER_SERVICE_HOST", "order_service"))
 	c.OrderServicePort = cast.ToInt(getOrReturnDefault("ORDER_SERVICE_PORT", 80))
 
-	c.COServiceHost = cast.ToString(getOrReturnDefault("CO_SERVICE_HOST", "co_service"))
-	c.COServicePort = cast.ToInt(getOrReturnDefault("CO_SERVICE_PORT", 80))
-
 	c.SmsServiceHost = cast.ToString(getOrReturnDefault("SMS_SERVICE_HOST", "sms_service"))
 	c.SmsServicePort = cast.ToInt(getOrReturnDefault("SMS_SERVICE_PORT", 80))
 
@@ -133,6 +133,9 @@ func Load() Config {
 
 	c.NotificationServiceHost = cast.ToString(getOrReturnDefault("NOTIFICATION_SERVICE_HOST", "notification_service"))
 	c.NotificationServicePort = cast.ToInt(getOrReturnDefault("NOTIFICATION_SERVICE_PORT", 80))
+
+	c.ReportServiceHost = cast.ToString(getOrReturnDefault("REPORT_SERVICE_HOST", "report_service"))
+	c.ReportServicePort = cast.ToInt(getOrReturnDefault("REPORT_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
 

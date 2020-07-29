@@ -1033,6 +1033,11 @@ definitions:
       slug:
         type: string
     type: object
+  models.GetReportModel:
+    properties:
+      file:
+        type: string
+    type: object
   models.GetShipperModel:
     properties:
       created_at:
@@ -1507,6 +1512,36 @@ paths:
       summary: Update Branch
       tags:
       - branch
+  /v1/branches-report-excel/:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branches report excel
+      parameters:
+      - description: date
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetReportModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Branches Report Excel
+      tags:
+      - report
   /v1/branches/{branch_id}:
     delete:
       consumes:
@@ -2075,6 +2110,36 @@ paths:
       summary: Update Courier
       tags:
       - courier
+  /v1/couriers-report-excel/:
+    get:
+      consumes:
+      - application/json
+      description: API for getting couriers report excel
+      parameters:
+      - description: date
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetReportModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Couriers Report Excel
+      tags:
+      - report
   /v1/couriers/{courier_id}:
     delete:
       consumes:
