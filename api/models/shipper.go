@@ -36,36 +36,13 @@ type GetShipperModel struct {
 
 //GetAllShippersModel ...
 type GetAllShippersModel struct {
-	Count     int               `json:"count"`
+	Count    int               `json:"count"`
 	Shippers []GetShipperModel `json:"shippers"`
-}
-
-//CheckShipperLoginRequest ...
-type CheckShipperLoginRequest struct {
-	Phone string `json:"phone"`
-}
-
-//CheckShipperLoginResponse ...
-type CheckShipperLoginResponse struct {
-	Code  string `json:"code"`
-	Phone string `json:"phone"`
-}
-
-//ConfirmShipperLoginRequest ...
-type ConfirmShipperLoginRequest struct {
-	Code  string `json:"code"`
-	Phone string `json:"phone"`
-}
-
-//ConfirmShipperLoginResponse ...
-type ConfirmShipperLoginResponse struct {
-	ID          string `json:"id"`
-	AccessToken string `json:"access_token"`
 }
 
 //Login Model
 type ShipperLogin struct {
-	Login string `json:"login" binding:"required"`
+	Login    string `json:"login" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 

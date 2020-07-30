@@ -262,7 +262,6 @@ func (h *handlerV1) GetBranch(c *gin.Context) {
 // @Param limit query integer false "limit"
 // @Success 200 {object} models.GetAllBranchesModel
 // @Failure 404 {object} models.ResponseError
-
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllBranches(c *gin.Context) {
 	var (

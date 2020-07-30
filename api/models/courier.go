@@ -88,6 +88,10 @@ type UpdateCourierVehicleModel struct {
 	VehicleNumber string `json:"vehicle_number"`
 }
 
+type CheckLoginRequest struct {
+	Login string `json:"login" binding:"required"`
+}
+
 //CheckLoginResponse ...
 type CheckLoginResponse struct {
 	Code  string `json:"code"`
