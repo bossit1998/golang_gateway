@@ -27,7 +27,6 @@ import (
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param Shipper header string true "shipper"
 // @Param customer body models.CreateCustomerModel true "customer"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError

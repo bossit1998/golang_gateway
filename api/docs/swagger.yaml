@@ -2573,11 +2573,6 @@ paths:
       - application/json
       description: API for creating customer
       parameters:
-      - description: shipper
-        in: header
-        name: Shipper
-        required: true
-        type: string
       - description: customer
         in: body
         name: customer
@@ -3510,7 +3505,7 @@ paths:
         type: string
       - description: end_time
         in: query
-        name: ent_time
+        name: end_time
         type: string
       produces:
       - application/json

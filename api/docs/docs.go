@@ -1841,13 +1841,6 @@ var doc = `{
                 "summary": "Create Customer",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "shipper",
-                        "name": "Shipper",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "customer",
                         "name": "customer",
                         "in": "body",
@@ -3232,7 +3225,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "end_time",
-                        "name": "ent_time",
+                        "name": "end_time",
                         "in": "query"
                     }
                 ],

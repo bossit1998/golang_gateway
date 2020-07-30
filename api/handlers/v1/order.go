@@ -320,7 +320,7 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 // @Param branch_ids query []string false "branch_ids"
 // @Param customer_phone query string false "customer_phone"
 // @Param start_time query string false "start_time"
-// @Param ent_time query string false "end_time"
+// @Param end_time query string false "end_time"
 // @Success 200 {object} models.GetAllOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
