@@ -134,7 +134,7 @@ func Load() Config {
 	c.NotificationServiceHost = cast.ToString(getOrReturnDefault("NOTIFICATION_SERVICE_HOST", "notification_service"))
 	c.NotificationServicePort = cast.ToInt(getOrReturnDefault("NOTIFICATION_SERVICE_PORT", 80))
 
-	c.ReportServiceHost = cast.ToString(getOrReturnDefault("REPORT_SERVICE_HOST", "report_service"))
+	c.ReportServiceHost = cast.ToString(getOrReturnDefault("REPORT_SERVICE_HOST", "delever_report_service"))
 	c.ReportServicePort = cast.ToInt(getOrReturnDefault("REPORT_SERVICE_PORT", 80))
 
 	c.CasbinConfigPath = cast.ToString(getOrReturnDefault("CASBIN_CONFIG_PATH", "./config/rbac_model.conf"))
