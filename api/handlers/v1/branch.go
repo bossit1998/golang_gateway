@@ -85,6 +85,7 @@ func (h *handlerV1) CreateBranch(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/branches [put]
 // @Summary Update Branch
 // @Description API for updating branch
@@ -142,6 +143,7 @@ func (h *handlerV1) UpdateBranch(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Tags branch
 // @Router /v1/branches/{branch_id} [delete]
 // @Summary Delete Branch
@@ -193,6 +195,7 @@ func (h *handlerV1) DeleteBranch(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// @Security ApiKeyAuth
 // @Tags branch
 // @Router /v1/branches/{branch_id} [get]
 // @Summary Get Branch
@@ -252,6 +255,7 @@ func (h *handlerV1) GetBranch(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/branches [get]
 // @Summary Get All Branches
 // @Description API for getting branches
@@ -442,7 +446,7 @@ func (h *handlerV1) ConfirmBranchLogin(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-//@SECURITY ApiKeyAuth
+// @Security ApiKeyAuth
 // @Tags branch
 // @Router /v1/nearest-branch [get]
 // @Summary Get Nearest Branch

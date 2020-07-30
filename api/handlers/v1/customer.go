@@ -21,13 +21,13 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/customers [post]
 // @Summary Create Customer
 // @Description API for creating customer
 // @Tags customer
 // @Accept  json
 // @Produce  json
-// @Param Shipper header string true "shipper"
 // @Param customer body models.CreateCustomerModel true "customer"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 404 {object} models.ResponseError

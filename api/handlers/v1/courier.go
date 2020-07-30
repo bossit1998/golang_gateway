@@ -22,6 +22,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id} [get]
 // @Summary Get Courier
 // @Description API for getting courier
@@ -67,6 +68,7 @@ func (h *handlerV1) GetCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/courier-details [get]
 // @Summary Get Courier Details
 // @Description API for getting courier details
@@ -254,6 +256,7 @@ func (h *handlerV1) CreateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/courier-details [post]
 // @Summary Create Courier Details
 // @Description API for creating courier details
@@ -320,6 +323,7 @@ func (h *handlerV1) CreateCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers [put]
 // @Summary Update Courier
 // @Description API for updating courier
@@ -404,6 +408,7 @@ func (h *handlerV1) UpdateCourier(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/courier-details [put]
 // @Summary Update Courier Details
 // @Description API for updating courier details
@@ -471,6 +476,7 @@ func (h *handlerV1) UpdateCourierDetails(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id} [delete]
 // @Summary Delete Courier
 // @Description API for deleting courier
@@ -525,6 +531,7 @@ func (h *handlerV1) DeleteCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/block [patch]
 // @Summary Blocking Courier
 // @Description API for blocking courier
@@ -579,6 +586,7 @@ func (h *handlerV1) BlockCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/unblock [patch]
 // @Summary Unblocking Courier
 // @Description API for unblocking courier
@@ -633,6 +641,7 @@ func (h *handlerV1) UnblockCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/vehicle/{vehicle_id} [get]
 // @Summary Get Courier Vehicle
 // @Description API for getting courier vehicle
@@ -678,6 +687,7 @@ func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/vehicles [get]
 // @Summary Get All Courier Vehicles
 // @Description API for getting courier's vehicles
@@ -711,6 +721,7 @@ func (h *handlerV1) GetAllCourierVehicles(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/vehicles [get]
 // @Summary Get All Vehicles
 // @Description API for getting all vehicles
@@ -745,6 +756,7 @@ func (h *handlerV1) GetAllVehicles(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/vehicle [post]
 // @Summary Create Courier Vehicle
 // @Description API for creating courier vehicle
@@ -812,6 +824,7 @@ func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/vehicle [put]
 // @Summary Update Courier Vehicle
 // @Description API for updating courier vehicle
@@ -881,6 +894,7 @@ func (h *handlerV1) UpdateCourierVehicle(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/vehicles/{vehicle_id} [delete]
 // @Summary Delete Courier Vehicle
 // @Description API for deleting courier vehicle
@@ -1153,6 +1167,7 @@ func (h *handlerV1) SearchCouriersByPhone(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/branches/add-courier [post]
 // @Summary Create Branch Courier
 // @Description API for creating branch courier
@@ -1226,6 +1241,7 @@ func (h *handlerV1) DeleteBranchCourier(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/branches [get]
 // @Summary Get All Couirer Branch Ids
 // @Description API for getting courier branhes
@@ -1260,6 +1276,7 @@ func (h *handlerV1) GetAllCourierBranches(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/branches/{branch_id}/couriers [get]
 // @Summary Get All Branch Couriers
 // @Description API for getting branch couriers

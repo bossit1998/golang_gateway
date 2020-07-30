@@ -120,7 +120,6 @@ func (h *handlerV1) Register(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// @Security ApiKeyAuth
 // @Summary Register confirm
 // @Description Register - API for confirming and inserting user to DB
 // @Tags register
