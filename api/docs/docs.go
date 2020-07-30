@@ -76,6 +76,11 @@ var doc = `{
         },
         "/v1/branches": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branches",
                 "consumes": [
                     "application/json"
@@ -123,6 +128,11 @@ var doc = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating branch",
                 "consumes": [
                     "application/json"
@@ -266,6 +276,11 @@ var doc = `{
         },
         "/v1/branches/add-courier": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating branch courier",
                 "consumes": [
                     "application/json"
@@ -450,6 +465,11 @@ var doc = `{
         },
         "/v1/branches/{branch_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branch info",
                 "consumes": [
                     "application/json"
@@ -492,6 +512,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting branch",
                 "consumes": [
                     "application/json"
@@ -536,6 +561,11 @@ var doc = `{
         },
         "/v1/branches/{branch_id}/couriers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branch couriers",
                 "consumes": [
                     "application/json"
@@ -1047,6 +1077,11 @@ var doc = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier",
                 "consumes": [
                     "application/json"
@@ -1282,6 +1317,11 @@ var doc = `{
         },
         "/v1/couriers/courier-details": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier details",
                 "consumes": [
                     "application/json"
@@ -1326,6 +1366,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating courier details",
                 "consumes": [
                     "application/json"
@@ -1372,6 +1417,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier",
                 "consumes": [
                     "application/json"
@@ -1414,6 +1464,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting courier",
                 "consumes": [
                     "application/json"
@@ -1458,6 +1513,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/block": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for blocking courier",
                 "consumes": [
                     "application/json"
@@ -1502,6 +1562,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/branches": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier branhes",
                 "consumes": [
                     "application/json"
@@ -1546,6 +1611,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/courier-details": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier details",
                 "consumes": [
                     "application/json"
@@ -1590,6 +1660,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/unblock": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for unblocking courier",
                 "consumes": [
                     "application/json"
@@ -1634,6 +1709,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/vehicles": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier's vehicles",
                 "consumes": [
                     "application/json"
@@ -1828,6 +1908,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating customer",
                 "consumes": [
                     "application/json"
@@ -1974,11 +2059,6 @@ var doc = `{
         },
         "/v1/customers/register-confirm/": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Register - API for confirming and inserting user to DB",
                 "consumes": [
                     "application/json"
@@ -4629,6 +4709,11 @@ var doc = `{
         },
         "/v1/vehicle": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4673,6 +4758,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4719,6 +4809,11 @@ var doc = `{
         },
         "/v1/vehicle/{vehicle_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4763,6 +4858,11 @@ var doc = `{
         },
         "/v1/vehicles": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting all vehicles",
                 "consumes": [
                     "application/json"
@@ -4812,6 +4912,11 @@ var doc = `{
         },
         "/v1/vehicles/{vehicle_id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting courier vehicle",
                 "consumes": [
                     "application/json"

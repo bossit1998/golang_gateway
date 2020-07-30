@@ -21,6 +21,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/customers [post]
 // @Summary Create Customer
 // @Description API for creating customer

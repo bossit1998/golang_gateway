@@ -1487,6 +1487,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Branches
       tags:
       - branch
@@ -1547,6 +1549,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Branch
       tags:
       - branch
@@ -1606,6 +1610,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Branch
       tags:
       - branch
@@ -1634,6 +1640,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Branch
       tags:
       - branch
@@ -1671,6 +1679,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Branch Couriers
       tags:
       - branch
@@ -1739,6 +1749,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Branch Courier
       tags:
       - branch
@@ -2145,6 +2157,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Courier
       tags:
       - courier
@@ -2204,6 +2218,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Courier
       tags:
       - courier
@@ -2232,6 +2248,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Courier
       tags:
       - courier
@@ -2261,6 +2279,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Blocking Courier
       tags:
       - courier
@@ -2290,6 +2310,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Couirer Branch Ids
       tags:
       - courier
@@ -2319,6 +2341,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Courier Details
       tags:
       - courier
@@ -2348,6 +2372,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Unblocking Courier
       tags:
       - courier
@@ -2377,6 +2403,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Courier Vehicles
       tags:
       - courier
@@ -2471,6 +2499,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Courier Details
       tags:
       - courier
@@ -2500,6 +2530,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Courier Details
       tags:
       - courier
@@ -2594,6 +2626,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Customer
       tags:
       - customer
@@ -2829,8 +2863,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
       summary: Register confirm
       tags:
       - register
@@ -4439,6 +4471,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Courier Vehicle
       tags:
       - vehicle
@@ -4468,6 +4502,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Courier Vehicle
       tags:
       - vehicle
@@ -4497,6 +4533,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Courier Vehicle
       tags:
       - vehicle
@@ -4529,6 +4567,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Vehicles
       tags:
       - vehicle
@@ -4558,6 +4598,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Courier Vehicle
       tags:
       - vehicle
