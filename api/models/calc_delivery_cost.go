@@ -1,9 +1,9 @@
 package models
 
 type CalcDeliveryCostRequest struct {
-	MinDistance float64        `json:"min_distance"`
-	MinPrice    float64        `json:"min_price"`
-	PerKmPrice  float64        `json:"per_km_price"`
+	MinDistance    float64        `json:"min_distance"`
+	MinPrice       float64        `json:"min_price"`
+	PerKmPrice     float64        `json:"per_km_price"`
 	TripsDataModel TripsDataModel `json: "trips_data"`
 }
 

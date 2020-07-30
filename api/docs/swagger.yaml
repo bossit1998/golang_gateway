@@ -68,18 +68,6 @@ definitions:
       phone:
         type: string
     type: object
-  models.CheckShipperLoginRequest:
-    properties:
-      phone:
-        type: string
-    type: object
-  models.CheckShipperLoginResponse:
-    properties:
-      code:
-        type: string
-      phone:
-        type: string
-    type: object
   models.ConfirmBranchLoginRequest:
     properties:
       code:
@@ -99,13 +87,6 @@ definitions:
       code:
         type: string
       fcm_token:
-        type: string
-      phone:
-        type: string
-    type: object
-  models.ConfirmShipperLoginRequest:
-    properties:
-      code:
         type: string
       phone:
         type: string
@@ -438,6 +419,15 @@ definitions:
       branch_id:
         type: string
       quantity:
+        type: integer
+    type: object
+  models.GetAllBranchesModel:
+    properties:
+      branches:
+        items:
+          $ref: '#/definitions/models.GetBranchModel'
+        type: array
+      count:
         type: integer
     type: object
   models.GetAllCategoriesModel:
@@ -1142,6 +1132,23 @@ definitions:
           $ref: '#/definitions/models.GetCourierModel'
         type: array
     type: object
+  models.ShipperChangePassword:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  models.ShipperLogin:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
   models.Status:
     properties:
       id:
@@ -1452,6 +1459,37 @@ paths:
       tags:
       - order
   /v1/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branches
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllBranchesModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Get All Branches
+      tags:
+      - branch
     post:
       consumes:
       - application/json
@@ -3466,6 +3504,14 @@ paths:
         in: query
         name: customer_phone
         type: string
+      - description: start_time
+        in: query
+        name: start_time
+        type: string
+      - description: end_time
+        in: query
+        name: ent_time
+        type: string
       produces:
       - application/json
       responses:
@@ -4294,27 +4340,25 @@ paths:
       summary: Get Shipper
       tags:
       - shipper
-  /v1/shippers/check-login/:
+  /v1/shippers/change-password:
     post:
       consumes:
       - application/json
-      description: |-
-        API that checks whether shipper exists
-        and if exists sends sms to their number
+      description: API that change shipper password
       parameters:
-      - description: check login
+      - description: change_password
         in: body
-        name: check_login
+        name: change_password
         required: true
         schema:
-          $ref: '#/definitions/models.CheckShipperLoginRequest'
+          $ref: '#/definitions/models.ShipperChangePassword'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.CheckShipperLoginResponse'
+            $ref: '#/definitions/models.ResponseOK'
         "404":
           description: Not Found
           schema:
@@ -4323,23 +4367,23 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      summary: Check Shipper Login
+      security:
+      - ApiKeyAuth: []
+      summary: Change shipper password
       tags:
       - shipper
-  /v1/shippers/confirm-login/:
+  /v1/shippers/login:
     post:
       consumes:
       - application/json
-      description: |-
-        API that checks whether - Shipper entered
-        valid token
+      description: API that checks whether shipper exists
       parameters:
-      - description: confirm login
+      - description: login
         in: body
-        name: confirm_phone
+        name: login
         required: true
         schema:
-          $ref: '#/definitions/models.ConfirmShipperLoginRequest'
+          $ref: '#/definitions/models.ShipperLogin'
       produces:
       - application/json
       responses:
@@ -4355,7 +4399,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      summary: Confirm shipper Login
+      summary: Check Shipper Login
       tags:
       - shipper
   /v1/upload:

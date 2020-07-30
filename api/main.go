@@ -103,8 +103,6 @@ func New(cnf Config) *gin.Engine {
 	r.DELETE("/v1/shippers/:shipper_id", handlerV1.DeleteShipper)
 	r.GET("/v1/shippers/:shipper_id", handlerV1.GetShipper)
 	r.GET("/v1/shippers", handlerV1.GetAllShippers)
-	r.POST("/v1/shippers/check-login", handlerV1.CheckShipperLogin)
-	r.POST("/v1/shippers/confirm-login", handlerV1.ConfirmShipperLogin)
 	r.PATCH("/v1/shippers/change-password", handlerV1.ChangePassword)
 	r.POST("/v1/shippers/login", handlerV1.ShipperLogin)
 
@@ -179,7 +177,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/branch/:shipper_id/orders/all", handlerV1.GetAllBranchOrders)
 
 	// Login endpoints
-	r.POST("/v1/check_code/")
+	r.POST("/v1/check_code")
 
 	// Specification endpoints
 	r.POST("/v1/specification", handlerV1.CreateSpecification)
