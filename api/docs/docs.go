@@ -75,7 +75,64 @@ var doc = `{
             }
         },
         "/v1/branches": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting branches",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "branch"
+                ],
+                "summary": "Get All Branches",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllBranchesModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating branch",
                 "consumes": [
                     "application/json"
@@ -219,6 +276,11 @@ var doc = `{
         },
         "/v1/branches/add-courier": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating branch courier",
                 "consumes": [
                     "application/json"
@@ -403,6 +465,11 @@ var doc = `{
         },
         "/v1/branches/{branch_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branch info",
                 "consumes": [
                     "application/json"
@@ -445,6 +512,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting branch",
                 "consumes": [
                     "application/json"
@@ -489,6 +561,11 @@ var doc = `{
         },
         "/v1/branches/{branch_id}/couriers": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting branch couriers",
                 "consumes": [
                     "application/json"
@@ -1000,6 +1077,11 @@ var doc = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier",
                 "consumes": [
                     "application/json"
@@ -1235,6 +1317,11 @@ var doc = `{
         },
         "/v1/couriers/courier-details": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier details",
                 "consumes": [
                     "application/json"
@@ -1279,6 +1366,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating courier details",
                 "consumes": [
                     "application/json"
@@ -1325,6 +1417,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier",
                 "consumes": [
                     "application/json"
@@ -1367,6 +1464,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting courier",
                 "consumes": [
                     "application/json"
@@ -1411,6 +1513,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/block": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for blocking courier",
                 "consumes": [
                     "application/json"
@@ -1455,6 +1562,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/branches": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier branhes",
                 "consumes": [
                     "application/json"
@@ -1499,6 +1611,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/courier-details": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier details",
                 "consumes": [
                     "application/json"
@@ -1543,6 +1660,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/unblock": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for unblocking courier",
                 "consumes": [
                     "application/json"
@@ -1587,6 +1709,11 @@ var doc = `{
         },
         "/v1/couriers/{courier_id}/vehicles": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier's vehicles",
                 "consumes": [
                     "application/json"
@@ -1781,6 +1908,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating customer",
                 "consumes": [
                     "application/json"
@@ -1793,13 +1925,6 @@ var doc = `{
                 ],
                 "summary": "Create Customer",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "shipper",
-                        "name": "Shipper",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "customer",
                         "name": "customer",
@@ -1934,11 +2059,6 @@ var doc = `{
         },
         "/v1/customers/register-confirm/": {
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Register - API for confirming and inserting user to DB",
                 "consumes": [
                     "application/json"
@@ -3175,6 +3295,18 @@ var doc = `{
                         "description": "customer_phone",
                         "name": "customer_phone",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start_time",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_time",
+                        "name": "end_time",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -4368,9 +4500,14 @@ var doc = `{
                 }
             }
         },
-        "/v1/shippers/check-login/": {
+        "/v1/shippers/change-password": {
             "post": {
-                "description": "API that checks whether shipper exists\nand if exists sends sms to their number",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API that change shipper password",
                 "consumes": [
                     "application/json"
                 ],
@@ -4380,15 +4517,15 @@ var doc = `{
                 "tags": [
                     "shipper"
                 ],
-                "summary": "Check Shipper Login",
+                "summary": "Change shipper password",
                 "parameters": [
                     {
-                        "description": "check login",
-                        "name": "check_login",
+                        "description": "change_password",
+                        "name": "change_password",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CheckShipperLoginRequest"
+                            "$ref": "#/definitions/models.ShipperChangePassword"
                         }
                     }
                 ],
@@ -4396,7 +4533,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CheckShipperLoginResponse"
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "404": {
@@ -4414,9 +4551,9 @@ var doc = `{
                 }
             }
         },
-        "/v1/shippers/confirm-login/": {
+        "/v1/shippers/login": {
             "post": {
-                "description": "API that checks whether - Shipper entered\nvalid token",
+                "description": "API that checks whether shipper exists",
                 "consumes": [
                     "application/json"
                 ],
@@ -4426,15 +4563,15 @@ var doc = `{
                 "tags": [
                     "shipper"
                 ],
-                "summary": "Confirm shipper Login",
+                "summary": "Check Shipper Login",
                 "parameters": [
                     {
-                        "description": "confirm login",
-                        "name": "confirm_phone",
+                        "description": "login",
+                        "name": "login",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ConfirmShipperLoginRequest"
+                            "$ref": "#/definitions/models.ShipperLogin"
                         }
                     }
                 ],
@@ -4572,6 +4709,11 @@ var doc = `{
         },
         "/v1/vehicle": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4616,6 +4758,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4662,6 +4809,11 @@ var doc = `{
         },
         "/v1/vehicle/{vehicle_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4706,6 +4858,11 @@ var doc = `{
         },
         "/v1/vehicles": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting all vehicles",
                 "consumes": [
                     "application/json"
@@ -4755,6 +4912,11 @@ var doc = `{
         },
         "/v1/vehicles/{vehicle_id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting courier vehicle",
                 "consumes": [
                     "application/json"
@@ -4907,25 +5069,6 @@ var doc = `{
                 }
             }
         },
-        "models.CheckShipperLoginRequest": {
-            "type": "object",
-            "properties": {
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CheckShipperLoginResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
         "models.ConfirmBranchLoginRequest": {
             "type": "object",
             "properties": {
@@ -4955,17 +5098,6 @@ var doc = `{
                     "type": "string"
                 },
                 "fcm_token": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.ConfirmShipperLoginRequest": {
-            "type": "object",
-            "properties": {
-                "code": {
                     "type": "string"
                 },
                 "phone": {
@@ -5466,6 +5598,20 @@ var doc = `{
                     "type": "string"
                 },
                 "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.GetAllBranchesModel": {
+            "type": "object",
+            "properties": {
+                "branches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetBranchModel"
+                    }
+                },
+                "count": {
                     "type": "integer"
                 }
             }
@@ -6524,6 +6670,32 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.GetCourierModel"
                     }
+                }
+            }
+        },
+        "models.ShipperChangePassword": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ShipperLogin": {
+            "type": "object",
+            "required": [
+                "login",
+                "password"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },

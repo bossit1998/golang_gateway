@@ -1,13 +1,12 @@
 package v1
 
 import (
-	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"context"
-	pbs "genproto/sms_service"
 	pbu "genproto/user_service"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"strings"
+
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -19,7 +18,6 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
-	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
 // @Router /v1/shippers [post]
@@ -36,7 +34,7 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		shipper        pbu.Shipper
+		shipper       pbu.Shipper
 	)
 	jspbMarshal.OrigName = true
 
@@ -111,7 +109,7 @@ func (h *handlerV1) UpdateShipper(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		shipper        pbu.Shipper
+		shipper       pbu.Shipper
 	)
 
 	jspbMarshal.OrigName = true
@@ -328,137 +326,19 @@ func (h *handlerV1) GetAllShippers(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/shippers/check-login/ [POST]
+// @Router /v1/shippers/login [POST]
 // @Summary Check Shipper Login
 // @Description API that checks whether shipper exists
-// @Description and if exists sends sms to their number
 // @Tags shipper
 // @Accept  json
 // @Produce  json
-// @Param check_login body models.CheckShipperLoginRequest true "check login"
-// @Success 200 {object} models.CheckShipperLoginResponse
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CheckShipperLogin(c *gin.Context) {
-	var (
-		checkShipperLoginModel models.CheckShipperLoginRequest
-		code                  string
-	)
-
-	err := c.ShouldBindJSON(&checkShipperLoginModel)
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
-		return
-	}
-
-	checkShipperLoginModel.Phone = strings.TrimSpace(checkShipperLoginModel.Phone)
-
-	resp, err := h.grpcClient.ShipperService().ExistsShipper(
-		context.Background(), &pbu.ExistsShipperRequest{
-			Phone: checkShipperLoginModel.Phone,
-		},
-	)
-	if handleStorageErrWithMessage(c, h.log, err, "Error while checking shipper") {
-		return
-	}
-
-	if !resp.Exists {
-		c.JSON(http.StatusNotFound, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeNotFound,
-				Message: "Shipper not found",
-			},
-		})
-		h.log.Error("Error while checking phone, doesn't exist", logger.Error(err))
-		return
-	}
-
-	if h.cfg.Environment == "develop" {
-		code = etc.GenerateCode(6, true)
-	} else {
-		code = etc.GenerateCode(6)
-		_, err = h.grpcClient.SmsService().Send(
-			context.Background(), &pbs.Sms{
-				Text:       code,
-				Recipients: []string{checkShipperLoginModel.Phone},
-			},
-		)
-		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
-			return
-		}
-	}
-
-	err = h.inMemoryStorage.SetWithTTl(checkShipperLoginModel.Phone, code, 1800)
-	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
-		return
-	}
-
-	c.Status(http.StatusOK)
-}
-
-// @Router /v1/shippers/confirm-login/ [POST]
-// @Summary Confirm shipper Login
-// @Description API that checks whether - Shipper entered
-// @Description valid token
-// @Tags shipper
-// @Accept  json
-// @Produce  json
-// @Param confirm_phone body models.ConfirmShipperLoginRequest true "confirm login"
+// @Param login body models.ShipperLogin true "login"
 // @Success 200 {object} models.GetShipperModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) ConfirmShipperLogin(c *gin.Context) {
-	var (
-		cb models.ConfirmShipperLoginRequest
-	)
-
-	err := c.ShouldBindJSON(&cb)
-	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
-		return
-	}
-
-	cb.Code = strings.TrimSpace(cb.Code)
-
-	//Getting code from redis
-	key := cb.Phone
-	s, err := redis.String(h.inMemoryStorage.Get(key))
-	if err != nil || s == "" {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Key does not exist", logger.Error(err))
-		return
-	}
-
-	//Checking whether received code is valid
-	if cb.Code != s {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInvalidCode,
-				Message: "Code is invalid",
-			},
-		})
-		h.log.Error("Code is invalid", logger.Error(err))
-		return
-	}
-
-	_, err = h.grpcClient.ShipperService().GetShipper(
-		context.Background(), &pbu.GetShipperRequest{
-			Id: cb.Phone,
-		},
-	)
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while getting Shipper") {
-		return
-	}
-
-	c.Status(http.StatusOK)
-}
-
 func (h *handlerV1) ShipperLogin(c *gin.Context) {
 	var (
-		model models.ShipperLogin
+		model   models.ShipperLogin
 		isMatch = true
 	)
 	err := c.ShouldBindJSON(&model)
@@ -466,7 +346,7 @@ func (h *handlerV1) ShipperLogin(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code: ErrorBadRequest,
+				Code:    ErrorBadRequest,
 				Message: err.Error(),
 			},
 		})
@@ -489,9 +369,9 @@ func (h *handlerV1) ShipperLogin(c *gin.Context) {
 	}
 
 	if !isMatch {
-		 c.JSON(http.StatusBadRequest, models.ResponseError{
+		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code: ErrorBadRequest,
+				Code:    ErrorBadRequest,
 				Message: "login or password is incorrect",
 			},
 		})
@@ -499,9 +379,9 @@ func (h *handlerV1) ShipperLogin(c *gin.Context) {
 	}
 
 	m := map[interface{}]interface{}{
-		"user_type": "shipper",
+		"user_type":  "shipper",
 		"shipper_id": shipper.Id,
-		"sub": shipper.Id,
+		"sub":        shipper.Id,
 	}
 	accessToken, _, err := jwt.GenJWT(m, signingKey)
 
@@ -510,9 +390,20 @@ func (h *handlerV1) ShipperLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, shipper)
 }
 
+// @Security ApiKeyAuth
+// @Router /v1/shippers/change-password [POST]
+// @Summary Change shipper password
+// @Description API that change shipper password
+// @Tags shipper
+// @Accept  json
+// @Produce  json
+// @Param change_password body models.ShipperChangePassword true "change_password"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
 func (h *handlerV1) ChangePassword(c *gin.Context) {
 	var (
-		model models.ShipperChangePassword
+		model    models.ShipperChangePassword
 		userInfo models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -526,7 +417,7 @@ func (h *handlerV1) ChangePassword(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
-				Code: ErrorBadRequest,
+				Code:    ErrorBadRequest,
 				Message: err.Error(),
 			},
 		})
@@ -542,13 +433,13 @@ func (h *handlerV1) ChangePassword(c *gin.Context) {
 	_, err = h.grpcClient.ShipperService().ChangePassword(
 		context.Background(),
 		&pbu.Shipper{
-			Id:userInfo.ID,
-			Password:string(passwordHash),
+			Id:       userInfo.ID,
+			Password: string(passwordHash),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing shipper password") {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ResponseOK{Message:"successfully password changed"})
+	c.JSON(http.StatusOK, models.ResponseOK{Message: "successfully password changed"})
 }

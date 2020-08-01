@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
 
@@ -87,7 +86,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 	)
 
 	err := getUserInfo(h, c, &userInfo)
-
 	if err != nil {
 		return
 	}
@@ -95,7 +93,6 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -129,6 +126,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		h.log.Error("source type is not valid", logger.Error(err))
 		return
 	}
+
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
 	order.CreatorId = userInfo.ShipperID
@@ -147,16 +145,22 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Steps[0].BranchId.GetValue() != "" {
-		values, err := json.Marshal(map[string]string{
-			"order_id": resp.OrderId,
-		})
+	go func() {
+		if order.Steps[0].BranchId.GetValue() != "" {
+			values, err := json.Marshal(map[string]string{
+				"order_id": resp.OrderId,
+			})
+			if err != nil {
+				h.log.Error("Error while marshaling", logger.Error(err))
+				return
+			}
 
-		_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
-		if err != nil {
-			h.log.Error("Error while sending order id to vendor bot", logger.Error(err))
+			_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
+			if err != nil {
+				h.log.Error("Error while sending push to vendor bot", logger.Error(err))
+			}
 		}
-	}
+	}()
 
 	c.JSON(http.StatusOK, resp)
 }
@@ -191,7 +195,6 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
@@ -237,16 +240,22 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	if order.Steps[0].BranchId.GetValue() != "" {
-		values, err := json.Marshal(map[string]string{
-			"order_id": orderID,
-		})
+	go func() {
+		if order.Steps[0].BranchId.GetValue() != "" {
+			values, err := json.Marshal(map[string]string{
+				"order_id": orderID,
+			})
+			if err != nil {
+				h.log.Error("Error while marshaling", logger.Error(err))
+				return
+			}
 
-		_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
-		if err != nil {
-			fmt.Println("Error while sending order id to vendor bot")
+			_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
+			if err != nil {
+				h.log.Error("Error while sending push to vendor bot", logger.Error(err))
+			}
 		}
-	}
+	}()
 
 	c.JSON(200, models.ResponseOK{
 		Message: "order successfully updated",
@@ -319,6 +328,8 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 // @Param limit query integer false "limit"
 // @Param branch_ids query []string false "branch_ids"
 // @Param customer_phone query string false "customer_phone"
+// @Param start_time query string false "start_time"
+// @Param end_time query string false "end_time"
 // @Success 200 {object} models.GetAllOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -374,6 +385,8 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		Limit:         limit,
 		CustomerPhone: c.Query("customer_phone"),
 		BranchIds:     c.QueryArray("branch_ids[]"),
+		StartTime:     c.Query("start_time"),
+		EndTime:       c.Query("end_time"),
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
@@ -436,27 +449,6 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
 		return
 	}
-
-	// if statusNote.StatusId == config.VendorAcceptedStatusId {
-	// 	// send notification
-
-	// 	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
-	// 		ShipperId: userInfo.ShipperID,
-	// 		Id:        statusNote.OrderId,
-	// 	})
-
-	// 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
-	// 		return
-	// 	}
-
-	// 	couriers, err := h.grpcClient.CourierService().GetAllBranchCouriers(
-	// 		context.Background(),
-	// 		&pbc.GetAllBranchCouriersRequest{
-	// 			BranchId: order.Id,
-	// 			Limit:    1000,
-	// 			Page:     1,
-	// 		})
-	// }
 
 	c.JSON(200, models.ResponseOK{
 		Message: "changing order status successfully",
@@ -585,15 +577,21 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 		return
 	}
 
-	values, err := json.Marshal(map[string]string{
-		"order_id":   orderID,
-		"courier_id": addCourierModel.CourierID,
-	})
+	go func() {
+		values, err := json.Marshal(map[string]string{
+			"order_id":   orderID,
+			"courier_id": addCourierModel.CourierID,
+		})
+		if err != nil {
+			h.log.Error("Error while marshaling", logger.Error(err))
+			return
+		}
 
-	_, err = http.Post(config.TelegramBotURL+"/send-courier-order/", "application/json", bytes.NewBuffer(values))
-	if err != nil {
-		fmt.Println("Error while sending order id to vendor bot")
-	}
+		_, err = http.Post(config.TelegramBotURL+"/send-courier-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			h.log.Error("Error while sending push to vendor bot", logger.Error(err))
+		}
+	}()
 
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "courier added successfully",
@@ -915,8 +913,8 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 		model    models.AddBranchIDModel
 		userInfo models.UserInfo
 	)
-	err := getUserInfo(h, c, &userInfo)
 
+	err := getUserInfo(h, c, &userInfo)
 	if err != nil {
 		return
 	}
@@ -924,7 +922,6 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 	orderID := c.Param("order_id")
 
 	err = c.ShouldBindJSON(&model)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: models.InternalServerError{
@@ -941,19 +938,24 @@ func (h *handlerV1) AddBranchID(c *gin.Context) {
 			ShipperId: userInfo.ShipperID,
 			BranchId:  model.BranchID,
 		})
-
-	values, err := json.Marshal(map[string]string{
-		"order_id": orderID,
-	})
-
-	_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
-	if err != nil {
-		fmt.Println("Error while sending order id to vendor bot")
-	}
-
 	if handleInternalWithMessage(c, h.log, err, "error while adding branch_id") {
 		return
 	}
+
+	go func() {
+		values, err := json.Marshal(map[string]string{
+			"order_id": orderID,
+		})
+		if err != nil {
+			h.log.Error("Error while marshaling", logger.Error(err))
+			return
+		}
+
+		_, err = http.Post(config.TelegramBotURL+"/send-order/", "application/json", bytes.NewBuffer(values))
+		if err != nil {
+			h.log.Error("Error while sending push to vendor bot", logger.Error(err))
+		}
+	}()
 
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "branch_id added successfully",
