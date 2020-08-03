@@ -2307,6 +2307,144 @@ var doc = `{
                 }
             }
         },
+        "/v1/delivery-price": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting delivery price for shipper",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Get Delivery Price",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DeliveryPriceModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for updating delivery price",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Update Delivery Price",
+                "parameters": [
+                    {
+                        "description": "delivery_price",
+                        "name": "fare",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DeliveryPriceModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating delivery price for shipper",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "fare"
+                ],
+                "summary": "Create Delivery Price for Shipper",
+                "parameters": [
+                    {
+                        "description": "delivery_price",
+                        "name": "fare",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.DeliveryPriceModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/demand-order/": {
             "post": {
                 "security": [
@@ -2716,6 +2854,11 @@ var doc = `{
         },
         "/v1/fares": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting fares",
                 "consumes": [
                     "application/json"
@@ -2763,6 +2906,11 @@ var doc = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating fare",
                 "consumes": [
                     "application/json"
@@ -2807,6 +2955,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating fare",
                 "consumes": [
                     "application/json"
@@ -2853,6 +3006,11 @@ var doc = `{
         },
         "/v1/fares/{fare_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting fare",
                 "consumes": [
                     "application/json"
@@ -2895,6 +3053,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting fare",
                 "consumes": [
                     "application/json"
@@ -5565,6 +5728,14 @@ var doc = `{
             "properties": {
                 "phone": {
                     "type": "string"
+                }
+            }
+        },
+        "models.DeliveryPriceModel": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number"
                 }
             }
         },
