@@ -399,6 +399,11 @@ definitions:
       phone:
         type: string
     type: object
+  models.DeliveryPriceModel:
+    properties:
+      price:
+        type: number
+    type: object
   models.GeoDrivingLegs:
     properties:
       distance:
@@ -2893,6 +2898,93 @@ paths:
       summary: Register
       tags:
       - register
+  /v1/delivery-price:
+    get:
+      consumes:
+      - application/json
+      description: API for getting delivery price for shipper
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DeliveryPriceModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Delivery Price
+      tags:
+      - fare
+    post:
+      consumes:
+      - application/json
+      description: API for creating delivery price for shipper
+      parameters:
+      - description: delivery_price
+        in: body
+        name: fare
+        required: true
+        schema:
+          $ref: '#/definitions/models.DeliveryPriceModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Delivery Price for Shipper
+      tags:
+      - fare
+    put:
+      consumes:
+      - application/json
+      description: API for updating delivery price
+      parameters:
+      - description: delivery_price
+        in: body
+        name: fare
+        required: true
+        schema:
+          $ref: '#/definitions/models.DeliveryPriceModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Delivery Price
+      tags:
+      - fare
   /v1/demand-order/:
     post:
       consumes:
@@ -3188,6 +3280,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Fares
       tags:
       - fare
@@ -3217,6 +3311,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create Fare
       tags:
       - fare
@@ -3246,6 +3342,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update Fare
       tags:
       - fare
@@ -3275,6 +3373,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Fare
       tags:
       - fare
@@ -3303,6 +3403,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get Fare
       tags:
       - fare
