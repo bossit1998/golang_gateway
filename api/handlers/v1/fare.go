@@ -337,7 +337,7 @@ func (h *handlerV1) GetDeliveryPrice(c *gin.Context) {
 		},
 	)
 
-	if handleGRPCErr(c, h.log, err) {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while delivery price") {
 		return
 	}
 
@@ -436,7 +436,7 @@ func (h *handlerV1) UpdateDeliveryPrice(c *gin.Context) {
 		context.Background(),
 		&dp,
 	)
-	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while updating order") {
 		return
 	}
 
