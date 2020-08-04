@@ -156,6 +156,9 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/fares", handlerV1.CreateFare)
 	r.PUT("/v1/fares", handlerV1.UpdateFare)
 	r.DELETE("/v1/fares/:fare_id", handlerV1.DeleteFare)
+	r.GET("/v1/delivery-price", handlerV1.GetDeliveryPrice)
+	r.POST("/v1/delivery-price", handlerV1.CreateDeliveryPrice)
+	r.PUT("/v1/delivery-price", handlerV1.UpdateDeliveryPrice)
 
 	// Order endpoints
 	r.POST("/v1/demand-order", handlerV1.CreateDemandOrder)

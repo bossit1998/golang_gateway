@@ -33,3 +33,7 @@ type UpdateFareModel struct {
 	MinPrice     float32 `json:"min_price"`
 	MinDistance  float64 `json:"min_distance"`
 }
+
+type DeliveryPriceModel struct {
+	Price float32 `json:"price"`
+}
