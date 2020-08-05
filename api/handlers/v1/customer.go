@@ -19,6 +19,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"bitbucket.org/alien_soft/api_getaway/storage/redis"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 // @Security ApiKeyAuth
@@ -102,7 +103,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	customer.Id = id.String()
 	customer.ShipperId = shipperID
-	customer.AccessToken = accessToken
+	customer.AccessToken = &wrappers.StringValue{Value: accessToken}
 
 	res, err := h.grpcClient.CustomerService().CreateCustomer(
 		context.Background(), &pbu.CreateCustomerRequest{
