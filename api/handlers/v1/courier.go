@@ -688,6 +688,42 @@ func (h *handlerV1) GetCourierVehicle(c *gin.Context) {
 }
 
 // @Security ApiKeyAuth
+// @Router /v1/couriers/{courier_id}/active-vehicle [get]
+// @Summary Get Courier Active Vehicle
+// @Description API for getting courier's  active vehicle
+// @Tags courier
+// @Accept  json
+// @Produce  json
+// @Param courier_id path string true "courier_id"
+// @Success 200 {object} models.GetCourierVehicleModel
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) GetCourierActiveVehicle(c *gin.Context) {
+	var jspbMarshal jsonpb.Marshaler
+
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	res, err := h.grpcClient.CourierService().GetCourierActiveVehicle(
+		context.Background(),
+		&pbc.GetCourierActiveVehicleRequest{
+			CourierId: c.Param("courier_id"),
+		},
+	)
+	if handleGRPCErr(c, h.log, err) {
+		return
+	}
+	js, err := jspbMarshal.MarshalToString(res)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
+}
+
+// @Security ApiKeyAuth
 // @Router /v1/couriers/{courier_id}/vehicles [get]
 // @Summary Get All Courier Vehicles
 // @Description API for getting courier's vehicles
@@ -706,7 +742,9 @@ func (h *handlerV1) GetAllCourierVehicles(c *gin.Context) {
 
 	res, err := h.grpcClient.CourierService().GetAllCourierVehicles(
 		context.Background(),
-		&pbc.GetAllCourierVehiclesRequest{},
+		&pbc.GetAllCourierVehiclesRequest{
+			CourierId: c.Param("courier_id"),
+		},
 	)
 	if handleGRPCErr(c, h.log, err) {
 		return

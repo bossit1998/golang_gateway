@@ -191,6 +191,8 @@ definitions:
       co_delivery_price:
         example: 10000
         type: number
+      delivery_time:
+        type: integer
       description:
         type: string
       external_order_id:
@@ -275,6 +277,8 @@ definitions:
       co_delivery_price:
         example: 10000
         type: number
+      delivery_time:
+        type: integer
       description:
         type: string
       extra_phone_number:
@@ -537,6 +541,8 @@ definitions:
               type: string
             created_at:
               type: string
+            delivery_time:
+              type: integer
             description:
               type: string
             external_order_id:
@@ -696,6 +702,8 @@ definitions:
               type: number
             created_at:
               type: string
+            delivery_time:
+              type: integer
             description:
               type: string
             extra_phone_number:
@@ -866,6 +874,8 @@ definitions:
         type: string
       created_at:
         type: string
+      delivery_time:
+        type: integer
       description:
         type: string
       external_order_id:
@@ -1294,6 +1304,8 @@ definitions:
       co_delivery_price:
         example: 10000
         type: number
+      delivery_time:
+        type: integer
       description:
         type: string
       extra_phone_number:
@@ -2256,6 +2268,37 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get Courier
+      tags:
+      - courier
+  /v1/couriers/{courier_id}/active-vehicle:
+    get:
+      consumes:
+      - application/json
+      description: API for getting courier's  active vehicle
+      parameters:
+      - description: courier_id
+        in: path
+        name: courier_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Courier Active Vehicle
       tags:
       - courier
   /v1/couriers/{courier_id}/block:
