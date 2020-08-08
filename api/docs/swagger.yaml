@@ -120,6 +120,8 @@ definitions:
         type: string
       phone:
         type: string
+      vehicle_number:
+        type: string
     type: object
   models.CreateBranchModel:
     properties:
@@ -166,6 +168,8 @@ definitions:
     type: object
   models.CreateCourierVehicleModel:
     properties:
+      courier_id:
+        type: string
       model:
         type: string
       vehicle_number:
@@ -180,8 +184,6 @@ definitions:
     type: object
   models.CreateDemandOrderModel:
     properties:
-      client_id:
-        type: string
       client_name:
         example: Oybek
         type: string
@@ -192,11 +194,9 @@ definitions:
         example: 10000
         type: number
       delivery_time:
-        type: integer
-      description:
+        example: "12:00"
         type: string
-      external_order_id:
-        example: "0"
+      description:
         type: string
       steps:
         items:
@@ -542,11 +542,9 @@ definitions:
             created_at:
               type: string
             delivery_time:
-              type: integer
-            description:
+              example: "12:00"
               type: string
-            external_order_id:
-              example: "0"
+            description:
               type: string
             extra_phone_number:
               type: string
@@ -875,11 +873,9 @@ definitions:
       created_at:
         type: string
       delivery_time:
-        type: integer
-      description:
+        example: "12:00"
         type: string
-      external_order_id:
-        example: "0"
+      description:
         type: string
       extra_phone_number:
         type: string
@@ -1707,6 +1703,10 @@ paths:
       - application/json
       description: API for getting branch orders
       parameters:
+      - description: branch_id
+        in: path
+        name: branch_id
+        type: string
       - description: status_id
         in: query
         name: status_id
@@ -4589,69 +4589,6 @@ paths:
             $ref: '#/definitions/v1.Path'
       tags:
       - image
-  /v1/vehicle:
-    post:
-      consumes:
-      - application/json
-      description: API for creating courier vehicle
-      parameters:
-      - description: courier_vehicle
-        in: body
-        name: courier_vehicle
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateCourierVehicleModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCourierVehicleModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Create Courier Vehicle
-      tags:
-      - vehicle
-    put:
-      consumes:
-      - application/json
-      description: API for updating courier vehicle
-      parameters:
-      - description: courier_vehicle
-        in: body
-        name: courier_vehicle
-        required: true
-        schema:
-          $ref: '#/definitions/models.UpdateCourierVehicleModel'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetCourierVehicleModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Update Courier Vehicle
-      tags:
-      - vehicle
   /v1/vehicle/{vehicle_id}:
     get:
       consumes:
@@ -4715,6 +4652,68 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get All Vehicles
+      tags:
+      - vehicle
+    post:
+      consumes:
+      - application/json
+      description: API for creating courier vehicle
+      parameters:
+      - description: courier_vehicle
+        in: body
+        name: courier_vehicle
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCourierVehicleModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Courier Vehicle
+      tags:
+      - vehicle
+    put:
+      consumes:
+      - application/json
+      description: API for updating courier vehicle
+      parameters:
+      - description: courier_vehicle
+        in: body
+        name: courier_vehicle
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCourierVehicleModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetCourierVehicleModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Courier Vehicle
       tags:
       - vehicle
   /v1/vehicles/{vehicle_id}:

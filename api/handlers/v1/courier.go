@@ -795,7 +795,7 @@ func (h *handlerV1) GetAllVehicles(c *gin.Context) {
 }
 
 // @Security ApiKeyAuth
-// @Router /v1/vehicle [post]
+// @Router /v1/vehicles [post]
 // @Summary Create Courier Vehicle
 // @Description API for creating courier vehicle
 // @Tags vehicle
@@ -863,7 +863,7 @@ func (h *handlerV1) CreateCourierVehicle(c *gin.Context) {
 }
 
 // @Security ApiKeyAuth
-// @Router /v1/vehicle [put]
+// @Router /v1/vehicles [put]
 // @Summary Update Courier Vehicle
 // @Description API for updating courier vehicle
 // @Tags vehicle
