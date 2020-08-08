@@ -112,6 +112,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
 	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
+	r.GET("/v1/couriers/:courier_id/active-vehicle", handlerV1.GetCourierActiveVehicle)
 	r.GET("/v1/couriers/:courier_id/branches", handlerV1.GetAllCourierBranches)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
 	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)

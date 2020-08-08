@@ -38,6 +38,7 @@ type orderDemandModel struct {
 	CoDeliveryPrice   float64  `json:"co_delivery_price" example:"10000"`
 	Description       string   `json:"description"`
 	ExternalOrderID   uint64   `json:"external_order_id,string"`
+	DeliveryTime      uint64   `json:"delivery_time"`
 }
 
 type CreateDemandOrderModel struct {
@@ -71,6 +72,7 @@ type orderOnDemandModel struct {
 	Building         string   `json:"building"`
 	Floor            string   `json:"floor"`
 	ExtraPhoneNumber string   `json:"extra_phone_number"`
+	DeliveryTime     uint64   `json:"delivery_time"`
 }
 
 type CreateOnDemandOrderModel struct {

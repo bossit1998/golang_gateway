@@ -1511,6 +1511,55 @@ var doc = `{
                 }
             }
         },
+        "/v1/couriers/{courier_id}/active-vehicle": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting courier's  active vehicle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get Courier Active Vehicle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierVehicleModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/couriers/{courier_id}/block": {
             "patch": {
                 "security": [
@@ -5419,6 +5468,9 @@ var doc = `{
                     "type": "number",
                     "example": 10000
                 },
+                "delivery_time": {
+                    "type": "integer"
+                },
                 "description": {
                     "type": "string"
                 },
@@ -5543,6 +5595,9 @@ var doc = `{
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
+                },
+                "delivery_time": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
@@ -5941,6 +5996,9 @@ var doc = `{
                             "created_at": {
                                 "type": "string"
                             },
+                            "delivery_time": {
+                                "type": "integer"
+                            },
                             "description": {
                                 "type": "string"
                             },
@@ -6179,6 +6237,9 @@ var doc = `{
                             },
                             "created_at": {
                                 "type": "string"
+                            },
+                            "delivery_time": {
+                                "type": "integer"
                             },
                             "description": {
                                 "type": "string"
@@ -6434,6 +6495,9 @@ var doc = `{
                 },
                 "created_at": {
                     "type": "string"
+                },
+                "delivery_time": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
@@ -7082,6 +7146,9 @@ var doc = `{
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
+                },
+                "delivery_time": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
