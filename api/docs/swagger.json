@@ -5,6 +5,125 @@
         "license": {}
     },
     "paths": {
+        "/v1/auth/login": {
+            "post": {
+                "description": "API that checks whether user exists",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Check User Login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Login"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "client_id",
+                        "name": "client_id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/platforms": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting platforms",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get All Platforms",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllPlatformsModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branch/:shipper_id/orders/all": {
             "get": {
                 "security": [
@@ -5462,6 +5581,9 @@
                 "description": {
                     "type": "string"
                 },
+                "external_order_id": {
+                    "type": "string"
+                },
                 "steps": {
                     "type": "array",
                     "items": {
@@ -5721,6 +5843,9 @@
                     "items": {
                         "type": "string"
                     }
+                },
+                "user_role_id": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -5987,6 +6112,9 @@
                             "description": {
                                 "type": "string"
                             },
+                            "external_order_id": {
+                                "type": "string"
+                            },
                             "extra_phone_number": {
                                 "type": "string"
                             },
@@ -6040,6 +6168,20 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.GetParkModel"
+                    }
+                }
+            }
+        },
+        "models.GetAllPlatformsModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "platforms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetPlatformModel"
                     }
                 }
             }
@@ -6484,6 +6626,9 @@
                 "description": {
                     "type": "string"
                 },
+                "external_order_id": {
+                    "type": "string"
+                },
                 "extra_phone_number": {
                     "type": "string"
                 },
@@ -6658,6 +6803,17 @@
                 }
             }
         },
+        "models.GetPlatformModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.GetProductKindModel": {
             "type": "object",
             "properties": {
@@ -6792,6 +6948,44 @@
                 },
                 "long": {
                     "type": "number"
+                }
+            }
+        },
+        "models.Login": {
+            "type": "object",
+            "required": [
+                "login",
+                "password"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "user_role_id": {
+                    "type": "string"
                 }
             }
         },

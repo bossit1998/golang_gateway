@@ -215,7 +215,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
 	// Auth
-	// r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
+	r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
 	// r.GET("/v1/auth/user-types", handlerV1.GetAllUserTypes)
 	// r.GET("/v1/auth/clients", handlerV1.GetAllClients)
 	// r.GET("/v1/auth/user-roles", handlerV1.GetAllUserRoles)

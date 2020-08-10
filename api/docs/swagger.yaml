@@ -198,6 +198,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: string
       steps:
         items:
           properties:
@@ -372,6 +374,8 @@ definitions:
         items:
           type: string
         type: array
+      user_role_id:
+        type: string
       username:
         type: string
     type: object
@@ -546,6 +550,8 @@ definitions:
               type: string
             description:
               type: string
+            external_order_id:
+              type: string
             extra_phone_number:
               type: string
             finished_at:
@@ -582,6 +588,15 @@ definitions:
       parks:
         items:
           $ref: '#/definitions/models.GetParkModel'
+        type: array
+    type: object
+  models.GetAllPlatformsModel:
+    properties:
+      count:
+        type: integer
+      platforms:
+        items:
+          $ref: '#/definitions/models.GetPlatformModel'
         type: array
     type: object
   models.GetAllProductKindsModel:
@@ -877,6 +892,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: string
       extra_phone_number:
         type: string
       finished_at:
@@ -995,6 +1012,13 @@ definitions:
       name:
         type: string
     type: object
+  models.GetPlatformModel:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   models.GetProductKindModel:
     properties:
       description:
@@ -1084,6 +1108,31 @@ definitions:
         type: number
       long:
         type: number
+    type: object
+  models.Login:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  models.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      client_id:
+        type: string
+      id:
+        type: string
+      refresh_token:
+        type: string
+      user_id:
+        type: string
+      user_role_id:
+        type: string
     type: object
   models.OptimizedTrips:
     properties:
@@ -1440,6 +1489,83 @@ info:
   contact: {}
   license: {}
 paths:
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: API that checks whether user exists
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.Login'
+      - description: client_id
+        in: header
+        name: client_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Check User Login
+      tags:
+      - auth
+  /v1/auth/platforms:
+    get:
+      consumes:
+      - application/json
+      description: API for getting platforms
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllPlatformsModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All Platforms
+      tags:
+      - auth
   /v1/branch/:shipper_id/orders/all:
     get:
       consumes:

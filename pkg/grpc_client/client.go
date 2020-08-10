@@ -151,6 +151,7 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"category_service":      pb.NewCategoryServiceClient(connCatalog),
 			"product_service":       pb.NewProductServiceClient(connCatalog),
 			"auth_service":          pba.NewAuthServiceClient(connAuth),
+			"platform_service":      pba.NewPlatformServiceClient(connAuth),
 			"notification_service":  pbn.NewNotificationServiceClient(connNotification),
 			"report_service":        pbr.NewReportServiceClient(connReport),
 		},
@@ -220,6 +221,10 @@ func (g *GrpcClient) ShipperService() pbu.ShipperServiceClient {
 
 func (g *GrpcClient) AuthService() pba.AuthServiceClient {
 	return g.connections["auth_service"].(pba.AuthServiceClient)
+}
+
+func (g *GrpcClient) PlatformService() pba.PlatformServiceClient {
+	return g.connections["platform_service"].(pba.PlatformServiceClient)
 }
 
 func (g *GrpcClient) NotificationService() pbn.NotificationServiceClient {
