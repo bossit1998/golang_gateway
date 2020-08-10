@@ -17,6 +17,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 // @Summary Register
@@ -208,7 +209,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		ShipperId:   shipperID,
 		Name:        name,
 		Phone:       rc.Phone,
-		AccessToken: accessToken,
+		AccessToken: &wrappers.StringValue{Value: accessToken},
 	}
 	_, err = h.grpcClient.CustomerService().CreateCustomer(
 		context.Background(), &pbu.CreateCustomerRequest{

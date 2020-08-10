@@ -79,6 +79,7 @@ type GetAllCourierVehiclesModel struct {
 type CreateCourierVehicleModel struct {
 	Model         string `json:"model"`
 	VehicleNumber string `json:"vehicle_number"`
+	CourierId     string `json:"courier_id"`
 }
 
 //UpdateCourierVehicleModel ...

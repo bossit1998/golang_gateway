@@ -6,9 +6,10 @@ type Location struct {
 }
 
 type CourierModel struct {
-	Phone     string `json:"phone"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Phone         string `json:"phone"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	VehicleNumber string `json:"vehicle_number"`
 }
 
 type productDemandModel struct {
@@ -33,11 +34,10 @@ type orderDemandModel struct {
 	ToLocation        Location `json:"to_location"`
 	ToAddress         string   `json:"to_address" example:"Hamid Olimjon maydoni 10A dom 40-kvartira"`
 	ClientName        string   `json:"client_name" example:"Oybek"`
-	ClientId          string   `json:"client_id"`
 	ClientPhoneNumber string   `json:"client_phone_number" example:"998998765432"`
 	CoDeliveryPrice   float64  `json:"co_delivery_price" example:"10000"`
 	Description       string   `json:"description"`
-	ExternalOrderID   uint64   `json:"external_order_id,string"`
+	DeliveryTime      string   `json:"delivery_time" example:"12:00"`
 }
 
 type CreateDemandOrderModel struct {
@@ -71,6 +71,7 @@ type orderOnDemandModel struct {
 	Building         string   `json:"building"`
 	Floor            string   `json:"floor"`
 	ExtraPhoneNumber string   `json:"extra_phone_number"`
+	DeliveryTime     uint64   `json:"delivery_time"`
 }
 
 type CreateOnDemandOrderModel struct {

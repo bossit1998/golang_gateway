@@ -55,7 +55,7 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 	order.CreatorId = userInfo.ShipperID
 	order.CreatorTypeId = userInfo.ShipperID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
-	order.StatusId = config.NewStatusId
+	order.StatusId = config.VendorReadyStatusId
 
 	resp, err := h.grpcClient.OrderService().Create(context.Background(), &order)
 
@@ -1068,6 +1068,7 @@ func (h *handlerV1) GetCustomerOrders(c *gin.Context) {
 // @Tags branch
 // @Accept json
 // @Produce json
+// @Param branch_id path string false "branch_id"
 // @Param status_id query string false "status_id"
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"

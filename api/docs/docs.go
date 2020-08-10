@@ -641,6 +641,12 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "branch_id",
+                        "name": "branch_id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
                         "description": "status_id",
                         "name": "status_id",
                         "in": "query"
@@ -1494,6 +1500,55 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/couriers/{courier_id}/active-vehicle": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting courier's  active vehicle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courier"
+                ],
+                "summary": "Get Courier Active Vehicle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "courier_id",
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierVehicleModel"
                         }
                     },
                     "404": {
@@ -4870,106 +4925,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/vehicle": {
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for updating courier vehicle",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "vehicle"
-                ],
-                "summary": "Update Courier Vehicle",
-                "parameters": [
-                    {
-                        "description": "courier_vehicle",
-                        "name": "courier_vehicle",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateCourierVehicleModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetCourierVehicleModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for creating courier vehicle",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "vehicle"
-                ],
-                "summary": "Create Courier Vehicle",
-                "parameters": [
-                    {
-                        "description": "courier_vehicle",
-                        "name": "courier_vehicle",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateCourierVehicleModel"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetCourierVehicleModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/vehicle/{vehicle_id}": {
             "get": {
                 "security": [
@@ -5056,6 +5011,104 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetAllCourierVehiclesModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for updating courier vehicle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vehicle"
+                ],
+                "summary": "Update Courier Vehicle",
+                "parameters": [
+                    {
+                        "description": "courier_vehicle",
+                        "name": "courier_vehicle",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateCourierVehicleModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierVehicleModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating courier vehicle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vehicle"
+                ],
+                "summary": "Create Courier Vehicle",
+                "parameters": [
+                    {
+                        "description": "courier_vehicle",
+                        "name": "courier_vehicle",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateCourierVehicleModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetCourierVehicleModel"
                         }
                     },
                     "404": {
@@ -5311,6 +5364,9 @@ var doc = `{
                 },
                 "phone": {
                     "type": "string"
+                },
+                "vehicle_number": {
+                    "type": "string"
                 }
             }
         },
@@ -5382,6 +5438,9 @@ var doc = `{
         "models.CreateCourierVehicleModel": {
             "type": "object",
             "properties": {
+                "courier_id": {
+                    "type": "string"
+                },
                 "model": {
                     "type": "string"
                 },
@@ -5404,9 +5463,6 @@ var doc = `{
         "models.CreateDemandOrderModel": {
             "type": "object",
             "properties": {
-                "client_id": {
-                    "type": "string"
-                },
                 "client_name": {
                     "type": "string",
                     "example": "Oybek"
@@ -5419,12 +5475,12 @@ var doc = `{
                     "type": "number",
                     "example": 10000
                 },
+                "delivery_time": {
+                    "type": "string",
+                    "example": "12:00"
+                },
                 "description": {
                     "type": "string"
-                },
-                "external_order_id": {
-                    "type": "string",
-                    "example": "0"
                 },
                 "steps": {
                     "type": "array",
@@ -5543,6 +5599,9 @@ var doc = `{
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
+                },
+                "delivery_time": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
@@ -5941,12 +6000,12 @@ var doc = `{
                             "created_at": {
                                 "type": "string"
                             },
+                            "delivery_time": {
+                                "type": "string",
+                                "example": "12:00"
+                            },
                             "description": {
                                 "type": "string"
-                            },
-                            "external_order_id": {
-                                "type": "string",
-                                "example": "0"
                             },
                             "extra_phone_number": {
                                 "type": "string"
@@ -6179,6 +6238,9 @@ var doc = `{
                             },
                             "created_at": {
                                 "type": "string"
+                            },
+                            "delivery_time": {
+                                "type": "integer"
                             },
                             "description": {
                                 "type": "string"
@@ -6435,12 +6497,12 @@ var doc = `{
                 "created_at": {
                     "type": "string"
                 },
+                "delivery_time": {
+                    "type": "string",
+                    "example": "12:00"
+                },
                 "description": {
                     "type": "string"
-                },
-                "external_order_id": {
-                    "type": "string",
-                    "example": "0"
                 },
                 "extra_phone_number": {
                     "type": "string"
@@ -7082,6 +7144,9 @@ var doc = `{
                 "co_delivery_price": {
                     "type": "number",
                     "example": 10000
+                },
+                "delivery_time": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
