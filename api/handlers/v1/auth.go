@@ -9,7 +9,6 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/jsonpb"
 )
 
 // @Router /v1/auth/login [POST]
@@ -111,46 +110,46 @@ func (h *handlerV1) Login(c *gin.Context) {
 // @Failure 400 {object} models.ResponseError
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllPlatforms(c *gin.Context) {
-	var (
-		jspbMarshal jsonpb.Marshaler
-	)
+// func (h *handlerV1) GetAllPlatforms(c *gin.Context) {
+// 	var (
+// 		jspbMarshal jsonpb.Marshaler
+// 	)
 
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
+// 	jspbMarshal.OrigName = true
+// 	jspbMarshal.EmitDefaults = true
 
-	page, err := ParsePageQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
+// 	page, err := ParsePageQueryParam(c)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: ErrorBadRequest,
+// 		})
+// 		return
+// 	}
 
-	limit, err := ParseLimitQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
+// 	limit, err := ParseLimitQueryParam(c)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: ErrorBadRequest,
+// 		})
+// 		return
+// 	}
 
-	res, err := h.grpcClient.AuthService().GetAllPlatforms(
-		context.Background(),
-		&pba.GetAllRequest{
-			Page:  page,
-			Limit: limit,
-		},
-	)
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-	js, err := jspbMarshal.MarshalToString(res)
+// 	res, err := h.grpcClient.AuthService().GetAllPlatforms(
+// 		context.Background(),
+// 		&pba.GetAllRequest{
+// 			Page:  page,
+// 			Limit: limit,
+// 		},
+// 	)
+// 	if handleGRPCErr(c, h.log, err) {
+// 		return
+// 	}
+// 	js, err := jspbMarshal.MarshalToString(res)
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
+// 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+// 		return
+// 	}
 
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
-}
+// 	c.Header("Content-Type", "application/json")
+// 	c.String(http.StatusOK, js)
+// }
