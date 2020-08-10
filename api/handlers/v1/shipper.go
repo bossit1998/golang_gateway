@@ -79,6 +79,7 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 	shipper.Id = id.String()
 	shipper.Password = string(passwordHash)
 	shipper.AccessToken = accessToken
+	// shipper.UserRoleId = id.String()
 
 	_, err = h.grpcClient.ShipperService().CreateShipper(
 		context.Background(), &pbu.CreateShipperRequest{

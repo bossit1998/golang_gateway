@@ -112,7 +112,6 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
 	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
-	r.GET("/v1/couriers/:courier_id/active-vehicle", handlerV1.GetCourierActiveVehicle)
 	r.GET("/v1/couriers/:courier_id/branches", handlerV1.GetAllCourierBranches)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
 	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)
@@ -216,7 +215,16 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
 	// Auth
-	r.POST("/v1/login", handlerV1.Login)
+	r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
+	// r.GET("/v1/auth/user-types", handlerV1.GetAllUserTypes)
+	// r.GET("/v1/auth/clients", handlerV1.GetAllClients)
+	// r.GET("/v1/auth/user-roles", handlerV1.GetAllUserRoles)
+	// r.POST("/v1/auth/scopes", handlerV1.CreateScope)
+	// r.GET("/v1/auth/scopes", handlerV1.GetAllScopes)
+	// r.POST("/v1/auth/user-type-scopes", handlerV1.CreateUserTypeScope)
+	// r.GET("/v1/auth/user-type-scopes/:user_type_id", handlerV1.GetAllUserTypeScopes)
+	r.POST("/v1/auth/login", handlerV1.Login)
+	// r.POST("/v1/auth/tokens/:user_id", handlerV1.GetUserTokens)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
