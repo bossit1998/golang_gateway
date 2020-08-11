@@ -207,66 +207,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/auth/platforms": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for getting platforms",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "auth"
-                ],
-                "summary": "Get All Platforms",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetAllPlatformsModel"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/branch/:shipper_id/orders/all": {
             "get": {
                 "security": [
@@ -6315,20 +6255,6 @@ var doc = `{
                 }
             }
         },
-        "models.GetAllPlatformsModel": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "platforms": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.GetPlatformModel"
-                    }
-                }
-            }
-        },
         "models.GetAllProductKindsModel": {
             "type": "object",
             "properties": {
@@ -6940,17 +6866,6 @@ var doc = `{
                 "location": {
                     "type": "object",
                     "$ref": "#/definitions/models.LocationModel"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.GetPlatformModel": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
                 },
                 "name": {
                     "type": "string"

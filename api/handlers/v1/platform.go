@@ -1,68 +1,58 @@
 package v1
 
-import (
-	"context"
-	pba "genproto/auth_service"
-	"net/http"
+// // @Security ApiKeyAuth
+// // @Router /v1/auth/platforms [GET]
+// // @Summary Get All Platforms
+// // @Description API for getting platforms
+// // @Tags auth
+// // @Accept  json
+// // @Produce  json
+// // @Param page query integer false "page"
+// // @Param limit query integer false "limit"
+// // @Success 200 {object} models.GetAllPlatformsModel
+// // @Failure 400 {object} models.ResponseError
+// // @Failure 404 {object} models.ResponseError
+// // @Failure 500 {object} models.ResponseError
+// func (h *handlerV1) GetAllPlatforms(c *gin.Context) {
+// 	var (
+// 		jspbMarshal jsonpb.Marshaler
+// 	)
 
-	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"github.com/gin-gonic/gin"
-	"github.com/golang/protobuf/jsonpb"
-)
+// 	jspbMarshal.OrigName = true
+// 	jspbMarshal.EmitDefaults = true
 
-// @Security ApiKeyAuth
-// @Router /v1/auth/platforms [GET]
-// @Summary Get All Platforms
-// @Description API for getting platforms
-// @Tags auth
-// @Accept  json
-// @Produce  json
-// @Param page query integer false "page"
-// @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllPlatformsModel
-// @Failure 400 {object} models.ResponseError
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllPlatforms(c *gin.Context) {
-	var (
-		jspbMarshal jsonpb.Marshaler
-	)
+// 	page, err := ParsePageQueryParam(c)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: ErrorBadRequest,
+// 		})
+// 		return
+// 	}
 
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
+// 	limit, err := ParseLimitQueryParam(c)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: ErrorBadRequest,
+// 		})
+// 		return
+// 	}
 
-	page, err := ParsePageQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
+// 	res, err := h.grpcClient.PlatformService().GetAll(
+// 		context.Background(),
+// 		&pba.GetAllRequest{
+// 			Page:  page,
+// 			Limit: limit,
+// 		},
+// 	)
+// 	if handleGRPCErr(c, h.log, err) {
+// 		return
+// 	}
+// 	js, err := jspbMarshal.MarshalToString(res)
 
-	limit, err := ParseLimitQueryParam(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: ErrorBadRequest,
-		})
-		return
-	}
+// 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+// 		return
+// 	}
 
-	res, err := h.grpcClient.PlatformService().GetAll(
-		context.Background(),
-		&pba.GetAllRequest{
-			Page:  page,
-			Limit: limit,
-		},
-	)
-	if handleGRPCErr(c, h.log, err) {
-		return
-	}
-	js, err := jspbMarshal.MarshalToString(res)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
-}
+// 	c.Header("Content-Type", "application/json")
+// 	c.String(http.StatusOK, js)
+// }

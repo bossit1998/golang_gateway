@@ -590,15 +590,6 @@ definitions:
           $ref: '#/definitions/models.GetParkModel'
         type: array
     type: object
-  models.GetAllPlatformsModel:
-    properties:
-      count:
-        type: integer
-      platforms:
-        items:
-          $ref: '#/definitions/models.GetPlatformModel'
-        type: array
-    type: object
   models.GetAllProductKindsModel:
     properties:
       count:
@@ -1009,13 +1000,6 @@ definitions:
       location:
         $ref: '#/definitions/models.LocationModel'
         type: object
-      name:
-        type: string
-    type: object
-  models.GetPlatformModel:
-    properties:
-      id:
-        type: string
       name:
         type: string
     type: object
@@ -1625,44 +1609,6 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: User Login
-      tags:
-      - auth
-  /v1/auth/platforms:
-    get:
-      consumes:
-      - application/json
-      description: API for getting platforms
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetAllPlatformsModel'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Platforms
       tags:
       - auth
   /v1/branch/:shipper_id/orders/all:
