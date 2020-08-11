@@ -83,6 +83,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/customers", handlerV1.GetAllCustomers)
 	r.POST("/v1/customers/login", handlerV1.CheckCustomerLogin)
 	r.POST("/v1/customers/confirm-login", handlerV1.ConfirmCustomerLogin)
+	r.POST("/v1/customers/exists", handlerV1.CustomerExists)
 
 	// Branch endpoints
 	r.POST("/v1/branches", handlerV1.CreateBranch)
