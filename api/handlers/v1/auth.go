@@ -153,7 +153,7 @@ func (h *handlerV1) GenerateOTP(c *gin.Context) {
 
 	login.Phone = strings.TrimSpace(login.Phone)
 
-	res, err := h.grpcClient.AuthService().GenerateOTP(context.Background(), &pba.OTPLoginRequest{
+	_, err = h.grpcClient.AuthService().GenerateOTP(context.Background(), &pba.OTPLoginRequest{
 		Phone:     login.Phone,
 		ShipperId: shipperID,
 		ClientId:  clientID,
@@ -219,7 +219,7 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 	login.Phone = strings.TrimSpace(login.Phone)
 	login.Code = strings.TrimSpace(login.Code)
 
-	res, err := h.grpcClient.AuthService().ConfirmOTP(context.Background(), &pba.ConfirmOTPLoginRequest{
+	res, err := h.grpcClient.AuthService().ConfirmOTP(context.Background(), &pba.OTPConfirmRequest{
 		Phone:     login.Phone,
 		Code:      login.Code,
 		ShipperId: shipperID,

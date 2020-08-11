@@ -1109,7 +1109,7 @@ definitions:
       long:
         type: number
     type: object
-  models.Login:
+  models.LoginRequest:
     properties:
       login:
         type: string
@@ -1133,6 +1133,23 @@ definitions:
         type: string
       user_role_id:
         type: string
+    type: object
+  models.OTPConfirmRequest:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    required:
+    - code
+    - phone
+    type: object
+  models.OTPLoginRequest:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
     type: object
   models.OptimizedTrips:
     properties:
@@ -1489,18 +1506,100 @@ info:
   contact: {}
   license: {}
 paths:
-  /v1/auth/login:
+  /v1/auth/confirm-otp:
     post:
       consumes:
       - application/json
-      description: API that checks whether user exists
+      description: API that confirms user otp
       parameters:
       - description: login
         in: body
         name: login
         required: true
         schema:
-          $ref: '#/definitions/models.Login'
+          $ref: '#/definitions/models.OTPConfirmRequest'
+      - description: client_id
+        in: header
+        name: client_id
+        required: true
+        type: string
+      - description: shipper
+        in: header
+        name: shipper
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Confirm otp for a user
+      tags:
+      - auth
+  /v1/auth/generate-otp:
+    post:
+      consumes:
+      - application/json
+      description: API that checks whether user exists then generates random otp
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPLoginRequest'
+      - description: client_id
+        in: header
+        name: client_id
+        required: true
+        type: string
+      - description: shipper
+        in: header
+        name: shipper
+        required: true
+        type: string
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Generate otp for a user
+      tags:
+      - auth
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: API that returns token based on user credential
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
       - description: client_id
         in: header
         name: client_id
@@ -1525,7 +1624,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      summary: Check User Login
+      summary: User Login
       tags:
       - auth
   /v1/auth/platforms:
