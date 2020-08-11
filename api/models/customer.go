@@ -59,3 +59,8 @@ type SearchByPhoneResponse struct {
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
 }
+
+//CustomerExists
+type CustomerExists struct {
+	Exists bool `json:"exists"`
+}
