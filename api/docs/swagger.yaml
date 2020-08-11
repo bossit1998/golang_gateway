@@ -198,6 +198,8 @@ definitions:
         type: string
       description:
         type: string
+      external_order_id:
+        type: string
       steps:
         items:
           properties:
@@ -398,6 +400,11 @@ definitions:
           $ref: '#/definitions/models.CustomerAddress'
         type: array
     type: object
+  models.CustomerExists:
+    properties:
+      exists:
+        type: boolean
+    type: object
   models.CustomerLoginRequest:
     properties:
       phone:
@@ -545,6 +552,8 @@ definitions:
               example: "12:00"
               type: string
             description:
+              type: string
+            external_order_id:
               type: string
             extra_phone_number:
               type: string
@@ -876,6 +885,8 @@ definitions:
         example: "12:00"
         type: string
       description:
+        type: string
+      external_order_id:
         type: string
       extra_phone_number:
         type: string
@@ -2849,6 +2860,41 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: Confirm Customer Login
+      tags:
+      - customer
+  /v1/customers/exists:
+    post:
+      consumes:
+      - application/json
+      description: API that checks whether customer exists
+      parameters:
+      - description: shipper
+        in: header
+        name: Shipper
+        required: true
+        type: string
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerExists'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Customer Login
       tags:
       - customer
   /v1/customers/login:

@@ -514,7 +514,6 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(customer.Customer)
 	m := map[interface{}]interface{}{
 		"sub":        customer.Customer.Id,
 		"user_type":  "customer",
@@ -526,6 +525,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.ConfirmCustomerLoginResponse{
 		ID:          customer.Customer.Id,
 		AccessToken: accessToken,
+		Name:        customer.Customer.Name,
 	})
 }
 
@@ -582,4 +582,53 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
 	c.String(http.StatusOK, js)
+}
+
+// @Router /v1/customers/exists [POST]
+// @Summary Customer Login
+// @Description API that checks whether customer exists
+// @Tags customer
+// @Accept  json
+// @Produce  json
+// @Param Shipper header string true "shipper"
+// @Param login body models.CustomerLoginRequest true "login"
+// @Success 200 {object} models.CustomerExists
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CustomerExists(c *gin.Context) {
+	var (
+		customerLoginModel models.CustomerLoginRequest
+		shipperID          string
+	)
+	shipperID = c.Request.Header.Get("shipper")
+
+	if shipperID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "shipper not found in header",
+			"code":    ErrorBadRequest,
+		})
+		return
+	}
+
+	err := c.ShouldBindJSON(&customerLoginModel)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	customerLoginModel.Phone = strings.TrimSpace(customerLoginModel.Phone)
+
+	res, err := h.grpcClient.CustomerService().ExistsCustomer(
+		context.Background(), &pbu.ExistsCustomerRequest{
+			ShipperId: shipperID,
+			Phone:     customerLoginModel.Phone,
+		},
+	)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.JSON(200, models.CustomerExists{
+		Exists: res.Exists,
+	})
 }

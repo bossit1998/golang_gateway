@@ -25,7 +25,7 @@ type GetCustomerModel struct {
 
 //GetAllCustomersModel ...
 type GetAllCustomersModel struct {
-	Count int            `json:"count"`
+	Count     int                `json:"count"`
 	Customers []GetCustomerModel `json:"customers"`
 }
 
@@ -50,6 +50,7 @@ type ConfirmCustomerLoginRequest struct {
 type ConfirmCustomerLoginResponse struct {
 	ID          string `json:"id"`
 	AccessToken string `json:"access_token"`
+	Name        string `json:"name"`
 }
 
 //SearchByPhoneResponse ...
@@ -57,4 +58,9 @@ type SearchByPhoneResponse struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
+}
+
+//CustomerExists
+type CustomerExists struct {
+	Exists bool `json:"exists"`
 }

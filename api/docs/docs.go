@@ -2065,6 +2065,59 @@ var doc = `{
                 }
             }
         },
+        "/v1/customers/exists": {
+            "post": {
+                "description": "API that checks whether customer exists",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Customer Login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "shipper",
+                        "name": "Shipper",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerLoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerExists"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/customers/login": {
             "post": {
                 "description": "API that checks whether customer exists\nand if exists sends sms to their number",
@@ -5482,6 +5535,9 @@ var doc = `{
                 "description": {
                     "type": "string"
                 },
+                "external_order_id": {
+                    "type": "string"
+                },
                 "steps": {
                     "type": "array",
                     "items": {
@@ -5782,6 +5838,14 @@ var doc = `{
                 }
             }
         },
+        "models.CustomerExists": {
+            "type": "object",
+            "properties": {
+                "exists": {
+                    "type": "boolean"
+                }
+            }
+        },
         "models.CustomerLoginRequest": {
             "type": "object",
             "properties": {
@@ -6005,6 +6069,9 @@ var doc = `{
                                 "example": "12:00"
                             },
                             "description": {
+                                "type": "string"
+                            },
+                            "external_order_id": {
                                 "type": "string"
                             },
                             "extra_phone_number": {
@@ -6502,6 +6569,9 @@ var doc = `{
                     "example": "12:00"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "external_order_id": {
                     "type": "string"
                 },
                 "extra_phone_number": {
