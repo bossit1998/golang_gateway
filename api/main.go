@@ -215,7 +215,7 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
 	// Auth
-	r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
+	// r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
 	// r.GET("/v1/auth/user-types", handlerV1.GetAllUserTypes)
 	// r.GET("/v1/auth/clients", handlerV1.GetAllClients)
 	// r.GET("/v1/auth/user-roles", handlerV1.GetAllUserRoles)
@@ -223,8 +223,11 @@ func New(cnf Config) *gin.Engine {
 	// r.GET("/v1/auth/scopes", handlerV1.GetAllScopes)
 	// r.POST("/v1/auth/user-type-scopes", handlerV1.CreateUserTypeScope)
 	// r.GET("/v1/auth/user-type-scopes/:user_type_id", handlerV1.GetAllUserTypeScopes)
-	r.POST("/v1/auth/login", handlerV1.Login)
 	// r.POST("/v1/auth/tokens/:user_id", handlerV1.GetUserTokens)
+	r.POST("/v1/auth/login", handlerV1.Login)
+	r.POST("/v1/auth/generate-otp", handlerV1.GenerateOTP)
+	r.POST("/v1/auth/confirm-otp", handlerV1.ConfirmOTP)
+	r.POST("/v1/auth/refresh-token", handlerV1.RefreshToken)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
