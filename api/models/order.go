@@ -37,6 +37,7 @@ type orderDemandModel struct {
 	ClientPhoneNumber string   `json:"client_phone_number" example:"998998765432"`
 	CoDeliveryPrice   float64  `json:"co_delivery_price" example:"10000"`
 	Description       string   `json:"description"`
+	ExternalOrderId   string   `json:"external_order_id"`
 	DeliveryTime      string   `json:"delivery_time" example:"12:00"`
 }
 
