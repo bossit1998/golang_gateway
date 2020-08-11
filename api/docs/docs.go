@@ -2097,6 +2097,12 @@ var doc = `{
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerExists"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -5829,6 +5835,14 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.CustomerAddress"
                     }
+                }
+            }
+        },
+        "models.CustomerExists": {
+            "type": "object",
+            "properties": {
+                "exists": {
+                    "type": "boolean"
                 }
             }
         },

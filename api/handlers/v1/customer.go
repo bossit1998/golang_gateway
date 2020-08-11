@@ -592,11 +592,11 @@ func (h *handlerV1) SearchByPhone(c *gin.Context) {
 // @Produce  json
 // @Param Shipper header string true "shipper"
 // @Param login body models.CustomerLoginRequest true "login"
+// @Success 200 {object} models.CustomerExists
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) CustomerExists(c *gin.Context) {
 	var (
-		jspbMarshal        jsonpb.Marshaler
 		customerLoginModel models.CustomerLoginRequest
 		shipperID          string
 	)
@@ -624,12 +624,11 @@ func (h *handlerV1) CustomerExists(c *gin.Context) {
 		},
 	)
 
-	js, err := jspbMarshal.MarshalToString(res)
-
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
+	c.JSON(200, models.CustomerExists{
+		Exists: res.Exists,
+	})
 }

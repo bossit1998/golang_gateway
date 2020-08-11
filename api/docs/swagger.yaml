@@ -400,6 +400,11 @@ definitions:
           $ref: '#/definitions/models.CustomerAddress'
         type: array
     type: object
+  models.CustomerExists:
+    properties:
+      exists:
+        type: boolean
+    type: object
   models.CustomerLoginRequest:
     properties:
       phone:
@@ -2877,6 +2882,10 @@ paths:
       produces:
       - application/json
       responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerExists'
         "404":
           description: Not Found
           schema:
