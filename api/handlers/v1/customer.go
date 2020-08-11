@@ -514,7 +514,6 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(customer.Customer)
 	m := map[interface{}]interface{}{
 		"sub":        customer.Customer.Id,
 		"user_type":  "customer",
@@ -526,6 +525,7 @@ func (h *handlerV1) ConfirmCustomerLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, &models.ConfirmCustomerLoginResponse{
 		ID:          customer.Customer.Id,
 		AccessToken: accessToken,
+		Name:        customer.Customer.Name,
 	})
 }
 
