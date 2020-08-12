@@ -18,6 +18,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
+// @Security ApiKeyAuth
 // @Router /v1/system-users [post]
 // @Summary Create SystemUser
 // @Description API for creating systemUser
@@ -33,6 +34,7 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		systemUser    pbu.SystemUser
+		userInfo      models.UserInfo
 	)
 	jspbMarshal.OrigName = true
 
@@ -40,6 +42,12 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
+
+	err = getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+	systemUser.ShipperId = userInfo.ID
 
 	err = helpers.ValidateLogin(systemUser.Username)
 	if err != nil {
@@ -93,6 +101,7 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/system-users [put]
 // @Summary Update SystemUser
 // @Description API for updating systemUser
@@ -109,6 +118,7 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
 		systemUser    pbu.SystemUser
+		userInfo      models.UserInfo
 	)
 
 	jspbMarshal.OrigName = true
@@ -124,6 +134,12 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 		h.log.Error("Error while unmarshalling data", logger.Error(err))
 		return
 	}
+
+	err = getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+	systemUser.ShipperId = userInfo.ID
 
 	res, err := h.grpcClient.SystemUserService().UpdateSystemUser(
 		context.Background(),
@@ -163,12 +179,12 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 }
 
 // @Tags systemUser
-// @Router /v1/system-users/{systemUser_id} [delete]
+// @Router /v1/system-users/{system_user_id} [delete]
 // @Summary Delete SystemUser
 // @Description API for deleting systemUser
 // @Accept  json
 // @Produce  json
-// @Param systemUser_id path string true "systemUser_id"
+// @Param system_user_id path string true "system_user_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -177,7 +193,7 @@ func (h *handlerV1) DeleteSystemUser(c *gin.Context) {
 	_, err := h.grpcClient.SystemUserService().DeleteSystemUser(
 		context.Background(),
 		&pbu.DeleteSystemUserRequest{
-			Id: c.Param("systemUser_id"),
+			Id: c.Param("system_user_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -214,12 +230,12 @@ func (h *handlerV1) DeleteSystemUser(c *gin.Context) {
 }
 
 // @Tags systemUser
-// @Router /v1/system-users/{systemUser_id} [get]
+// @Router /v1/system-users/{system_user_id} [get]
 // @Summary Get SystemUser
 // @Description API for getting systemUser info
 // @Accept  json
 // @Produce json
-// @Param systemUser_id path string true "systemUser_id"
+// @Param system_user_id path string true "system_user_id"
 // @Success 200 {object} models.GetSystemUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -229,7 +245,7 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 	jspbMarshal.EmitDefaults = true
 	res, err := h.grpcClient.SystemUserService().GetSystemUser(
 		context.Background(), &pbu.GetSystemUserRequest{
-			Id: c.Param("systemUser_id"),
+			Id: c.Param("system_user_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -379,7 +395,7 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 
 // 	m := map[interface{}]interface{}{
 // 		"user_type":     "systemUser",
-// 		"systemUser_id": systemUser.Id,
+// 		"system_user_id": systemUser.Id,
 // 		"sub":           systemUser.Id,
 // 	}
 // 	accessToken, _, err := jwt.GenJWT(m, signingKey)

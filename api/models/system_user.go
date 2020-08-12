@@ -7,6 +7,7 @@ type CreateSystemUserModel struct {
 	Password   string   `json:"password"`
 	Phone      []string `json:"phone"`
 	UserRoleID string   `json:"user_role_id"`
+	// ShipperID  string   `json:"shipper_id"`
 }
 
 //UpdateSystemUserModel ...
@@ -17,6 +18,7 @@ type UpdateSystemUserModel struct {
 	Password   string   `json:"password"`
 	Phone      []string `json:"phone"`
 	UserRoleID string   `json:"user_role_id"`
+	// ShipperID  string   `json:"shipper_id"`
 }
 
 //GetSystemUserModel ...

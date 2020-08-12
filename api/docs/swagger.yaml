@@ -4878,6 +4878,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Create SystemUser
       tags:
       - systemUser
@@ -4907,18 +4909,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Update SystemUser
       tags:
       - systemUser
-  /v1/system-users/{systemUser_id}:
+  /v1/system-users/{system_user_id}:
     delete:
       consumes:
       - application/json
       description: API for deleting systemUser
       parameters:
-      - description: systemUser_id
+      - description: system_user_id
         in: path
-        name: systemUser_id
+        name: system_user_id
         required: true
         type: string
       produces:
@@ -4944,9 +4948,9 @@ paths:
       - application/json
       description: API for getting systemUser info
       parameters:
-      - description: systemUser_id
+      - description: system_user_id
         in: path
-        name: systemUser_id
+        name: system_user_id
         required: true
         type: string
       produces:

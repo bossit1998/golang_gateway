@@ -5132,6 +5132,11 @@ var doc = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for updating systemUser",
                 "consumes": [
                     "application/json"
@@ -5176,6 +5181,11 @@ var doc = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for creating systemUser",
                 "consumes": [
                     "application/json"
@@ -5271,7 +5281,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/system-users/{systemUser_id}": {
+        "/v1/system-users/{system_user_id}": {
             "get": {
                 "description": "API for getting systemUser info",
                 "consumes": [
@@ -5287,8 +5297,8 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "systemUser_id",
-                        "name": "systemUser_id",
+                        "description": "system_user_id",
+                        "name": "system_user_id",
                         "in": "path",
                         "required": true
                     }
@@ -5329,8 +5339,8 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "systemUser_id",
-                        "name": "systemUser_id",
+                        "description": "system_user_id",
+                        "name": "system_user_id",
                         "in": "path",
                         "required": true
                     }
