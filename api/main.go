@@ -106,6 +106,15 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/shippers/change-password", handlerV1.ChangePassword)
 	r.POST("/v1/shippers/login", handlerV1.ShipperLogin)
 
+	// SystemUser endpoints
+	r.POST("/v1/system-users", handlerV1.CreateSystemUser)
+	r.PUT("/v1/system-users", handlerV1.UpdateSystemUser)
+	r.DELETE("/v1/system-users/:system_user_id", handlerV1.DeleteSystemUser)
+	r.GET("/v1/system-users/:system_user_id", handlerV1.GetSystemUser)
+	r.GET("/v1/system-users", handlerV1.GetAllSystemUsers)
+	r.PATCH("/v1/system-users/change-password", handlerV1.ChangeSystemUserPassword)
+	// r.POST("/v1/system-users/login", handlerV1.SystemUserLogin)
+
 	// Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
 	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
