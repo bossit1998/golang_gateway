@@ -50,8 +50,8 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "client_id",
-                        "name": "client_id",
+                        "description": "client",
+                        "name": "client",
                         "in": "header",
                         "required": true
                     },
@@ -113,8 +113,8 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "client_id",
-                        "name": "client_id",
+                        "description": "client",
+                        "name": "client",
                         "in": "header",
                         "required": true
                     },
@@ -173,8 +173,8 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "client_id",
-                        "name": "client_id",
+                        "description": "client",
+                        "name": "client",
                         "in": "header",
                         "required": true
                     }

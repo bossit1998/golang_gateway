@@ -19,7 +19,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Param login body models.LoginRequest true "login"
-// @Param client_id header string true "client_id"
+// @Param client header string true "client"
 // @Success 200 {object} models.LoginResponse
 // @Failure 400 {object} models.ResponseError
 // @Failure 404 {object} models.ResponseError
@@ -29,7 +29,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 		login models.LoginRequest
 	)
 
-	clientID := c.GetHeader("client_id")
+	clientID := c.GetHeader("client")
 	if clientID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "client_id not found in header",
@@ -113,7 +113,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Param login body models.OTPLoginRequest true "login"
-// @Param client_id header string true "client_id"
+// @Param client header string true "client"
 // @Param shipper header string true "shipper"
 // @Failure 400 {object} models.ResponseError
 // @Failure 404 {object} models.ResponseError
@@ -132,7 +132,7 @@ func (h *handlerV1) GenerateOTP(c *gin.Context) {
 		return
 	}
 
-	clientID := c.GetHeader("client_id")
+	clientID := c.GetHeader("client")
 	if clientID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "client_id not found in header",
@@ -177,7 +177,7 @@ func (h *handlerV1) GenerateOTP(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param login body models.OTPConfirmRequest true "login"
-// @Param client_id header string true "client_id"
+// @Param client header string true "client"
 // @Param shipper header string true "shipper"
 // @Success 200 {object} models.LoginResponse
 // @Failure 400 {object} models.ResponseError
@@ -197,7 +197,7 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 		return
 	}
 
-	clientID := c.GetHeader("client_id")
+	clientID := c.GetHeader("client")
 	if clientID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "client_id not found in header",
