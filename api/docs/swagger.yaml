@@ -1582,9 +1582,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.OTPConfirmRequest'
-      - description: client_id
+      - description: client
         in: header
-        name: client_id
+        name: client
         required: true
         type: string
       - description: shipper
@@ -1626,9 +1626,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.OTPLoginRequest'
-      - description: client_id
+      - description: client
         in: header
-        name: client_id
+        name: client
         required: true
         type: string
       - description: shipper
@@ -1664,9 +1664,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.LoginRequest'
-      - description: client_id
+      - description: client
         in: header
-        name: client_id
+        name: client
         required: true
         type: string
       produces:
