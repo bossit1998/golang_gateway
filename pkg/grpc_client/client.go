@@ -145,12 +145,14 @@ func New(cfg config.Config) (*GrpcClient, error) {
 			"customer_service":      pbu.NewCustomerServiceClient(connUser),
 			"branch_service":        pbu.NewBranchServiceClient(connUser),
 			"shipper_service":       pbu.NewShipperServiceClient(connUser),
+			"system_user_service":   pbu.NewSystemUserServiceClient(connUser),
 			"specification_service": pb.NewSpecificationServiceClient(connCatalog),
 			"product_kind_service":  pb.NewProductKindServiceClient(connCatalog),
 			"measure_service":       pb.NewMeasureServiceClient(connCatalog),
 			"category_service":      pb.NewCategoryServiceClient(connCatalog),
 			"product_service":       pb.NewProductServiceClient(connCatalog),
 			"auth_service":          pba.NewAuthServiceClient(connAuth),
+			"platform_service":      pba.NewPlatformServiceClient(connAuth),
 			"notification_service":  pbn.NewNotificationServiceClient(connNotification),
 			"report_service":        pbr.NewReportServiceClient(connReport),
 		},
@@ -218,8 +220,16 @@ func (g *GrpcClient) ShipperService() pbu.ShipperServiceClient {
 	return g.connections["shipper_service"].(pbu.ShipperServiceClient)
 }
 
+func (g *GrpcClient) SystemUserService() pbu.SystemUserServiceClient {
+	return g.connections["system_user_service"].(pbu.SystemUserServiceClient)
+}
+
 func (g *GrpcClient) AuthService() pba.AuthServiceClient {
 	return g.connections["auth_service"].(pba.AuthServiceClient)
+}
+
+func (g *GrpcClient) PlatformService() pba.PlatformServiceClient {
+	return g.connections["platform_service"].(pba.PlatformServiceClient)
 }
 
 func (g *GrpcClient) NotificationService() pbn.NotificationServiceClient {

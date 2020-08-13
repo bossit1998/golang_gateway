@@ -113,7 +113,6 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/search-couriers", handlerV1.SearchCouriersByPhone)
 	r.GET("/v1/couriers/:courier_id/courier-details", handlerV1.GetCourierDetails)
 	r.GET("/v1/couriers/:courier_id/vehicles", handlerV1.GetAllCourierVehicles)
-	r.GET("/v1/couriers/:courier_id/active-vehicle", handlerV1.GetCourierActiveVehicle)
 	r.GET("/v1/couriers/:courier_id/branches", handlerV1.GetAllCourierBranches)
 	r.POST("/v1/couriers", handlerV1.CreateCourier)
 	r.POST("/v1/couriers/courier-details", handlerV1.CreateCourierDetails)
@@ -216,8 +215,29 @@ func New(cnf Config) *gin.Engine {
 	// NBU currency exchange rates
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
+	// SystemUser endpoints
+	r.POST("/v1/system-users", handlerV1.CreateSystemUser)
+	r.PUT("/v1/system-users", handlerV1.UpdateSystemUser)
+	r.DELETE("/v1/system-users/:system_user_id", handlerV1.DeleteSystemUser)
+	r.GET("/v1/system-users/:system_user_id", handlerV1.GetSystemUser)
+	r.GET("/v1/system-users", handlerV1.GetAllSystemUsers)
+	r.PATCH("/v1/system-users/change-password", handlerV1.ChangeSystemUserPassword)
+	// r.POST("/v1/system-users/login", handlerV1.SystemUserLogin)
+
 	// Auth
-	r.POST("/v1/login", handlerV1.Login)
+	// r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
+	// r.GET("/v1/auth/user-types", handlerV1.GetAllUserTypes)
+	// r.GET("/v1/auth/clients", handlerV1.GetAllClients)
+	// r.GET("/v1/auth/user-roles", handlerV1.GetAllUserRoles)
+	// r.POST("/v1/auth/scopes", handlerV1.CreateScope)
+	// r.GET("/v1/auth/scopes", handlerV1.GetAllScopes)
+	// r.POST("/v1/auth/user-type-scopes", handlerV1.CreateUserTypeScope)
+	// r.GET("/v1/auth/user-type-scopes/:user_type_id", handlerV1.GetAllUserTypeScopes)
+	// r.POST("/v1/auth/tokens/:user_id", handlerV1.GetUserTokens)
+	r.POST("/v1/auth/generate-otp", handlerV1.GenerateOTP)
+	r.POST("/v1/auth/confirm-otp", handlerV1.ConfirmOTP)
+	r.POST("/v1/auth/login", handlerV1.Login)
+	// r.POST("/v1/auth/refresh-token", handlerV1.RefreshToken)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
