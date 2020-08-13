@@ -106,15 +106,6 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/shippers/change-password", handlerV1.ChangePassword)
 	r.POST("/v1/shippers/login", handlerV1.ShipperLogin)
 
-	// SystemUser endpoints
-	r.POST("/v1/system-users", handlerV1.CreateSystemUser)
-	r.PUT("/v1/system-users", handlerV1.UpdateSystemUser)
-	r.DELETE("/v1/system-users/:system_user_id", handlerV1.DeleteSystemUser)
-	r.GET("/v1/system-users/:system_user_id", handlerV1.GetSystemUser)
-	r.GET("/v1/system-users", handlerV1.GetAllSystemUsers)
-	r.PATCH("/v1/system-users/change-password", handlerV1.ChangeSystemUserPassword)
-	// r.POST("/v1/system-users/login", handlerV1.SystemUserLogin)
-
 	// Courier endpoints
 	r.GET("/v1/couriers", handlerV1.GetAllCouriers)
 	r.GET("/v1/couriers/:courier_id", handlerV1.GetCourier)
@@ -223,6 +214,15 @@ func New(cnf Config) *gin.Engine {
 	// NBU currency exchange rates
 	r.GET("/v1/exchange-rates", handlerV1.GetExchangeRate)
 
+	// SystemUser endpoints
+	r.POST("/v1/system-users", handlerV1.CreateSystemUser)
+	r.PUT("/v1/system-users", handlerV1.UpdateSystemUser)
+	r.DELETE("/v1/system-users/:system_user_id", handlerV1.DeleteSystemUser)
+	r.GET("/v1/system-users/:system_user_id", handlerV1.GetSystemUser)
+	r.GET("/v1/system-users", handlerV1.GetAllSystemUsers)
+	r.PATCH("/v1/system-users/change-password", handlerV1.ChangeSystemUserPassword)
+	// r.POST("/v1/system-users/login", handlerV1.SystemUserLogin)
+
 	// Auth
 	// r.GET("/v1/auth/platforms", handlerV1.GetAllPlatforms)
 	// r.GET("/v1/auth/user-types", handlerV1.GetAllUserTypes)
@@ -233,9 +233,9 @@ func New(cnf Config) *gin.Engine {
 	// r.POST("/v1/auth/user-type-scopes", handlerV1.CreateUserTypeScope)
 	// r.GET("/v1/auth/user-type-scopes/:user_type_id", handlerV1.GetAllUserTypeScopes)
 	// r.POST("/v1/auth/tokens/:user_id", handlerV1.GetUserTokens)
-	r.POST("/v1/auth/login", handlerV1.Login)
 	r.POST("/v1/auth/generate-otp", handlerV1.GenerateOTP)
 	r.POST("/v1/auth/confirm-otp", handlerV1.ConfirmOTP)
+	r.POST("/v1/auth/login", handlerV1.Login)
 	// r.POST("/v1/auth/refresh-token", handlerV1.RefreshToken)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
