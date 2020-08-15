@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"bitbucket.org/alien_soft/api_getaway/api/helpers"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -16,34 +15,41 @@ import (
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
-	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
 )
 
-// @Router /v1/shippers [post]
-// @Summary Create Shipper
-// @Description API for creating shipper
-// @Tags shipper
+// @Security ApiKeyAuth
+// @Router /v1/system-users [post]
+// @Summary Create SystemUser
+// @Description API for creating systemUser
+// @Tags systemUser
 // @Accept  json
 // @Produce  json
-// @Param shipper body models.CreateShipperModel true "shipper"
-// @Success 200 {object} models.GetShipperModel
+// @Param systemUser body models.CreateSystemUserModel true "systemUser"
+// @Success 200 {object} models.GetSystemUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) CreateShipper(c *gin.Context) {
+func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		shipper       pbu.Shipper
+		systemUser    pbu.SystemUser
+		userInfo      models.UserInfo
 	)
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &shipper)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &systemUser)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
 		return
 	}
 
-	err = helpers.ValidateLogin(shipper.Username)
+	err = getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+	systemUser.ShipperId = userInfo.ID
+
+	err = helpers.ValidateLogin(systemUser.Username)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: err.Error(),
@@ -51,7 +57,7 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 		return
 	}
 
-	err = helpers.ValidatePassword(shipper.Password)
+	err = helpers.ValidatePassword(systemUser.Password)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
@@ -60,7 +66,7 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 		return
 	}
 
-	passwordHash, err := etc.GeneratePasswordHash(shipper.Password)
+	passwordHash, err := etc.GeneratePasswordHash(systemUser.Password)
 
 	if handleBadRequestErrWithMessage(c, h.log, err, "error while hashing password") {
 		return
@@ -71,22 +77,22 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := jwt.GenerateJWT(id.String(), "shipper", signingKey)
-	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
-		return
-	}
+	// accessToken, err := jwt.GenerateJWT(id.String(), "systemUser", signingKey)
+	// if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
+	// 	return
+	// }
 
-	shipper.Id = id.String()
-	shipper.Password = string(passwordHash)
-	shipper.AccessToken = accessToken
-	// shipper.UserRoleId = id.String()
+	systemUser.Id = id.String()
+	systemUser.Password = string(passwordHash)
+	// systemUser.AccessToken = accessToken
+	// systemUser.UserRoleId = id.String()
 
-	_, err = h.grpcClient.ShipperService().CreateShipper(
-		context.Background(), &pbu.CreateShipperRequest{
-			Shipper: &shipper,
+	_, err = h.grpcClient.SystemUserService().CreateSystemUser(
+		context.Background(), &pbu.CreateSystemUserRequest{
+			SystemUser: &systemUser,
 		})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating Shipper") {
+	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating SystemUser") {
 		return
 	}
 
@@ -95,27 +101,29 @@ func (h *handlerV1) CreateShipper(c *gin.Context) {
 	})
 }
 
-// @Router /v1/shippers [put]
-// @Summary Update Shipper
-// @Description API for updating shipper
-// @Tags shipper
+// @Security ApiKeyAuth
+// @Router /v1/system-users [put]
+// @Summary Update SystemUser
+// @Description API for updating systemUser
+// @Tags systemUser
 // @Accept  json
 // @Produce  json
-// @Param shipper body models.UpdateShipperModel true "shipper"
-// @Success 200 {object} models.GetShipperModel
+// @Param systemUser body models.UpdateSystemUserModel true "systemUser"
+// @Success 200 {object} models.GetSystemUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) UpdateShipper(c *gin.Context) {
+func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 
 	var (
 		jspbMarshal   jsonpb.Marshaler
 		jspbUnmarshal jsonpb.Unmarshaler
-		shipper       pbu.Shipper
+		systemUser    pbu.SystemUser
+		userInfo      models.UserInfo
 	)
 
 	jspbMarshal.OrigName = true
 
-	err := jspbUnmarshal.Unmarshal(c.Request.Body, &shipper)
+	err := jspbUnmarshal.Unmarshal(c.Request.Body, &systemUser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
 			Error: models.InternalServerError{
@@ -127,10 +135,16 @@ func (h *handlerV1) UpdateShipper(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.ShipperService().UpdateShipper(
+	err = getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+	systemUser.ShipperId = userInfo.ID
+
+	res, err := h.grpcClient.SystemUserService().UpdateSystemUser(
 		context.Background(),
-		&pbu.UpdateShipperRequest{
-			Shipper: &shipper,
+		&pbu.UpdateSystemUserRequest{
+			SystemUser: &systemUser,
 		},
 	)
 	st, ok := status.FromError(err)
@@ -141,7 +155,7 @@ func (h *handlerV1) UpdateShipper(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating Shipper", logger.Error(err))
+		h.log.Error("Error while updating SystemUser", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.Unavailable {
@@ -151,11 +165,11 @@ func (h *handlerV1) UpdateShipper(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while updating Shipper, service unavailable", logger.Error(err))
+		h.log.Error("Error while updating SystemUser, service unavailable", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.GetShipper())
+	js, err := jspbMarshal.MarshalToString(res.GetSystemUser())
 	if err != nil {
 		return
 	}
@@ -164,22 +178,22 @@ func (h *handlerV1) UpdateShipper(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Tags shipper
-// @Router /v1/shippers/{shipper_id} [delete]
-// @Summary Delete Shipper
-// @Description API for deleting shipper
+// @Tags systemUser
+// @Router /v1/system-users/{system_user_id} [delete]
+// @Summary Delete SystemUser
+// @Description API for deleting systemUser
 // @Accept  json
 // @Produce  json
-// @Param shipper_id path string true "shipper_id"
+// @Param system_user_id path string true "system_user_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) DeleteShipper(c *gin.Context) {
+func (h *handlerV1) DeleteSystemUser(c *gin.Context) {
 
-	_, err := h.grpcClient.ShipperService().DeleteShipper(
+	_, err := h.grpcClient.SystemUserService().DeleteSystemUser(
 		context.Background(),
-		&pbu.DeleteShipperRequest{
-			Id: c.Param("shipper_id"),
+		&pbu.DeleteSystemUserRequest{
+			Id: c.Param("system_user_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -190,7 +204,7 @@ func (h *handlerV1) DeleteShipper(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting Shipper", logger.Error(err))
+		h.log.Error("Error while deleting SystemUser", logger.Error(err))
 		return
 	}
 	if st.Code() == codes.NotFound {
@@ -200,7 +214,7 @@ func (h *handlerV1) DeleteShipper(c *gin.Context) {
 				Message: "Not found",
 			},
 		})
-		h.log.Error("Error while deleting shipper, not found", logger.Error(err))
+		h.log.Error("Error while deleting systemUser, not found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -209,29 +223,29 @@ func (h *handlerV1) DeleteShipper(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while deleting shipper, service unavailable", logger.Error(err))
+		h.log.Error("Error while deleting systemUser, service unavailable", logger.Error(err))
 		return
 	}
 	c.Status(http.StatusOK)
 }
 
-// @Tags shipper
-// @Router /v1/shippers/{shipper_id} [get]
-// @Summary Get Shipper
-// @Description API for getting shipper info
+// @Tags systemUser
+// @Router /v1/system-users/{system_user_id} [get]
+// @Summary Get SystemUser
+// @Description API for getting systemUser info
 // @Accept  json
 // @Produce json
-// @Param shipper_id path string true "shipper_id"
-// @Success 200 {object} models.GetShipperModel
+// @Param system_user_id path string true "system_user_id"
+// @Success 200 {object} models.GetSystemUserModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetShipper(c *gin.Context) {
+func (h *handlerV1) GetSystemUser(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
-	res, err := h.grpcClient.ShipperService().GetShipper(
-		context.Background(), &pbu.GetShipperRequest{
-			Id: c.Param("shipper_id"),
+	res, err := h.grpcClient.SystemUserService().GetSystemUser(
+		context.Background(), &pbu.GetSystemUserRequest{
+			Id: c.Param("system_user_id"),
 		},
 	)
 	st, ok := status.FromError(err)
@@ -239,10 +253,10 @@ func (h *handlerV1) GetShipper(c *gin.Context) {
 		c.JSON(http.StatusConflict, models.ResponseError{
 			Error: models.InternalServerError{
 				Code:    ErrorCodeNotFound,
-				Message: "Shipper Not Found",
+				Message: "SystemUser Not Found",
 			},
 		})
-		h.log.Error("Error while getting Shipper, Shipper Not Found", logger.Error(err))
+		h.log.Error("Error while getting SystemUser, SystemUser Not Found", logger.Error(err))
 		return
 	} else if st.Code() == codes.Unavailable {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -251,7 +265,7 @@ func (h *handlerV1) GetShipper(c *gin.Context) {
 				Message: "Server unavailable",
 			},
 		})
-		h.log.Error("Error while getting Shipper, service unavailable", logger.Error(err))
+		h.log.Error("Error while getting SystemUser, service unavailable", logger.Error(err))
 		return
 	} else if !ok || st.Code() == codes.Internal {
 		c.JSON(http.StatusInternalServerError, models.ResponseError{
@@ -260,11 +274,11 @@ func (h *handlerV1) GetShipper(c *gin.Context) {
 				Message: "Internal Server error",
 			},
 		})
-		h.log.Error("Error while getting Shipper", logger.Error(err))
+		h.log.Error("Error while getting SystemUser", logger.Error(err))
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res.GetShipper())
+	js, err := jspbMarshal.MarshalToString(res.GetSystemUser())
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
@@ -274,18 +288,18 @@ func (h *handlerV1) GetShipper(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/shippers [get]
-// @Summary Get All shippers
-// @Description API for getting shippers
-// @Tags shipper
+// @Router /v1/system-users [get]
+// @Summary Get All systemUsers
+// @Description API for getting systemUsers
+// @Tags systemUser
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Success 200 {object} models.GetAllShippersModel
+// @Success 200 {object} models.GetAllSystemUsersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllShippers(c *gin.Context) {
+func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 	var jspbMarshal jsonpb.Marshaler
 
 	jspbMarshal.OrigName = true
@@ -307,9 +321,9 @@ func (h *handlerV1) GetAllShippers(c *gin.Context) {
 		return
 	}
 
-	res, err := h.grpcClient.ShipperService().GetAllShippers(
+	res, err := h.grpcClient.SystemUserService().GetAllSystemUsers(
 		context.Background(),
-		&pbu.GetAllShippersRequest{
+		&pbu.GetAllSystemUsersRequest{
 			Page:  uint64(page),
 			Limit: uint64(limit),
 		},
@@ -327,84 +341,84 @@ func (h *handlerV1) GetAllShippers(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Router /v1/shippers/login [POST]
-// @Summary Check Shipper Login
-// @Description API that checks whether shipper exists
-// @Tags shipper
-// @Accept  json
-// @Produce  json
-// @Param login body models.ShipperLogin true "login"
-// @Success 200 {object} models.GetShipperModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) ShipperLogin(c *gin.Context) {
-	var (
-		model   models.ShipperLogin
-		isMatch = true
-	)
-	err := c.ShouldBindJSON(&model)
+// // @Router /v1/system-users/login [POST]
+// // @Summary Check SystemUser Login
+// // @Description API that checks whether systemUser exists
+// // @Tags systemUser
+// // @Accept  json
+// // @Produce  json
+// // @Param login body models.SystemUserLogin true "login"
+// // @Success 200 {object} models.GetSystemUserModel
+// // @Failure 404 {object} models.ResponseError
+// // @Failure 500 {object} models.ResponseError
+// func (h *handlerV1) SystemUserLogin(c *gin.Context) {
+// 	var (
+// 		model   models.SystemUserLogin
+// 		isMatch = true
+// 	)
+// 	err := c.ShouldBindJSON(&model)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorBadRequest,
-				Message: err.Error(),
-			},
-		})
-		return
-	}
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: models.InternalServerError{
+// 				Code:    ErrorBadRequest,
+// 				Message: err.Error(),
+// 			},
+// 		})
+// 		return
+// 	}
 
-	shipper, err := h.grpcClient.ShipperService().GetByLogin(
-		context.Background(),
-		&pbu.Shipper{
-			Username: model.Login,
-		})
+// 	systemUser, err := h.grpcClient.SystemUserService().GetByLogin(
+// 		context.Background(),
+// 		&pbu.SystemUser{
+// 			Username: model.Login,
+// 		})
 
-	if err != nil {
-		isMatch = false
-	} else {
-		err = bcrypt.CompareHashAndPassword([]byte(shipper.Password), []byte(model.Password))
-		if err != nil {
-			isMatch = false
-		}
-	}
+// 	if err != nil {
+// 		isMatch = false
+// 	} else {
+// 		err = bcrypt.CompareHashAndPassword([]byte(systemUser.Password), []byte(model.Password))
+// 		if err != nil {
+// 			isMatch = false
+// 		}
+// 	}
 
-	if !isMatch {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorBadRequest,
-				Message: "login or password is incorrect",
-			},
-		})
-		return
-	}
+// 	if !isMatch {
+// 		c.JSON(http.StatusBadRequest, models.ResponseError{
+// 			Error: models.InternalServerError{
+// 				Code:    ErrorBadRequest,
+// 				Message: "login or password is incorrect",
+// 			},
+// 		})
+// 		return
+// 	}
 
-	m := map[interface{}]interface{}{
-		"user_type":  "shipper",
-		"shipper_id": shipper.Id,
-		"sub":        shipper.Id,
-	}
-	accessToken, _, err := jwt.GenJWT(m, signingKey)
+// 	m := map[interface{}]interface{}{
+// 		"user_type":     "systemUser",
+// 		"system_user_id": systemUser.Id,
+// 		"sub":           systemUser.Id,
+// 	}
+// 	accessToken, _, err := jwt.GenJWT(m, signingKey)
 
-	shipper.AccessToken = accessToken
+// 	systemUser.AccessToken = accessToken
 
-	c.JSON(http.StatusOK, shipper)
-}
+// 	c.JSON(http.StatusOK, systemUser)
+// }
 
 // @Security ApiKeyAuth
-// @Router /v1/shippers/change-password [POST]
-// @Summary Change shipper password
-// @Description API that change shipper password
-// @Tags shipper
+// @Router /v1/system-users/change-password [POST]
+// @Summary Change systemUser password
+// @Description API that change systemUser password
+// @Tags systemUser
 // @Accept  json
 // @Produce  json
-// @Param change_password body models.ShipperChangePassword true "change_password"
+// @Param change_password body models.SystemUserChangePassword true "change_password"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
-func (h *handlerV1) ChangePassword(c *gin.Context) {
+func (h *handlerV1) ChangeSystemUserPassword(c *gin.Context) {
 	var (
-		model    models.ShipperChangePassword
+		model    models.SystemUserChangePassword
 		userInfo models.UserInfo
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -431,14 +445,14 @@ func (h *handlerV1) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	_, err = h.grpcClient.ShipperService().ChangePassword(
+	_, err = h.grpcClient.SystemUserService().ChangePassword(
 		context.Background(),
-		&pbu.Shipper{
+		&pbu.SystemUser{
 			Id:       userInfo.ID,
 			Password: string(passwordHash),
 		})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while changing shipper password") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while changing systemUser password") {
 		return
 	}
 

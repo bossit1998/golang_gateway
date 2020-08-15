@@ -8,6 +8,7 @@ type CreateShipperModel struct {
 	Logo        string   `json:"logo"`
 	Description string   `json:"description"`
 	Phone       []string `json:"phone"`
+	UserRoleID  string   `json:"user_role_id"`
 }
 
 //UpdateShipperModel ...
