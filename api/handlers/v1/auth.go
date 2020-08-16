@@ -104,7 +104,15 @@ func (h *handlerV1) Login(c *gin.Context) {
 	// default:
 	// 	c.JSON(http.StatusOK, res.Token)
 	// }
-	c.JSON(http.StatusOK, res.Token)
+	c.JSON(http.StatusOK, &models.LoginResponse{
+		ID:           res.Token.Id,
+		UserID:       res.Token.UserId,
+		ClientID:     res.Token.ClientId,
+		AccessToken:  res.Token.AccessToken,
+		RefreshToken: res.Token.RefreshToken,
+		UserRoleID:   res.Token.UserRoleId,
+		UserTypeID:   res.UserTypeId,
+	})
 }
 
 // @Router /v1/auth/generate-otp [POST]
@@ -234,5 +242,13 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, res.Token)
+	c.JSON(http.StatusOK, &models.LoginResponse{
+		ID:           res.Token.Id,
+		UserID:       res.Token.UserId,
+		ClientID:     res.Token.ClientId,
+		AccessToken:  res.Token.AccessToken,
+		RefreshToken: res.Token.RefreshToken,
+		UserRoleID:   res.Token.UserRoleId,
+		UserTypeID:   res.UserTypeId,
+	})
 }
