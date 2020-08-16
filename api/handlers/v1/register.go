@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,6 +16,8 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
@@ -133,9 +134,10 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Router /v1/customers/register-confirm/ [post]
 func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	var (
-		rc        models.RegisterConfirmModel
-		customer  pbu.Customer
-		shipperID string
+		jspbMarshal jsonpb.Marshaler
+		rc          models.RegisterConfirmModel
+		customer    pbu.Customer
+		shipperID   string
 	)
 
 	shipperID = c.Request.Header.Get("shipper")
@@ -204,6 +206,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
+
 	customer = pbu.Customer{
 		Id:          id.String(),
 		ShipperId:   shipperID,
@@ -211,14 +214,23 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		Phone:       rc.Phone,
 		AccessToken: &wrappers.StringValue{Value: accessToken},
 	}
-	_, err = h.grpcClient.CustomerService().CreateCustomer(
+
+	res, err := h.grpcClient.CustomerService().CreateCustomer(
 		context.Background(), &pbu.CreateCustomerRequest{
 			Customer: &customer,
 		},
 	)
+
 	if handleGrpcErrWithMessage(c, h.log, err, "Error while creating a customer") {
 		return
 	}
 
-	c.JSON(http.StatusOK, customer)
+	js, err := jspbMarshal.MarshalToString(res.Customer)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
