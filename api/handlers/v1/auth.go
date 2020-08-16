@@ -111,7 +111,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 		AccessToken:  res.Token.AccessToken,
 		RefreshToken: res.Token.RefreshToken,
 		UserRoleID:   res.Token.UserRoleId,
-		UserType:     res.UserType,
+		UserTypeID:   res.UserTypeId,
 	})
 }
 
@@ -249,6 +249,6 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 		AccessToken:  res.Token.AccessToken,
 		RefreshToken: res.Token.RefreshToken,
 		UserRoleID:   res.Token.UserRoleId,
-		UserType:     res.UserType,
+		UserTypeID:   res.UserTypeId,
 	})
 }

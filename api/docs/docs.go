@@ -7467,6 +7467,9 @@ var doc = `{
                 },
                 "user_role_id": {
                     "type": "string"
+                },
+                "user_type_id": {
+                    "type": "string"
                 }
             }
         },

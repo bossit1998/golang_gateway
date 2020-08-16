@@ -13,7 +13,7 @@ type LoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 	UserRoleID   string `json:"user_role_id"`
-	UserType     string `json:"user_type"`
+	UserTypeID   string `json:"user_type_id"`
 }
 
 //OTPLoginRequest ...
