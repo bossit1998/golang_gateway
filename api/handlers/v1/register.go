@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,6 +16,7 @@ import (
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes/wrappers"
 )
@@ -206,6 +206,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 	if handleInternalWithMessage(c, h.log, err, "Error while generating access token") {
 		return
 	}
+
 	customer = pbu.Customer{
 		Id:          id.String(),
 		ShipperId:   shipperID,
@@ -224,7 +225,7 @@ func (h *handlerV1) RegisterConfirm(c *gin.Context) {
 		return
 	}
 
-	js, err := jspbMarshal.MarshalToString(res)
+	js, err := jspbMarshal.MarshalToString(res.Customer)
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return

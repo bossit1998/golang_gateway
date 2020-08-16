@@ -50,6 +50,7 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 		h.log.Error("error while unmarshal", logger.Error(err))
 		return
 	}
+
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
 	order.CreatorId = userInfo.ShipperID

@@ -171,7 +171,14 @@ func (h *handlerV1) GetCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, customer)
+	js, err := jspbMarshal.MarshalToString(customer.Customer)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
+	}
+
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
 // @Security ApiKeyAuth
