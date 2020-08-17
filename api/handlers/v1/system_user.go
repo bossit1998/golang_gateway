@@ -296,8 +296,8 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Param shipper_id path string true "shipper_id"
-// @Param user_role_id path string true "user_role_id"
+// @Param shipper_id query string true "shipper_id"
+// @Param user_role_id query string true "user_role_id"
 // @Success 200 {object} models.GetAllSystemUsersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -323,8 +323,8 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 		return
 	}
 
-	shipperID := c.Param("shipper_id")
-	userRoleID := c.Param("user_role_id")
+	shipperID := c.DefaultQuery("shipper_id", "")
+	userRoleID := c.DefaultQuery("user_role_id", "")
 
 	res, err := h.grpcClient.SystemUserService().GetAllSystemUsers(
 		context.Background(),
