@@ -5199,14 +5199,14 @@
                         "type": "string",
                         "description": "shipper_id",
                         "name": "shipper_id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "user_role_id",
                         "name": "user_role_id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],

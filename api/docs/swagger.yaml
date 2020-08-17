@@ -4917,12 +4917,12 @@ paths:
         name: limit
         type: integer
       - description: shipper_id
-        in: path
+        in: query
         name: shipper_id
         required: true
         type: string
       - description: user_role_id
-        in: path
+        in: query
         name: user_role_id
         required: true
         type: string
