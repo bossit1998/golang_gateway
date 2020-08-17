@@ -4924,7 +4924,6 @@ paths:
       - description: user_role_id
         in: query
         name: user_role_id
-        required: true
         type: string
       produces:
       - application/json
@@ -4943,7 +4942,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All systemUsers
       tags:
-      - systemUser
+      - system-user
     post:
       consumes:
       - application/json
@@ -4974,7 +4973,7 @@ paths:
       - ApiKeyAuth: []
       summary: Create SystemUser
       tags:
-      - systemUser
+      - system-user
     put:
       consumes:
       - application/json
@@ -5005,7 +5004,7 @@ paths:
       - ApiKeyAuth: []
       summary: Update SystemUser
       tags:
-      - systemUser
+      - system-user
   /v1/system-users/{system_user_id}:
     delete:
       consumes:
@@ -5034,7 +5033,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete SystemUser
       tags:
-      - systemUser
+      - system-user
     get:
       consumes:
       - application/json
@@ -5062,7 +5061,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Get SystemUser
       tags:
-      - systemUser
+      - system-user
   /v1/system-users/change-password:
     post:
       consumes:
@@ -5094,7 +5093,7 @@ paths:
       - ApiKeyAuth: []
       summary: Change systemUser password
       tags:
-      - systemUser
+      - system-user
   /v1/upload:
     post:
       parameters:
