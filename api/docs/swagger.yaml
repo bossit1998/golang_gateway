@@ -1206,6 +1206,11 @@ definitions:
           $ref: '#/definitions/models.TripsWaypoint'
         type: array
     type: object
+  models.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
   models.RegisterConfirmModel:
     properties:
       code:
@@ -1691,6 +1696,41 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: User Login
+      tags:
+      - auth
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: API that returns token based on user credential
+      parameters:
+      - description: refresh-token
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshTokenRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: User Refresh Token
       tags:
       - auth
   /v1/branch/:shipper_id/orders/all:

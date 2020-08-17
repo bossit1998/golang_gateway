@@ -12,8 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Router /v1/auth/login [POST]
-// @Summary User Login
+// @Router /v1/auth/refresh-token [POST]
+// @Summary User Refresh Token
 // @Description API that returns token based on user credential
 // @Tags auth
 // @Accept  json
@@ -27,15 +27,6 @@ func (h *handlerV1) RefreshToken(c *gin.Context) {
 	var (
 		refreshTokenRequest models.RefreshTokenRequest
 	)
-
-	clientID := c.GetHeader("client")
-	if clientID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "client_id not found in header",
-			"code":    ErrorBadRequest,
-		})
-		return
-	}
 
 	err := c.ShouldBindJSON(&refreshTokenRequest)
 
@@ -52,6 +43,15 @@ func (h *handlerV1) RefreshToken(c *gin.Context) {
 		c.JSON(http.StatusForbidden, models.ResponseError{
 			Error: err.Error(),
 		})
+	}
+
+	clientID := c.GetHeader("client")
+	if clientID == "" || clientID != userInfo.ClientID {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "client_id not found in header",
+			"code":    ErrorBadRequest,
+		})
+		return
 	}
 
 	res, err := h.grpcClient.AuthService().RefreshToken(context.Background(), &pba.RefreshTokenRequest{
