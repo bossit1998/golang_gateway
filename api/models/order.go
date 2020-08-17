@@ -73,6 +73,7 @@ type orderOnDemandModel struct {
 	Floor            string   `json:"floor"`
 	ExtraPhoneNumber string   `json:"extra_phone_number"`
 	DeliveryTime     uint64   `json:"delivery_time"`
+	Paid             bool     `json:"paid"`
 }
 
 type CreateOnDemandOrderModel struct {
@@ -99,6 +100,9 @@ type GetOrderModel struct {
 	Building         string       `json:"building"`
 	Floor            string       `json:"floor"`
 	ExtraPhoneNumber string       `json:"extra_phone_number"`
+	Paid             bool         `json:"paid"`
+	Rating           string       `json:"rating"`
+	Review           string       `json:"review"`
 	Steps            []struct {
 		stepDemandModel
 		ID         string `json:"id"`
@@ -137,6 +141,9 @@ type GetAllOrderModel struct {
 		Floor            string            `json:"floor"`
 		ExtraPhoneNumber string            `json:"extra_phone_number"`
 		OrderAmount      int64             `json:"order_amount,omitempty"`
+		Paid             bool              `json:"paid"`
+		Rating           string            `json:"rating"`
+		Review           string            `json:"review"`
 		Steps            []stepDemandModel `json:"steps"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
@@ -270,4 +277,9 @@ type AddBranchIDModel struct {
 type GetAllBranchOrdersModel struct {
 	BranchID string `json:"branch_id"`
 	Quantity uint64 `json:"quantity"`
+}
+
+type OrderReview struct {
+	Rating string `json:"rating"`
+	Review string `json:"review"`
 }

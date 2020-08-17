@@ -1139,3 +1139,53 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 
 	c.JSON(http.StatusOK, model)
 }
+
+// @Security ApiKeyAuth
+// @Router /v1/order/{order_id}/review [patch]
+// @Summary Create Review For An Order
+// @Description API for creating review for order
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "order_id"
+// @Param order body models.OrderReview true "order_review"
+// @Success 200 {object} models.ResponseOK
+// @Failure 400 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) CreateReview(c *gin.Context) {
+	var (
+		jspbMarshal   jsonpb.Marshaler
+		jspbUnmarshal jsonpb.Unmarshaler
+		order         pbo.Order
+		userInfo      models.UserInfo
+	)
+
+	err := getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+
+	orderID := c.Param("order_id")
+
+	jspbMarshal.OrigName = true
+
+	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("error while unmarshal", logger.Error(err))
+		return
+	}
+
+	order.Id = orderID
+	_, err = h.grpcClient.OrderService().CreateReview(context.Background(), &order)
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while creating order review") {
+		return
+	}
+
+	c.JSON(200, models.ResponseOK{
+		Message: "review created successfully",
+	})
+}

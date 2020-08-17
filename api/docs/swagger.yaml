@@ -152,8 +152,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -287,6 +286,8 @@ definitions:
         type: string
       floor:
         type: string
+      paid:
+        type: boolean
       payment_type:
         type: string
       source:
@@ -447,13 +448,6 @@ definitions:
       weight:
         type: number
     type: object
-  models.GetAllBranchOrdersModel:
-    properties:
-      branch_id:
-        type: string
-      quantity:
-        type: integer
-    type: object
   models.GetAllBranchesModel:
     properties:
       branches:
@@ -582,7 +576,13 @@ definitions:
               type: string
             order_amount:
               type: integer
+            paid:
+              type: boolean
             payment_type:
+              type: string
+            rating:
+              type: string
+            review:
               type: string
             source:
               type: string
@@ -690,6 +690,8 @@ definitions:
         type: string
       name:
         type: string
+      order_no:
+        type: integer
       parent_id:
         type: string
       slug:
@@ -747,6 +749,8 @@ definitions:
               type: string
             order_amount:
               type: integer
+            paid:
+              type: boolean
             payment_type:
               type: string
             source:
@@ -925,7 +929,13 @@ definitions:
       order_amount:
         example: "0"
         type: string
+      paid:
+        type: boolean
       payment_type:
+        type: string
+      rating:
+        type: string
+      review:
         type: string
       source:
         type: string
@@ -1058,6 +1068,9 @@ definitions:
       measure_id:
         type: string
       name:
+        type: string
+      order_no:
+        example: "0"
         type: string
       preview_text:
         type: string
@@ -1193,6 +1206,34 @@ definitions:
     required:
     - phone
     type: object
+  models.OperatorReport:
+    properties:
+      admin_panel:
+        type: integer
+      app:
+        type: integer
+      average_per_hour:
+        type: number
+      bot:
+        type: integer
+      fullname:
+        type: string
+      phone:
+        type: string
+      total:
+        type: integer
+      username:
+        type: string
+      website:
+        type: integer
+    type: object
+  models.OperatorsReport:
+    properties:
+      reports:
+        items:
+          $ref: '#/definitions/models.OperatorReport'
+        type: array
+    type: object
   models.OptimizedTrips:
     properties:
       code:
@@ -1205,6 +1246,13 @@ definitions:
         items:
           $ref: '#/definitions/models.TripsWaypoint'
         type: array
+    type: object
+  models.OrderReview:
+    properties:
+      rating:
+        type: string
+      review:
+        type: string
     type: object
   models.RefreshTokenRequest:
     properties:
@@ -1430,6 +1478,8 @@ definitions:
         type: string
       id:
         type: string
+      paid:
+        type: boolean
       payment_type:
         type: string
       source:
@@ -1733,37 +1783,6 @@ paths:
       summary: User Refresh Token
       tags:
       - auth
-  /v1/branch/:shipper_id/orders/all:
-    get:
-      consumes:
-      - application/json
-      description: API for getting all branch orders
-      parameters:
-      - description: shipper_id
-        in: path
-        name: shipper_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetAllBranchOrdersModel'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Branch Orders
-      tags:
-      - order
   /v1/branches:
     get:
       consumes:
@@ -4297,6 +4316,43 @@ paths:
       summary: Remove Order Courier
       tags:
       - order
+  /v1/order/{order_id}/review:
+    patch:
+      consumes:
+      - application/json
+      description: API for creating review for order
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: order_review
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Review For An Order
+      tags:
+      - order
   /v1/parks:
     post:
       consumes:
@@ -4628,6 +4684,114 @@ paths:
       summary: Update Product
       tags:
       - product
+  /v1/reports/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting operators report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
+  /v1/reports/couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting couriers report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
+  /v1/reports/operators:
+    get:
+      consumes:
+      - application/json
+      description: API for getting operators report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
   /v1/search-couriers:
     get:
       consumes:
