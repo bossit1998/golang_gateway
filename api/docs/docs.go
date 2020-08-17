@@ -207,55 +207,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/branch/:shipper_id/orders/all": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for getting all branch orders",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "order"
-                ],
-                "summary": "Get All Branch Orders",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetAllBranchOrdersModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/branches": {
             "get": {
                 "security": [
@@ -4201,6 +4152,64 @@ var doc = `{
                 }
             }
         },
+        "/v1/order/{order_id}/review": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating review for order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create Review For An Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "order_review",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/parks": {
             "put": {
                 "description": "API for updating park",
@@ -5932,8 +5941,7 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -6133,6 +6141,9 @@ var doc = `{
                 },
                 "floor": {
                     "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 },
                 "payment_type": {
                     "type": "string"
@@ -6377,17 +6388,6 @@ var doc = `{
                 }
             }
         },
-        "models.GetAllBranchOrdersModel": {
-            "type": "object",
-            "properties": {
-                "branch_id": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.GetAllBranchesModel": {
             "type": "object",
             "properties": {
@@ -6581,7 +6581,16 @@ var doc = `{
                             "order_amount": {
                                 "type": "integer"
                             },
+                            "paid": {
+                                "type": "boolean"
+                            },
                             "payment_type": {
+                                "type": "string"
+                            },
+                            "rating": {
+                                "type": "string"
+                            },
+                            "review": {
                                 "type": "string"
                             },
                             "source": {
@@ -6744,6 +6753,9 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "order_no": {
+                    "type": "integer"
+                },
                 "parent_id": {
                     "type": "string"
                 },
@@ -6829,6 +6841,9 @@ var doc = `{
                             },
                             "order_amount": {
                                 "type": "integer"
+                            },
+                            "paid": {
+                                "type": "boolean"
                             },
                             "payment_type": {
                                 "type": "string"
@@ -7096,7 +7111,16 @@ var doc = `{
                     "type": "string",
                     "example": "0"
                 },
+                "paid": {
+                    "type": "boolean"
+                },
                 "payment_type": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
                     "type": "string"
                 },
                 "source": {
@@ -7294,6 +7318,10 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "order_no": {
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
@@ -7516,6 +7544,17 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.TripsWaypoint"
                     }
+                }
+            }
+        },
+        "models.OrderReview": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
+                    "type": "string"
                 }
             }
         },
@@ -7854,6 +7893,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 },
                 "payment_type": {
                     "type": "string"

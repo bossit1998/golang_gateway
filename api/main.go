@@ -67,8 +67,8 @@ func New(cnf Config) *gin.Engine {
 	})
 
 	// Excel report endpoints
-	r.GET("/v1/branches-report-excel", handlerV1.GetBranchesReport)
-	r.GET("/v1/couriers-report-excel", handlerV1.GetCouriersReport)
+	r.GET("/v1/branches-report-excel", handlerV1.GetBranchesReportExcel)
+	r.GET("/v1/couriers-report-excel", handlerV1.GetCouriersReportExcel)
 
 	// Register endpoints
 	r.POST("/v1/customers/register", handlerV1.Register)
@@ -178,6 +178,7 @@ func New(cnf Config) *gin.Engine {
 	r.PATCH("/v1/order-step/:step_id/take", handlerV1.TakeOrderStep)
 	r.GET("/v1/customer-addresses/:phone", handlerV1.GetCustomerAddresses)
 	r.PATCH("/v1/order/:order_id/add-branch", handlerV1.AddBranchID)
+	r.PATCH("/v1/order/:order_id/review", handlerV1.CreateReview)
 
 	// Login endpoints
 	r.POST("/v1/check_code")
