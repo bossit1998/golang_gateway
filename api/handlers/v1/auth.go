@@ -18,6 +18,71 @@ import (
 // @Tags auth
 // @Accept  json
 // @Produce  json
+// @Param refresh_token body models.RefreshTokenRequest true "refresh-token"
+// @Param client header string true "client"
+// @Success 200 {object} models.LoginResponse
+// @Failure 403 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) RefreshToken(c *gin.Context) {
+	var (
+		refreshTokenRequest models.RefreshTokenRequest
+	)
+
+	clientID := c.GetHeader("client")
+	if clientID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "client_id not found in header",
+			"code":    ErrorBadRequest,
+		})
+		return
+	}
+
+	err := c.ShouldBindJSON(&refreshTokenRequest)
+
+	if err != nil {
+		h.log.Error("error while binding refreshTokenRequest parameters", logger.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "refresh token field is required ",
+			"code":    ErrorBadRequest,
+		})
+		return
+	}
+	userInfo, err := ReturnUserInfo(refreshTokenRequest.RefreshToken)
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.ResponseError{
+			Error: err.Error(),
+		})
+	}
+
+	res, err := h.grpcClient.AuthService().RefreshToken(context.Background(), &pba.RefreshTokenRequest{
+		ClientId:  userInfo.ClientID,
+		UserId:    userInfo.UserID,
+		ShipperId: userInfo.ShipperID,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, models.ResponseError{
+			Error: err.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, &models.LoginResponse{
+		ID:           res.Token.Id,
+		UserID:       res.Token.UserId,
+		ClientID:     res.Token.ClientId,
+		AccessToken:  res.Token.AccessToken,
+		RefreshToken: res.Token.RefreshToken,
+		UserRoleID:   res.Token.UserRoleId,
+		UserTypeID:   res.UserTypeId,
+	})
+}
+
+// @Router /v1/auth/login [POST]
+// @Summary User Login
+// @Description API that returns token based on user credential
+// @Tags auth
+// @Accept  json
+// @Produce  json
 // @Param login body models.LoginRequest true "login"
 // @Param client header string true "client"
 // @Success 200 {object} models.LoginResponse
