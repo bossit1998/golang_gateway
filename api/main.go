@@ -236,7 +236,7 @@ func New(cnf Config) *gin.Engine {
 	r.POST("/v1/auth/generate-otp", handlerV1.GenerateOTP)
 	r.POST("/v1/auth/confirm-otp", handlerV1.ConfirmOTP)
 	r.POST("/v1/auth/login", handlerV1.Login)
-	// r.POST("/v1/auth/refresh-token", handlerV1.RefreshToken)
+	r.POST("/v1/auth/refresh-token", handlerV1.RefreshToken)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

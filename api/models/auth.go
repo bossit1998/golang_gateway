@@ -5,6 +5,11 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+//RefreshTokenRequest
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
 //LoginResponse
 type LoginResponse struct {
 	ID           string `json:"id"`
