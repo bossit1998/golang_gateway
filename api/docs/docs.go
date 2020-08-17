@@ -5216,17 +5216,18 @@ var doc = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "shipper-id",
-                        "name": "shipper-id",
-                        "in": "query",
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "user-role_id",
-                        "name": "user-role-id",
-                        "in": "query"
+                        "type": "string",
+                        "description": "user_role_id",
+                        "name": "user_role_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
