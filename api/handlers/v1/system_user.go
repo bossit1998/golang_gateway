@@ -47,7 +47,7 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	systemUser.ShipperId = userInfo.ID
+	systemUser.ShipperId = userInfo.ShipperID
 
 	err = helpers.ValidateLogin(systemUser.Username)
 	if err != nil {
@@ -139,7 +139,7 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	systemUser.ShipperId = userInfo.ID
+	systemUser.ShipperId = userInfo.ShipperID
 
 	res, err := h.grpcClient.SystemUserService().UpdateSystemUser(
 		context.Background(),
