@@ -5217,15 +5217,15 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
+                        "description": "shipper-id",
+                        "name": "shipper-id",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "user_role_id",
-                        "name": "user_role_id",
+                        "description": "user-role_id",
+                        "name": "user-role-id",
                         "in": "query"
                     }
                 ],
