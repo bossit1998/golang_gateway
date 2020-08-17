@@ -1206,6 +1206,34 @@ definitions:
     required:
     - phone
     type: object
+  models.OperatorReport:
+    properties:
+      admin_panel:
+        type: integer
+      app:
+        type: integer
+      average_per_hour:
+        type: number
+      bot:
+        type: integer
+      fullname:
+        type: string
+      phone:
+        type: string
+      total:
+        type: integer
+      username:
+        type: string
+      website:
+        type: integer
+    type: object
+  models.OperatorsReport:
+    properties:
+      reports:
+        items:
+          $ref: '#/definitions/models.OperatorReport'
+        type: array
+    type: object
   models.OptimizedTrips:
     properties:
       code:
@@ -1224,6 +1252,11 @@ definitions:
       rating:
         type: string
       review:
+        type: string
+    type: object
+  models.RefreshTokenRequest:
+    properties:
+      refresh_token:
         type: string
     type: object
   models.RegisterConfirmModel:
@@ -1713,6 +1746,41 @@ paths:
           schema:
             $ref: '#/definitions/models.ResponseError'
       summary: User Login
+      tags:
+      - auth
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: API that returns token based on user credential
+      parameters:
+      - description: refresh-token
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshTokenRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: User Refresh Token
       tags:
       - auth
   /v1/branches:
@@ -4616,6 +4684,114 @@ paths:
       summary: Update Product
       tags:
       - product
+  /v1/reports/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting operators report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
+  /v1/reports/couriers:
+    get:
+      consumes:
+      - application/json
+      description: API for getting couriers report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
+  /v1/reports/operators:
+    get:
+      consumes:
+      - application/json
+      description: API for getting operators report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
   /v1/search-couriers:
     get:
       consumes:
@@ -4904,6 +5080,15 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: shipper_id
+        in: query
+        name: shipper_id
+        required: true
+        type: string
+      - description: user_role_id
+        in: query
+        name: user_role_id
+        type: string
       produces:
       - application/json
       responses:
@@ -4921,7 +5106,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Get All systemUsers
       tags:
-      - systemUser
+      - system-user
     post:
       consumes:
       - application/json
@@ -4952,7 +5137,7 @@ paths:
       - ApiKeyAuth: []
       summary: Create SystemUser
       tags:
-      - systemUser
+      - system-user
     put:
       consumes:
       - application/json
@@ -4983,7 +5168,7 @@ paths:
       - ApiKeyAuth: []
       summary: Update SystemUser
       tags:
-      - systemUser
+      - system-user
   /v1/system-users/{system_user_id}:
     delete:
       consumes:
@@ -5012,7 +5197,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Delete SystemUser
       tags:
-      - systemUser
+      - system-user
     get:
       consumes:
       - application/json
@@ -5040,7 +5225,7 @@ paths:
             $ref: '#/definitions/models.ResponseError'
       summary: Get SystemUser
       tags:
-      - systemUser
+      - system-user
   /v1/system-users/change-password:
     post:
       consumes:
@@ -5072,7 +5257,7 @@ paths:
       - ApiKeyAuth: []
       summary: Change systemUser password
       tags:
-      - systemUser
+      - system-user
   /v1/upload:
     post:
       parameters:

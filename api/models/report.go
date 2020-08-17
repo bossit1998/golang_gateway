@@ -4,19 +4,18 @@ type GetReportModel struct {
 	File string `json:"file"`
 }
 
-type OperatorsReportModel struct {
-	Fullname   string `json:"fullname"`
-	Username   string `json:"username"`
-	Phone      string `json:"phone"`
-	Total      string `json:"total"`
-	AvgPerHour string `json:"average_per_hour"`
-	Bot        string `json:"bot"`
-	AdminPanel string `json:"admin_panel"`
-	App        string `json:"app"`
-	Website    string `json:"website"`
+type OperatorReport struct {
+	Fullname   string  `json:"fullname"`
+	Username   string  `json:"username"`
+	Phone      string  `json:"phone"`
+	Total      int     `json:"total"`
+	AvgPerHour float64 `json:"average_per_hour"`
+	Bot        int     `json:"bot"`
+	AdminPanel int     `json:"admin_panel"`
+	App        int     `json:"app"`
+	Website    int     `json:"website"`
 }
 
-type GetAllOperatorsReportModel struct {
-	Reports []OperatorsReportModel `json:"reports"`
-	Count   int                    `json:"count"`
+type OperatorsReport struct {
+	Reports []OperatorReport `json:"reports"`
 }

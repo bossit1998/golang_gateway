@@ -22,7 +22,7 @@ import (
 // @Router /v1/system-users [post]
 // @Summary Create SystemUser
 // @Description API for creating systemUser
-// @Tags systemUser
+// @Tags system-user
 // @Accept  json
 // @Produce  json
 // @Param systemUser body models.CreateSystemUserModel true "systemUser"
@@ -47,7 +47,7 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	systemUser.ShipperId = userInfo.ID
+	systemUser.ShipperId = userInfo.ShipperID
 
 	err = helpers.ValidateLogin(systemUser.Username)
 	if err != nil {
@@ -105,7 +105,7 @@ func (h *handlerV1) CreateSystemUser(c *gin.Context) {
 // @Router /v1/system-users [put]
 // @Summary Update SystemUser
 // @Description API for updating systemUser
-// @Tags systemUser
+// @Tags system-user
 // @Accept  json
 // @Produce  json
 // @Param systemUser body models.UpdateSystemUserModel true "systemUser"
@@ -139,7 +139,7 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	systemUser.ShipperId = userInfo.ID
+	systemUser.ShipperId = userInfo.ShipperID
 
 	res, err := h.grpcClient.SystemUserService().UpdateSystemUser(
 		context.Background(),
@@ -178,7 +178,7 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
-// @Tags systemUser
+// @Tags system-user
 // @Router /v1/system-users/{system_user_id} [delete]
 // @Summary Delete SystemUser
 // @Description API for deleting systemUser
@@ -229,7 +229,7 @@ func (h *handlerV1) DeleteSystemUser(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// @Tags systemUser
+// @Tags system-user
 // @Router /v1/system-users/{system_user_id} [get]
 // @Summary Get SystemUser
 // @Description API for getting systemUser info
@@ -291,11 +291,13 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 // @Router /v1/system-users [get]
 // @Summary Get All systemUsers
 // @Description API for getting systemUsers
-// @Tags systemUser
+// @Tags system-user
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
+// @Param shipper_id query string true "shipper_id"
+// @Param user_role_id query string false "user_role_id"
 // @Success 200 {object} models.GetAllSystemUsersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -321,11 +323,16 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 		return
 	}
 
+	shipperID := c.DefaultQuery("shipper_id", "")
+	userRoleID := c.DefaultQuery("user_role_id", "")
+
 	res, err := h.grpcClient.SystemUserService().GetAllSystemUsers(
 		context.Background(),
 		&pbu.GetAllSystemUsersRequest{
-			Page:  uint64(page),
-			Limit: uint64(limit),
+			Page:       uint64(page),
+			Limit:      uint64(limit),
+			ShipperId:  shipperID,
+			UserRoleId: userRoleID,
 		},
 	)
 	if handleGRPCErr(c, h.log, err) {
@@ -344,7 +351,7 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 // // @Router /v1/system-users/login [POST]
 // // @Summary Check SystemUser Login
 // // @Description API that checks whether systemUser exists
-// // @Tags systemUser
+// // @Tags system-user
 // // @Accept  json
 // // @Produce  json
 // // @Param login body models.SystemUserLogin true "login"
@@ -409,7 +416,7 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 // @Router /v1/system-users/change-password [POST]
 // @Summary Change systemUser password
 // @Description API that change systemUser password
-// @Tags systemUser
+// @Tags system-user
 // @Accept  json
 // @Produce  json
 // @Param change_password body models.SystemUserChangePassword true "change_password"

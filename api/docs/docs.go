@@ -207,6 +207,59 @@ var doc = `{
                 }
             }
         },
+        "/v1/auth/refresh-token": {
+            "post": {
+                "description": "API that returns token based on user credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User Refresh Token",
+                "parameters": [
+                    {
+                        "description": "refresh-token",
+                        "name": "refresh_token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RefreshTokenRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "client",
+                        "name": "client",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/branches": {
             "get": {
                 "security": [
@@ -4722,6 +4775,174 @@ var doc = `{
                 }
             }
         },
+        "/v1/reports/branches": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting operators report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Operators Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/couriers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting couriers report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Operators Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/operators": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting operators report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Operators Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/search-couriers": {
             "get": {
                 "security": [
@@ -5155,7 +5376,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get All systemUsers",
                 "parameters": [
@@ -5169,6 +5390,19 @@ var doc = `{
                         "type": "integer",
                         "description": "limit",
                         "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_role_id",
+                        "name": "user_role_id",
                         "in": "query"
                     }
                 ],
@@ -5207,7 +5441,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Update SystemUser",
                 "parameters": [
@@ -5256,7 +5490,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Create SystemUser",
                 "parameters": [
@@ -5307,7 +5541,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Change systemUser password",
                 "parameters": [
@@ -5353,7 +5587,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get SystemUser",
                 "parameters": [
@@ -5395,7 +5629,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Delete SystemUser",
                 "parameters": [
@@ -7527,6 +7761,49 @@ var doc = `{
                 }
             }
         },
+        "models.OperatorReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel": {
+                    "type": "integer"
+                },
+                "app": {
+                    "type": "integer"
+                },
+                "average_per_hour": {
+                    "type": "number"
+                },
+                "bot": {
+                    "type": "integer"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.OperatorsReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.OperatorReport"
+                    }
+                }
+            }
+        },
         "models.OptimizedTrips": {
             "type": "object",
             "properties": {
@@ -7554,6 +7831,14 @@ var doc = `{
                     "type": "string"
                 },
                 "review": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RefreshTokenRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
                     "type": "string"
                 }
             }
