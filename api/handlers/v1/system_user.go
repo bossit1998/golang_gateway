@@ -296,8 +296,8 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Param shipper_id query integer true "shipper_id"
-// @Param user_role_id query integer false "user_role_id"
+// @Param shipper-id query integer true "shipper-id"
+// @Param user-role-id query integer false "user-role_id"
 // @Success 200 {object} models.GetAllSystemUsersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
