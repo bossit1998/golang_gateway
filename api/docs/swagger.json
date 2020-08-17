@@ -5179,7 +5179,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get All systemUsers",
                 "parameters": [
@@ -5206,8 +5206,7 @@
                         "type": "string",
                         "description": "user_role_id",
                         "name": "user_role_id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -5245,7 +5244,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Update SystemUser",
                 "parameters": [
@@ -5294,7 +5293,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Create SystemUser",
                 "parameters": [
@@ -5345,7 +5344,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Change systemUser password",
                 "parameters": [
@@ -5391,7 +5390,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get SystemUser",
                 "parameters": [
@@ -5433,7 +5432,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Delete SystemUser",
                 "parameters": [

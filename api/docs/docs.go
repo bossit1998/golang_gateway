@@ -5199,7 +5199,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get All systemUsers",
                 "parameters": [
@@ -5226,8 +5226,7 @@ var doc = `{
                         "type": "string",
                         "description": "user_role_id",
                         "name": "user_role_id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -5265,7 +5264,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Update SystemUser",
                 "parameters": [
@@ -5314,7 +5313,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Create SystemUser",
                 "parameters": [
@@ -5365,7 +5364,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Change systemUser password",
                 "parameters": [
@@ -5411,7 +5410,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Get SystemUser",
                 "parameters": [
@@ -5453,7 +5452,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "systemUser"
+                    "system-user"
                 ],
                 "summary": "Delete SystemUser",
                 "parameters": [
