@@ -53,8 +53,8 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
-	order.CreatorId = userInfo.ShipperID
-	order.CreatorTypeId = userInfo.ShipperID
+	order.CreatorId = userInfo.UserID
+	order.CreatorTypeId = userInfo.UserTypeID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 	order.StatusId = config.VendorReadyStatusId
 
@@ -130,8 +130,8 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
-	order.CreatorId = userInfo.ShipperID
-	order.CreatorTypeId = userInfo.ShipperID
+	order.CreatorId = userInfo.UserID
+	order.CreatorTypeId = userInfo.UserTypeID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	if order.Steps[0].BranchId.GetValue() == "" {
@@ -225,8 +225,8 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	order.Id = orderID
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
-	order.CreatorId = userInfo.ShipperID
-	order.CreatorTypeId = userInfo.ShipperID
+	order.CreatorId = userInfo.UserID
+	order.CreatorTypeId = userInfo.UserTypeID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	if order.Steps[0].BranchId.GetValue() == "" {
@@ -493,27 +493,6 @@ func (h *handlerV1) GetStatuses(c *gin.Context) {
 	m[config.DeliveredStatusId] = "Delivered"
 	m[config.FinishedStatusId] = "Finished"
 	m[config.ServerCancelledStatusId] = "Server Cancelled"
-
-	//status = models.Status{ID: config.NEW_STATUS_ID, Name: "New"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//status = models.Status{ID: config.CANCELLED_STATUS_ID, Name: "Cancelled"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//status = models.Status{ID: config.ACCEPTED_STATUS_ID, Name: "Accepted"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//status = models.Status{ID: "84be5a2f-3a92-4469-8283-220ca34a0de4", Name: "Picked up"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//status = models.Status{ID: config.DELIVERED_STATUS_ID, Name: "Delivered"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//status = models.Status{ID: config.FINISHED_STATUS_ID, Name: "Finished"}
-	//model.Statuses = append(model.Statuses, status)
-	//
-	//var a int
-	//fmt.Scan(a)
 
 	c.JSON(http.StatusOK, m)
 }
@@ -1159,52 +1138,4 @@ func (h *handlerV1) GetBranchOrders(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model)
-}
-
-// @Security ApiKeyAuth
-// @Router /v1/branch/:shipper_id/orders/all [get]
-// @Summary Get All Branch Orders
-// @Description API for getting all branch orders
-// @Tags order
-// @Accept  json
-// @Produce  json
-// @Param shipper_id path string true "shipper_id"
-// @Success 200 {object} models.GetAllBranchOrdersModel
-// @Failure 404 {object} models.ResponseError
-// @Failure 500 {object} models.ResponseError
-func (h *handlerV1) GetAllBranchOrders(c *gin.Context) {
-	var (
-		jspbMarshal jsonpb.Marshaler
-		// orderID     string
-		// userInfo    models.UserInfo
-		// //model models.GetOrderModel
-	)
-
-	jspbMarshal.OrigName = true
-	jspbMarshal.EmitDefaults = true
-
-	shipperID := c.Param("shipper_id")
-
-	orders, err := h.grpcClient.OrderService().GetAllBranchOrders(context.Background(), &pbo.GetAllBranchOrdersRequest{
-		ShipperId: shipperID,
-	})
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting orders") {
-		return
-	}
-
-	js, err := jspbMarshal.MarshalToString(orders)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
-		return
-	}
-	//
-	//err = json.Unmarshal([]byte(js), &model)
-	//
-	//if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
-	//	return
-	//}
-
-	c.Header("Content-Type", "application/json")
-	c.String(http.StatusOK, js)
 }
