@@ -51,6 +51,7 @@ func New(cnf Config) *gin.Engine {
 	config.AllowHeaders = append(config.AllowHeaders, "image/jpeg")
 	config.AllowHeaders = append(config.AllowHeaders, "image/png")
 	config.AllowHeaders = append(config.AllowHeaders, "shipper")
+	config.AllowHeaders = append(config.AllowHeaders, "client")
 
 	r.Use(cors.New(config))
 
