@@ -5214,6 +5214,19 @@ var doc = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "shipper_id",
+                        "name": "shipper_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user_role_id",
+                        "name": "user_role_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {

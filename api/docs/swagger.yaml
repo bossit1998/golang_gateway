@@ -4916,6 +4916,15 @@ paths:
         in: query
         name: limit
         type: integer
+      - description: shipper_id
+        in: query
+        name: shipper_id
+        required: true
+        type: integer
+      - description: user_role_id
+        in: query
+        name: user_role_id
+        type: integer
       produces:
       - application/json
       responses:
