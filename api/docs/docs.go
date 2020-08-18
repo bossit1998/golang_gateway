@@ -5368,6 +5368,11 @@ var doc = `{
         },
         "/v1/system-users": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting systemUsers",
                 "consumes": [
                     "application/json"
@@ -5391,13 +5396,6 @@ var doc = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
-                        "in": "query",
-                        "required": true
                     },
                     {
                         "type": "string",
@@ -5579,6 +5577,11 @@ var doc = `{
         },
         "/v1/system-users/{system_user_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting systemUser info",
                 "consumes": [
                     "application/json"
@@ -5621,6 +5624,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting systemUser",
                 "consumes": [
                     "application/json"
