@@ -7822,7 +7822,7 @@ var doc = `{
                 "bot_orders_count": {
                     "type": "integer"
                 },
-                "fullname": {
+                "name": {
                     "type": "string"
                 },
                 "phone": {

@@ -186,6 +186,11 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 
 	for _, user := range users.SystemUsers {
 		var report models.OperatorReport
+
+		report.Username = user.Username
+		report.Name = user.Name
+		report.Phone = user.Phone[0]
+
 		for _, order := range orders.Orders {
 			if order.CreatorId == user.Id {
 				report.TotalOrdersCount++
