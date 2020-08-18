@@ -70,6 +70,9 @@ func New(cnf Config) *gin.Engine {
 	// Excel report endpoints
 	r.GET("/v1/branches-report-excel", handlerV1.GetBranchesReportExcel)
 	r.GET("/v1/couriers-report-excel", handlerV1.GetCouriersReportExcel)
+	r.GET("/v1/reports/operators", handlerV1.GetOperatorsReport)
+	r.GET("/v1/reports/branches", handlerV1.GetBranchesReport)
+	r.GET("/v1/reports/shipper", handlerV1.GetShipperReport)
 
 	// Register endpoints
 	r.POST("/v1/customers/register", handlerV1.Register)
