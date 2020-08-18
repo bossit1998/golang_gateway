@@ -4782,7 +4782,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "API for getting operators report",
+                "description": "API for getting branches report",
                 "consumes": [
                     "application/json"
                 ],
@@ -4792,7 +4792,7 @@ var doc = `{
                 "tags": [
                     "report"
                 ],
-                "summary": "Get Operators Report",
+                "summary": "Get Branches Report",
                 "parameters": [
                     {
                         "type": "string",
@@ -4813,63 +4813,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.OperatorsReport"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/reports/couriers": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for getting couriers report",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "report"
-                ],
-                "summary": "Get Operators Report",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "start_date",
-                        "name": "start_date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "end_date",
-                        "name": "end_date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.OperatorsReport"
+                            "$ref": "#/definitions/models.BranchesReport"
                         }
                     },
                     "404": {
@@ -4926,6 +4870,62 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/shipper": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting shipper report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Shipper Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ShipperReport"
                         }
                     },
                     "404": {
@@ -5963,6 +5963,52 @@ var doc = `{
                 },
                 "courier_id": {
                     "type": "string"
+                }
+            }
+        },
+        "models.BranchReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "total_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.BranchesReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BranchReport"
+                    }
                 }
             }
         },
@@ -7764,16 +7810,16 @@ var doc = `{
         "models.OperatorReport": {
             "type": "object",
             "properties": {
-                "admin_panel": {
+                "admin_panel_orders_count": {
                     "type": "integer"
                 },
-                "app": {
+                "app_orders_count": {
                     "type": "integer"
                 },
                 "average_per_hour": {
                     "type": "number"
                 },
-                "bot": {
+                "bot_orders_count": {
                     "type": "integer"
                 },
                 "fullname": {
@@ -7782,13 +7828,13 @@ var doc = `{
                 "phone": {
                     "type": "string"
                 },
-                "total": {
+                "total_orders_count": {
                     "type": "integer"
                 },
                 "username": {
                     "type": "string"
                 },
-                "website": {
+                "website_orders_count": {
                     "type": "integer"
                 }
             }
@@ -7937,6 +7983,38 @@ var doc = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ShipperReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "total_orders_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
                 }
             }
         },
