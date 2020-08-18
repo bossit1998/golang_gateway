@@ -5131,11 +5131,6 @@ paths:
         in: query
         name: limit
         type: integer
-      - description: shipper_id
-        in: query
-        name: shipper_id
-        required: true
-        type: string
       - description: user_role_id
         in: query
         name: user_role_id
@@ -5155,6 +5150,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get All systemUsers
       tags:
       - system-user
@@ -5246,6 +5243,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Delete SystemUser
       tags:
       - system-user
@@ -5274,6 +5273,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
       summary: Get SystemUser
       tags:
       - system-user
