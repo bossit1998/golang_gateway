@@ -178,6 +178,7 @@ func (h *handlerV1) UpdateSystemUser(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Tags system-user
 // @Router /v1/system-users/{system_user_id} [delete]
 // @Summary Delete SystemUser
@@ -229,6 +230,7 @@ func (h *handlerV1) DeleteSystemUser(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// @Security ApiKeyAuth
 // @Tags system-user
 // @Router /v1/system-users/{system_user_id} [get]
 // @Summary Get SystemUser
@@ -288,6 +290,7 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 	c.String(http.StatusOK, js)
 }
 
+// @Security ApiKeyAuth
 // @Router /v1/system-users [get]
 // @Summary Get All systemUsers
 // @Description API for getting systemUsers
@@ -296,13 +299,20 @@ func (h *handlerV1) GetSystemUser(c *gin.Context) {
 // @Produce  json
 // @Param page query integer false "page"
 // @Param limit query integer false "limit"
-// @Param shipper_id query string true "shipper_id"
 // @Param user_role_id query string false "user_role_id"
 // @Success 200 {object} models.GetAllSystemUsersModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
-	var jspbMarshal jsonpb.Marshaler
+	var (
+		jspbMarshal jsonpb.Marshaler
+		userInfo    models.UserInfo
+	)
+
+	err := getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
 
 	jspbMarshal.OrigName = true
 	jspbMarshal.EmitDefaults = true
@@ -323,7 +333,6 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 		return
 	}
 
-	shipperID := c.DefaultQuery("shipper_id", "")
 	userRoleID := c.DefaultQuery("user_role_id", "")
 
 	res, err := h.grpcClient.SystemUserService().GetAllSystemUsers(
@@ -331,7 +340,7 @@ func (h *handlerV1) GetAllSystemUsers(c *gin.Context) {
 		&pbu.GetAllSystemUsersRequest{
 			Page:       uint64(page),
 			Limit:      uint64(limit),
-			ShipperId:  shipperID,
+			ShipperId:  userInfo.ShipperID,
 			UserRoleId: userRoleID,
 		},
 	)

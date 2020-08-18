@@ -183,6 +183,8 @@ func New(cnf Config) *gin.Engine {
 	r.GET("/v1/customer-addresses/:phone", handlerV1.GetCustomerAddresses)
 	r.PATCH("/v1/order/:order_id/add-branch", handlerV1.AddBranchID)
 	r.PATCH("/v1/order/:order_id/review", handlerV1.CreateReview)
+	// r.POST("/v1/order/:order_id/request-complete", handlerV1.AddBranchID)
+	// r.POST("/v1/order/:order_id/complete", handlerV1.CreateReview)
 
 	// Login endpoints
 	r.POST("/v1/check_code")
