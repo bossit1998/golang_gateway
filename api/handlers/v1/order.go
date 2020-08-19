@@ -167,8 +167,7 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
 	order.CreatorId = userInfo.UserID
-	// order.CreatorTypeId = userInfo.UserTypeID
-	order.CreatorTypeId = "96d52342-e4b6-4c15-93f9-39a3949cee91"
+	order.CreatorTypeId = userInfo.UserTypeID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	if order.Steps[0].BranchId.GetValue() == "" {
@@ -280,8 +279,7 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 	order.DeliveryPrice = order.CoDeliveryPrice
 	order.ShipperId = userInfo.ShipperID
 	order.CreatorId = userInfo.UserID
-	// order.CreatorTypeId = userInfo.UserTypeID
-	order.CreatorTypeId = "96d52342-e4b6-4c15-93f9-39a3949cee91"
+	order.CreatorTypeId = userInfo.UserTypeID
 	order.FareId = "b35436da-a347-4794-a9dd-1dcbf918b35d"
 
 	if order.Steps[0].BranchId.GetValue() == "" {
