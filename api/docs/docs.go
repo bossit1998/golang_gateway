@@ -260,55 +260,6 @@ var doc = `{
                 }
             }
         },
-        "/v1/branch/:shipper_id/orders/all": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for getting all branch orders",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "order"
-                ],
-                "summary": "Get All Branch Orders",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetAllBranchOrdersModel"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ResponseError"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/branches": {
             "get": {
                 "security": [
@@ -4254,6 +4205,64 @@ var doc = `{
                 }
             }
         },
+        "/v1/order/{order_id}/review": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating review for order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create Review For An Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "order_review",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/parks": {
             "put": {
                 "description": "API for updating park",
@@ -4766,6 +4775,174 @@ var doc = `{
                 }
             }
         },
+        "/v1/reports/branches": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting branches report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Branches Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.BranchesReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/operators": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting operators report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Operators Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/shipper": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting shipper report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Shipper Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ShipperReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/search-couriers": {
             "get": {
                 "security": [
@@ -5191,6 +5368,11 @@ var doc = `{
         },
         "/v1/system-users": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting systemUsers",
                 "consumes": [
                     "application/json"
@@ -5214,13 +5396,6 @@ var doc = `{
                         "description": "limit",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
-                        "in": "query",
-                        "required": true
                     },
                     {
                         "type": "string",
@@ -5402,6 +5577,11 @@ var doc = `{
         },
         "/v1/system-users/{system_user_id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for getting systemUser info",
                 "consumes": [
                     "application/json"
@@ -5444,6 +5624,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "API for deleting systemUser",
                 "consumes": [
                     "application/json"
@@ -5789,6 +5974,52 @@ var doc = `{
                 }
             }
         },
+        "models.BranchReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "total_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.BranchesReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BranchReport"
+                    }
+                }
+            }
+        },
         "models.CalcDeliveryCostRequest": {
             "type": "object",
             "properties": {
@@ -5998,8 +6229,7 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -6199,6 +6429,9 @@ var doc = `{
                 },
                 "floor": {
                     "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 },
                 "payment_type": {
                     "type": "string"
@@ -6443,17 +6676,6 @@ var doc = `{
                 }
             }
         },
-        "models.GetAllBranchOrdersModel": {
-            "type": "object",
-            "properties": {
-                "branch_id": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.GetAllBranchesModel": {
             "type": "object",
             "properties": {
@@ -6647,7 +6869,16 @@ var doc = `{
                             "order_amount": {
                                 "type": "integer"
                             },
+                            "paid": {
+                                "type": "boolean"
+                            },
                             "payment_type": {
+                                "type": "string"
+                            },
+                            "rating": {
+                                "type": "string"
+                            },
+                            "review": {
                                 "type": "string"
                             },
                             "source": {
@@ -6810,6 +7041,9 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "order_no": {
+                    "type": "integer"
+                },
                 "parent_id": {
                     "type": "string"
                 },
@@ -6895,6 +7129,9 @@ var doc = `{
                             },
                             "order_amount": {
                                 "type": "integer"
+                            },
+                            "paid": {
+                                "type": "boolean"
                             },
                             "payment_type": {
                                 "type": "string"
@@ -7162,7 +7399,16 @@ var doc = `{
                     "type": "string",
                     "example": "0"
                 },
+                "paid": {
+                    "type": "boolean"
+                },
                 "payment_type": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
                     "type": "string"
                 },
                 "source": {
@@ -7360,6 +7606,10 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "order_no": {
+                    "type": "string",
+                    "example": "0"
                 },
                 "preview_text": {
                     "type": "string"
@@ -7565,6 +7815,49 @@ var doc = `{
                 }
             }
         },
+        "models.OperatorReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "average_per_hour": {
+                    "type": "number"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "total_orders_count": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.OperatorsReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.OperatorReport"
+                    }
+                }
+            }
+        },
         "models.OptimizedTrips": {
             "type": "object",
             "properties": {
@@ -7582,6 +7875,17 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.TripsWaypoint"
                     }
+                }
+            }
+        },
+        "models.OrderReview": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
+                    "type": "string"
                 }
             }
         },
@@ -7687,6 +7991,38 @@ var doc = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "models.ShipperReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "total_orders_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
                 }
             }
         },
@@ -7928,6 +8264,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "paid": {
+                    "type": "boolean"
                 },
                 "payment_type": {
                     "type": "string"
