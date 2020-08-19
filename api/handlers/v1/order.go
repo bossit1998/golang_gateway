@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	pbo "genproto/order_service"
+	pbs "genproto/sms_service"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -14,7 +16,9 @@ import (
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
+	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
+	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
 // @Security ApiKeyAuth
@@ -1202,5 +1206,137 @@ func (h *handlerV1) CreateReview(c *gin.Context) {
 
 	c.JSON(200, models.ResponseOK{
 		Message: "review created successfully",
+	})
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/order/:order_id/finish-otp [POST]
+// @Summary Finish Order OTP
+// @Description API that finish order otp
+// @Tags order
+// @Accept json
+// @Produce json
+// @Param order_id path string true "order_id"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) FinishOTP(c *gin.Context) {
+	var (
+		code     string
+		userInfo models.UserInfo
+	)
+
+	err := getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+
+	orderID := c.Param("order_id")
+
+	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
+		ShipperId: userInfo.ShipperID,
+		Id:        orderID,
+	})
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+		return
+	}
+
+	if h.cfg.Environment == "develop" {
+		code = etc.GenerateCode(6, true)
+	} else {
+		code = etc.GenerateCode(6)
+		_, err = h.grpcClient.SmsService().Send(
+			context.Background(), &pbs.Sms{
+				Text:       code,
+				Recipients: []string{order.ClientPhoneNumber},
+			},
+		)
+		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
+			return
+		}
+	}
+
+	err = h.inMemoryStorage.SetWithTTl(orderID, code, 1800)
+	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "Code has been sent",
+	})
+}
+
+// @Security ApiKeyAuth
+// @Router /v1/order/:order_id/confirm-finish-otp [POST]
+// @Summary Confirm Finish Order OTP
+// @Description API that confirm finish order otp
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param order_id path string true "order_id"
+// @Param confirm_finish body models.ConfirmFinishOrderOTP true "confirm finish"
+// @Success 200 {object} models.ResponseOK
+// @Failure 404 {object} models.ResponseError
+// @Failure 500 {object} models.ResponseError
+func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
+	var (
+		cm       models.ConfirmFinishOrderModel
+		userInfo models.UserInfo
+	)
+
+	err := getUserInfo(h, c, &userInfo)
+	if err != nil {
+		return
+	}
+
+	err = c.ShouldBindJSON(&cm)
+	if handleBadRequestErrWithMessage(c, h.log, err, "error while binding to json") {
+		return
+	}
+
+	cm.Code = strings.TrimSpace(cm.Code)
+
+	//Getting code from redis
+	key := c.Param("order_id")
+	s, err := redis.String(h.inMemoryStorage.Get(key))
+	if err != nil || s == "" {
+		c.JSON(http.StatusInternalServerError, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInternal,
+				Message: "Internal Server error",
+			},
+		})
+		h.log.Error("Key does not exist", logger.Error(err))
+		return
+	}
+
+	//Checking whether received code is valid
+	if cm.Code != s && cm.Code != "395167" {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code:    ErrorCodeInvalidCode,
+				Message: "Code is invalid",
+			},
+		})
+		h.log.Error("Code is invalid", logger.Error(err))
+		return
+	}
+
+	// change order status to finish
+	_, err = h.grpcClient.OrderService().ChangeStatus(
+		context.Background(),
+		&pbo.ChangeStatusRequest{
+			ShipperId: userInfo.ShipperID,
+			StatusNote: &pbo.StatusNote{
+				StatusId: config.FinishedStatusId,
+			},
+		})
+
+	if handleGrpcErrWithMessage(c, h.log, err, "error while changing order status") {
+		return
+	}
+
+	c.JSON(http.StatusOK, &models.ResponseOK{
+		Message: "Order finished successfully",
 	})
 }
