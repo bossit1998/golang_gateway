@@ -149,7 +149,7 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 		return
 	}
 
-	if startDate.Before(endDate) {
+	if !startDate.Before(endDate) {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: "start_time can not be greater than end_time",
 		})
@@ -257,7 +257,7 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 		return
 	}
 
-	if startDate.Before(endDate) {
+	if !startDate.Before(endDate) {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: "start_time can not be greater than end_time",
 		})
@@ -367,7 +367,7 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 		return
 	}
 
-	if startDate.Before(endDate) {
+	if !startDate.Before(endDate) {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: "start_time can not be greater than end_time",
 		})
