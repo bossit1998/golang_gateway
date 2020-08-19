@@ -316,7 +316,6 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 				} else if order.PaymentType == "click" {
 					report.TotalSumClick += order.OrderAmount
 				}
-				report.TotalSum += order.OrderAmount
 			}
 		}
 
