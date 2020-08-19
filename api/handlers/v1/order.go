@@ -105,8 +105,25 @@ func (h *handlerV1) CreateOnDemandOrder(c *gin.Context) {
 		userInfo      models.UserInfo
 	)
 
-	err := getUserInfo(h, c, &userInfo)
+	// err := getUserInfo(h, c, &userInfo)
+	// if err != nil {
+	// 	return
+	// }
+	accessToken := c.GetHeader("Authorization")
+	if c.Request.Header.Get("Authorization") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		ErrUnauthorized := errors.New("unauthorized")
+		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
+		return
+	}
+
+	userInfo, err := ReturnUserInfo(accessToken)
 	if err != nil {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: err.Error(),
+		})
 		return
 	}
 
@@ -205,8 +222,25 @@ func (h *handlerV1) UpdateOrder(c *gin.Context) {
 		userInfo      models.UserInfo
 	)
 
-	err := getUserInfo(h, c, &userInfo)
+	// err := getUserInfo(h, c, &userInfo)
+	// if err != nil {
+	// 	return
+	// }
+	accessToken := c.GetHeader("Authorization")
+	if c.Request.Header.Get("Authorization") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		ErrUnauthorized := errors.New("unauthorized")
+		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
+		return
+	}
+
+	userInfo, err := ReturnUserInfo(accessToken)
 	if err != nil {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: err.Error(),
+		})
 		return
 	}
 
