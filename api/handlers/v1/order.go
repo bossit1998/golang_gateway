@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	pbo "genproto/order_service"
 	"net/http"
 
@@ -34,11 +35,25 @@ func (h *handlerV1) CreateDemandOrder(c *gin.Context) {
 		order         pbo.Order
 		userInfo      models.UserInfo
 	)
-	err := getUserInfo(h, c, &userInfo)
 
-	if err != nil {
+	accessToken := c.GetHeader("Authorization")
+	if c.Request.Header.Get("Authorization") == "" {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: ErrorCodeUnauthorized,
+		})
+		ErrUnauthorized := errors.New("unauthorized")
+		h.log.Error("Unauthorized request: ", logger.Error(ErrUnauthorized))
 		return
 	}
+
+	userInfo, err := ReturnUserInfo(accessToken)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, models.ResponseError{
+			Error: err.Error(),
+		})
+		return
+	}
+
 	jspbMarshal.OrigName = true
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &order)
