@@ -173,6 +173,7 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 	// getting all orders
 	orders, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 		ShipperId: userInfo.ShipperID,
+		StatusId:  config.FinishedStatusId,
 		StartTime: c.Query("start_date"),
 		EndTime:   c.Query("end_date"),
 	})
@@ -280,6 +281,7 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 	// getting all orders
 	respOrder, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 		ShipperId: userInfo.ShipperID,
+		StatusId:  config.FinishedStatusId,
 		StartTime: c.Query("start_date"),
 		EndTime:   c.Query("end_date"),
 	})
@@ -290,6 +292,7 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 
 	for _, branch := range respBranch.Branches {
 		var report models.BranchReport
+		report.Name = branch.Name
 		for _, order := range respOrder.Orders {
 			if order.Steps[0].BranchId.Value == branch.Id {
 				report.TotalCount++
@@ -377,6 +380,7 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 	// getting all orders
 	respOrder, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
 		ShipperId: userInfo.ShipperID,
+		StatusId:  config.FinishedStatusId,
 		StartTime: c.Query("start_date"),
 		EndTime:   c.Query("end_date"),
 	})
