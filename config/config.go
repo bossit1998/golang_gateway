@@ -26,8 +26,7 @@ const (
 	DeliveredStatusId         = "79413606-a56f-45ed-97c3-f3f18e645972"
 	FinishedStatusId          = "e665273d-5415-4243-a329-aee410e39465"
 	ServerCancelledStatusId   = "d39cb255-6cf5-4602-896d-9c559d40cbbe"
-	// TelegramBotURL            = "https://bot.delever.uz"
-	TelegramBotURL = "https://669fad3ef479.ngrok.io"
+	TelegramBotURL            = "https://bot.delever.uz"
 )
 
 var (
