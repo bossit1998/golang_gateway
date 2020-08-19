@@ -394,12 +394,12 @@ func getUserInfo(h *handlerV1, c *gin.Context, info *models.UserInfo) error {
 
 	info.ID = claims["sub"].(string)
 	info.UserType = claims["user_type"].(string)
-	// info.ShipperID = claims["shipper_id"].(string)
-
-	info.UserID = claims["sub"].(string)
-	info.ClientID = claims["client_id"].(string)
 	info.ShipperID = claims["shipper_id"].(string)
-	info.UserTypeID = claims["user_type_id"].(string)
+
+	// info.UserID = claims["sub"].(string)
+	// info.ClientID = claims["client_id"].(string)
+	// info.ShipperID = claims["shipper_id"].(string)
+	// info.UserTypeID = claims["user_type_id"].(string)
 
 	return nil
 }
