@@ -149,27 +149,6 @@ func (h *handlerV1) Login(c *gin.Context) {
 		return
 	}
 
-	// switch res.UserType {
-	// case "shipper":
-	// 	c.JSON(httpswitch res.UserType {
-	// case "shipper":
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"shipper_id":    res.Token.UserId,
-	// 		"access_token":  res.Token.AccessToken,
-	// 		"refresh_token": res.Token.RefreshToken,
-	// 		"user_role_id":  res.Token.UserRoleId,
-	// 	})
-	// default:
-	// 	c.JSON(http.StatusOK, res.Token)
-	// }.StatusOK, gin.H{
-	// 		"shipper_id":    res.Token.UserId,
-	// 		"access_token":  res.Token.AccessToken,
-	// 		"refresh_token": res.Token.RefreshToken,
-	// 		"user_role_id":  res.Token.UserRoleId,
-	// 	})
-	// default:
-	// 	c.JSON(http.StatusOK, res.Token)
-	// }
 	c.JSON(http.StatusOK, &models.LoginResponse{
 		ID:           res.Token.Id,
 		UserID:       res.Token.UserId,
@@ -188,7 +167,7 @@ func (h *handlerV1) Login(c *gin.Context) {
 // @Accept json
 // @Param login body models.OTPLoginRequest true "login"
 // @Param client header string true "client"
-// @Param shipper header string true "shipper"
+// @Param shipper header string false "shipper"
 // @Failure 400 {object} models.ResponseError
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -198,13 +177,13 @@ func (h *handlerV1) GenerateOTP(c *gin.Context) {
 	)
 
 	shipperID := c.GetHeader("shipper")
-	if shipperID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper not found in header",
-			"code":    ErrorBadRequest,
-		})
-		return
-	}
+	// if shipperID == "" {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"message": "shipper not found in header",
+	// 		"code":    ErrorBadRequest,
+	// 	})
+	// 	return
+	// }
 
 	clientID := c.GetHeader("client")
 	if clientID == "" {
@@ -252,7 +231,8 @@ func (h *handlerV1) GenerateOTP(c *gin.Context) {
 // @Produce json
 // @Param login body models.OTPConfirmRequest true "login"
 // @Param client header string true "client"
-// @Param shipper header string true "shipper"
+// @Param shipper header string false "shipper"
+// @Param fcm header string false "fcm"
 // @Success 200 {object} models.LoginResponse
 // @Failure 400 {object} models.ResponseError
 // @Failure 404 {object} models.ResponseError
@@ -262,14 +242,15 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 		login models.OTPConfirmRequest
 	)
 
+	fcmToken := c.GetHeader("fcm")
 	shipperID := c.GetHeader("shipper")
-	if shipperID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "shipper not found in header",
-			"code":    ErrorBadRequest,
-		})
-		return
-	}
+	// if shipperID == "" {
+	// 	c.JSON(http.StatusBadRequest, gin.H{
+	// 		"message": "shipper not found in header",
+	// 		"code":    ErrorBadRequest,
+	// 	})
+	// 	return
+	// }
 
 	clientID := c.GetHeader("client")
 	if clientID == "" {
@@ -296,8 +277,9 @@ func (h *handlerV1) ConfirmOTP(c *gin.Context) {
 	res, err := h.grpcClient.AuthService().ConfirmOTP(context.Background(), &pba.OTPConfirmRequest{
 		Phone:     login.Phone,
 		Code:      login.Code,
-		ShipperId: shipperID,
 		ClientId:  clientID,
+		ShipperId: shipperID,
+		FcmToken:  fcmToken,
 	})
 
 	if err != nil {

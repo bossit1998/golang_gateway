@@ -1698,7 +1698,10 @@ paths:
       - description: shipper
         in: header
         name: shipper
-        required: true
+        type: string
+      - description: fcm
+        in: header
+        name: fcm
         type: string
       produces:
       - application/json
@@ -1742,7 +1745,6 @@ paths:
       - description: shipper
         in: header
         name: shipper
-        required: true
         type: string
       responses:
         "400":
