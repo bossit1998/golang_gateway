@@ -16,6 +16,36 @@ definitions:
       courier_id:
         type: string
     type: object
+  models.BranchReport:
+    properties:
+      admin_panel_orders_count:
+        type: integer
+      app_orders_count:
+        type: integer
+      bot_orders_count:
+        type: integer
+      name:
+        type: string
+      total_count:
+        type: integer
+      total_sum:
+        type: number
+      total_sum_cash:
+        type: number
+      total_sum_click:
+        type: number
+      total_sum_payme:
+        type: number
+      website_orders_count:
+        type: integer
+    type: object
+  models.BranchesReport:
+    properties:
+      reports:
+        items:
+          $ref: '#/definitions/models.BranchReport'
+        type: array
+    type: object
   models.CalcDeliveryCostRequest:
     properties:
       min_distance:
@@ -152,8 +182,7 @@ definitions:
       name:
         type: string
       order_no:
-        example: "0"
-        type: string
+        type: integer
       parent_id:
         type: string
     type: object
@@ -287,6 +316,8 @@ definitions:
         type: string
       floor:
         type: string
+      paid:
+        type: boolean
       payment_type:
         type: string
       source:
@@ -374,6 +405,23 @@ definitions:
         items:
           type: string
         type: array
+      user_role_id:
+        type: string
+      username:
+        type: string
+    type: object
+  models.CreateSystemUserModel:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      user_role_id:
+        type: string
       username:
         type: string
     type: object
@@ -429,13 +477,6 @@ definitions:
         type: string
       weight:
         type: number
-    type: object
-  models.GetAllBranchOrdersModel:
-    properties:
-      branch_id:
-        type: string
-      quantity:
-        type: integer
     type: object
   models.GetAllBranchesModel:
     properties:
@@ -565,7 +606,13 @@ definitions:
               type: string
             order_amount:
               type: integer
+            paid:
+              type: boolean
             payment_type:
+              type: string
+            rating:
+              type: string
+            review:
               type: string
             source:
               type: string
@@ -622,6 +669,15 @@ definitions:
           $ref: '#/definitions/models.GetShipperModel'
         type: array
     type: object
+  models.GetAllSystemUsersModel:
+    properties:
+      count:
+        type: integer
+      shippers:
+        items:
+          $ref: '#/definitions/models.GetSystemUserModel'
+        type: array
+    type: object
   models.GetBranchModel:
     properties:
       address:
@@ -664,6 +720,8 @@ definitions:
         type: string
       name:
         type: string
+      order_no:
+        type: integer
       parent_id:
         type: string
       slug:
@@ -721,6 +779,8 @@ definitions:
               type: string
             order_amount:
               type: integer
+            paid:
+              type: boolean
             payment_type:
               type: string
             source:
@@ -899,7 +959,13 @@ definitions:
       order_amount:
         example: "0"
         type: string
+      paid:
+        type: boolean
       payment_type:
+        type: string
+      rating:
+        type: string
+      review:
         type: string
       source:
         type: string
@@ -1033,6 +1099,9 @@ definitions:
         type: string
       name:
         type: string
+      order_no:
+        example: "0"
+        type: string
       preview_text:
         type: string
       price:
@@ -1080,6 +1149,33 @@ definitions:
           $ref: '#/definitions/models.Status'
         type: array
     type: object
+  models.GetSystemUserModel:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      is_blocked:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      shipper_id:
+        type: string
+      updated_at:
+        type: string
+      user_role_id:
+        type: string
+      username:
+        type: string
+    type: object
   models.Location:
     properties:
       lat:
@@ -1096,6 +1192,78 @@ definitions:
       long:
         type: number
     type: object
+  models.LoginRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  models.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      client_id:
+        type: string
+      id:
+        type: string
+      refresh_token:
+        type: string
+      user_id:
+        type: string
+      user_role_id:
+        type: string
+      user_type_id:
+        type: string
+    type: object
+  models.OTPConfirmRequest:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    required:
+    - code
+    - phone
+    type: object
+  models.OTPLoginRequest:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
+  models.OperatorReport:
+    properties:
+      admin_panel_orders_count:
+        type: integer
+      app_orders_count:
+        type: integer
+      average_per_hour:
+        type: number
+      bot_orders_count:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+      total_orders_count:
+        type: integer
+      username:
+        type: string
+      website_orders_count:
+        type: integer
+    type: object
+  models.OperatorsReport:
+    properties:
+      reports:
+        items:
+          $ref: '#/definitions/models.OperatorReport'
+        type: array
+    type: object
   models.OptimizedTrips:
     properties:
       code:
@@ -1108,6 +1276,18 @@ definitions:
         items:
           $ref: '#/definitions/models.TripsWaypoint'
         type: array
+    type: object
+  models.OrderReview:
+    properties:
+      rating:
+        type: string
+      review:
+        type: string
+    type: object
+  models.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
     type: object
   models.RegisterConfirmModel:
     properties:
@@ -1171,12 +1351,40 @@ definitions:
     - login
     - password
     type: object
+  models.ShipperReport:
+    properties:
+      admin_panel_orders_count:
+        type: integer
+      app_orders_count:
+        type: integer
+      bot_orders_count:
+        type: integer
+      total_orders_count:
+        type: integer
+      total_sum:
+        type: number
+      total_sum_cash:
+        type: number
+      total_sum_click:
+        type: number
+      total_sum_payme:
+        type: number
+      website_orders_count:
+        type: integer
+    type: object
   models.Status:
     properties:
       id:
         type: string
       name:
         type: string
+    type: object
+  models.SystemUserChangePassword:
+    properties:
+      password:
+        type: string
+    required:
+    - password
     type: object
   models.Trips:
     properties:
@@ -1321,6 +1529,8 @@ definitions:
         type: string
       id:
         type: string
+      paid:
+        type: boolean
       payment_type:
         type: string
       source:
@@ -1373,6 +1583,23 @@ definitions:
         items:
           type: string
         type: array
+      username:
+        type: string
+    type: object
+  models.UpdateSystemUserModel:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        items:
+          type: string
+        type: array
+      user_role_id:
+        type: string
       username:
         type: string
     type: object
@@ -1451,15 +1678,26 @@ info:
   contact: {}
   license: {}
 paths:
-  /v1/branch/:shipper_id/orders/all:
-    get:
+  /v1/auth/confirm-otp:
+    post:
       consumes:
       - application/json
-      description: API for getting all branch orders
+      description: API that confirms user otp
       parameters:
-      - description: shipper_id
-        in: path
-        name: shipper_id
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPConfirmRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      - description: shipper
+        in: header
+        name: shipper
         required: true
         type: string
       produces:
@@ -1468,7 +1706,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetAllBranchOrdersModel'
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
         "404":
           description: Not Found
           schema:
@@ -1477,11 +1719,121 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ResponseError'
-      security:
-      - ApiKeyAuth: []
-      summary: Get All Branch Orders
+      summary: Confirm otp for a user
       tags:
-      - order
+      - auth
+  /v1/auth/generate-otp:
+    post:
+      consumes:
+      - application/json
+      description: API that checks whether user exists then generates random otp
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPLoginRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      - description: shipper
+        in: header
+        name: shipper
+        required: true
+        type: string
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: Generate otp for a user
+      tags:
+      - auth
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: API that returns token based on user credential
+      parameters:
+      - description: login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: User Login
+      tags:
+      - auth
+  /v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: API that returns token based on user credential
+      parameters:
+      - description: refresh-token
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshTokenRequest'
+      - description: client
+        in: header
+        name: client
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: User Refresh Token
+      tags:
+      - auth
   /v1/branches:
     get:
       consumes:
@@ -4015,6 +4367,43 @@ paths:
       summary: Remove Order Courier
       tags:
       - order
+  /v1/order/{order_id}/review:
+    patch:
+      consumes:
+      - application/json
+      description: API for creating review for order
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: order_review
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.OrderReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Review For An Order
+      tags:
+      - order
   /v1/parks:
     post:
       consumes:
@@ -4346,6 +4735,114 @@ paths:
       summary: Update Product
       tags:
       - product
+  /v1/reports/branches:
+    get:
+      consumes:
+      - application/json
+      description: API for getting branches report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.BranchesReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Branches Report
+      tags:
+      - report
+  /v1/reports/operators:
+    get:
+      consumes:
+      - application/json
+      description: API for getting operators report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.OperatorsReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Operators Report
+      tags:
+      - report
+  /v1/reports/shipper:
+    get:
+      consumes:
+      - application/json
+      description: API for getting shipper report
+      parameters:
+      - description: start_date
+        in: query
+        name: start_date
+        required: true
+        type: string
+      - description: end_date
+        in: query
+        name: end_date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ShipperReport'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Shipper Report
+      tags:
+      - report
   /v1/search-couriers:
     get:
       consumes:
@@ -4620,6 +5117,199 @@ paths:
       summary: Check Shipper Login
       tags:
       - shipper
+  /v1/system-users:
+    get:
+      consumes:
+      - application/json
+      description: API for getting systemUsers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: user_role_id
+        in: query
+        name: user_role_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllSystemUsersModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get All systemUsers
+      tags:
+      - system-user
+    post:
+      consumes:
+      - application/json
+      description: API for creating systemUser
+      parameters:
+      - description: systemUser
+        in: body
+        name: systemUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateSystemUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSystemUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create SystemUser
+      tags:
+      - system-user
+    put:
+      consumes:
+      - application/json
+      description: API for updating systemUser
+      parameters:
+      - description: systemUser
+        in: body
+        name: systemUser
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateSystemUserModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSystemUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update SystemUser
+      tags:
+      - system-user
+  /v1/system-users/{system_user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: API for deleting systemUser
+      parameters:
+      - description: system_user_id
+        in: path
+        name: system_user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete SystemUser
+      tags:
+      - system-user
+    get:
+      consumes:
+      - application/json
+      description: API for getting systemUser info
+      parameters:
+      - description: system_user_id
+        in: path
+        name: system_user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSystemUserModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Get SystemUser
+      tags:
+      - system-user
+  /v1/system-users/change-password:
+    post:
+      consumes:
+      - application/json
+      description: API that change systemUser password
+      parameters:
+      - description: change_password
+        in: body
+        name: change_password
+        required: true
+        schema:
+          $ref: '#/definitions/models.SystemUserChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Change systemUser password
+      tags:
+      - system-user
   /v1/upload:
     post:
       parameters:

@@ -222,8 +222,8 @@ func (h *handlerV1) GetProduct(c *gin.Context) {
 // @Summary Update Product
 // @Description API for updating product
 // @Tags product
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param product_id path string true "product_id"
 // @Param product body models.CreateProductModel true "product"
 // @Success 200 {object} models.ResponseOK
@@ -275,8 +275,8 @@ func (h *handlerV1) UpdateProduct(c *gin.Context) {
 // @Summary Delete Product
 // @Description API for deleting product
 // @Tags product
-// @Accept  json
-// @Produce  json
+// @Accept json
+// @Produce json
 // @Param product_id path string true "product_id"
 // @Success 200 {object} models.ResponseOK
 // @Failure 400 {object} models.ResponseError

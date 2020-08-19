@@ -25,14 +25,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/branch/:shipper_id/orders/all": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "API for getting all branch orders",
+        "/v1/auth/confirm-otp": {
+            "post": {
+                "description": "API that confirms user otp",
                 "consumes": [
                     "application/json"
                 ],
@@ -40,15 +35,31 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "order"
+                    "auth"
                 ],
-                "summary": "Get All Branch Orders",
+                "summary": "Confirm otp for a user",
                 "parameters": [
                     {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OTPConfirmRequest"
+                        }
+                    },
+                    {
                         "type": "string",
-                        "description": "shipper_id",
-                        "name": "shipper_id",
-                        "in": "path",
+                        "description": "client",
+                        "name": "client",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "shipper",
+                        "name": "shipper",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -56,11 +67,186 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetAllBranchOrdersModel"
+                            "$ref": "#/definitions/models.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/generate-otp": {
+            "post": {
+                "description": "API that checks whether user exists then generates random otp",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Generate otp for a user",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OTPLoginRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "client",
+                        "name": "client",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "shipper",
+                        "name": "shipper",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/login": {
+            "post": {
+                "description": "API that returns token based on user credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User Login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "client",
+                        "name": "client",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/refresh-token": {
+            "post": {
+                "description": "API that returns token based on user credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User Refresh Token",
+                "parameters": [
+                    {
+                        "description": "refresh-token",
+                        "name": "refresh_token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RefreshTokenRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "client",
+                        "name": "client",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/models.ResponseError"
                         }
@@ -4019,6 +4205,64 @@ var doc = `{
                 }
             }
         },
+        "/v1/order/{order_id}/review": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating review for order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Create Review For An Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order_id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "order_review",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OrderReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/parks": {
             "put": {
                 "description": "API for updating park",
@@ -4531,6 +4775,174 @@ var doc = `{
                 }
             }
         },
+        "/v1/reports/branches": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting branches report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Branches Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.BranchesReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/operators": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting operators report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Operators Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OperatorsReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/reports/shipper": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting shipper report",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "summary": "Get Shipper Report",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "start_date",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "end_date",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ShipperReport"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/search-couriers": {
             "get": {
                 "security": [
@@ -4954,6 +5366,311 @@ var doc = `{
                 }
             }
         },
+        "/v1/system-users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting systemUsers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Get All systemUsers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_role_id",
+                        "name": "user_role_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetAllSystemUsersModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for updating systemUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Update SystemUser",
+                "parameters": [
+                    {
+                        "description": "systemUser",
+                        "name": "systemUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateSystemUserModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetSystemUserModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for creating systemUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Create SystemUser",
+                "parameters": [
+                    {
+                        "description": "systemUser",
+                        "name": "systemUser",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateSystemUserModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetSystemUserModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/system-users/change-password": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API that change systemUser password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Change systemUser password",
+                "parameters": [
+                    {
+                        "description": "change_password",
+                        "name": "change_password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SystemUserChangePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/system-users/{system_user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for getting systemUser info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Get SystemUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "system_user_id",
+                        "name": "system_user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetSystemUserModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "API for deleting systemUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system-user"
+                ],
+                "summary": "Delete SystemUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "system_user_id",
+                        "name": "system_user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/upload": {
             "post": {
                 "tags": [
@@ -5257,6 +5974,52 @@ var doc = `{
                 }
             }
         },
+        "models.BranchReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "total_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.BranchesReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BranchReport"
+                    }
+                }
+            }
+        },
         "models.CalcDeliveryCostRequest": {
             "type": "object",
             "properties": {
@@ -5466,8 +6229,7 @@ var doc = `{
                     "type": "string"
                 },
                 "order_no": {
-                    "type": "string",
-                    "example": "0"
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -5668,6 +6430,9 @@ var doc = `{
                 "floor": {
                     "type": "string"
                 },
+                "paid": {
+                    "type": "boolean"
+                },
                 "payment_type": {
                     "type": "string"
                 },
@@ -5798,6 +6563,32 @@ var doc = `{
                         "type": "string"
                     }
                 },
+                "user_role_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CreateSystemUserModel": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "user_role_id": {
+                    "type": "string"
+                },
                 "username": {
                     "type": "string"
                 }
@@ -5882,17 +6673,6 @@ var doc = `{
                 },
                 "weight": {
                     "type": "number"
-                }
-            }
-        },
-        "models.GetAllBranchOrdersModel": {
-            "type": "object",
-            "properties": {
-                "branch_id": {
-                    "type": "string"
-                },
-                "quantity": {
-                    "type": "integer"
                 }
             }
         },
@@ -6089,7 +6869,16 @@ var doc = `{
                             "order_amount": {
                                 "type": "integer"
                             },
+                            "paid": {
+                                "type": "boolean"
+                            },
                             "payment_type": {
+                                "type": "string"
+                            },
+                            "rating": {
+                                "type": "string"
+                            },
+                            "review": {
                                 "type": "string"
                             },
                             "source": {
@@ -6175,6 +6964,20 @@ var doc = `{
                 }
             }
         },
+        "models.GetAllSystemUsersModel": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "shippers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.GetSystemUserModel"
+                    }
+                }
+            }
+        },
         "models.GetBranchModel": {
             "type": "object",
             "properties": {
@@ -6237,6 +7040,9 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "order_no": {
+                    "type": "integer"
                 },
                 "parent_id": {
                     "type": "string"
@@ -6323,6 +7129,9 @@ var doc = `{
                             },
                             "order_amount": {
                                 "type": "integer"
+                            },
+                            "paid": {
+                                "type": "boolean"
                             },
                             "payment_type": {
                                 "type": "string"
@@ -6590,7 +7399,16 @@ var doc = `{
                     "type": "string",
                     "example": "0"
                 },
+                "paid": {
+                    "type": "boolean"
+                },
                 "payment_type": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
                     "type": "string"
                 },
                 "source": {
@@ -6789,6 +7607,10 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "order_no": {
+                    "type": "string",
+                    "example": "0"
+                },
                 "preview_text": {
                     "type": "string"
                 },
@@ -6861,6 +7683,47 @@ var doc = `{
                 }
             }
         },
+        "models.GetSystemUserModel": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_blocked": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "shipper_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_role_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Location": {
             "type": "object",
             "properties": {
@@ -6885,6 +7748,116 @@ var doc = `{
                 }
             }
         },
+        "models.LoginRequest": {
+            "type": "object",
+            "required": [
+                "login",
+                "password"
+            ],
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "user_role_id": {
+                    "type": "string"
+                },
+                "user_type_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.OTPConfirmRequest": {
+            "type": "object",
+            "required": [
+                "code",
+                "phone"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.OTPLoginRequest": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.OperatorReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "average_per_hour": {
+                    "type": "number"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "total_orders_count": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.OperatorsReport": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.OperatorReport"
+                    }
+                }
+            }
+        },
         "models.OptimizedTrips": {
             "type": "object",
             "properties": {
@@ -6902,6 +7875,25 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.TripsWaypoint"
                     }
+                }
+            }
+        },
+        "models.OrderReview": {
+            "type": "object",
+            "properties": {
+                "rating": {
+                    "type": "string"
+                },
+                "review": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RefreshTokenRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
                 }
             }
         },
@@ -7002,6 +7994,38 @@ var doc = `{
                 }
             }
         },
+        "models.ShipperReport": {
+            "type": "object",
+            "properties": {
+                "admin_panel_orders_count": {
+                    "type": "integer"
+                },
+                "app_orders_count": {
+                    "type": "integer"
+                },
+                "bot_orders_count": {
+                    "type": "integer"
+                },
+                "total_orders_count": {
+                    "type": "integer"
+                },
+                "total_sum": {
+                    "type": "number"
+                },
+                "total_sum_cash": {
+                    "type": "number"
+                },
+                "total_sum_click": {
+                    "type": "number"
+                },
+                "total_sum_payme": {
+                    "type": "number"
+                },
+                "website_orders_count": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.Status": {
             "type": "object",
             "properties": {
@@ -7009,6 +8033,17 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SystemUserChangePassword": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
                     "type": "string"
                 }
             }
@@ -7230,6 +8265,9 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
+                "paid": {
+                    "type": "boolean"
+                },
                 "payment_type": {
                     "type": "string"
                 },
@@ -7307,6 +8345,32 @@ var doc = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateSystemUserModel": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "user_role_id": {
+                    "type": "string"
                 },
                 "username": {
                     "type": "string"

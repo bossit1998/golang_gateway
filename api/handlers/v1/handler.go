@@ -365,6 +365,26 @@ func getOptimizedTrip(tripData models.TripsDataModel, cfg config.Config) models.
 	return optimizedTrip
 }
 
+func ReturnUserInfo(Token string) (models.UserInfo, error) {
+	info := models.UserInfo{}
+
+	claims, err := jwt.ExtractClaims(Token, signingKey)
+	if err != nil {
+		return info, err
+	}
+
+	info.ID = claims["sub"].(string)
+	info.UserType = claims["user_type"].(string)
+	// info.ShipperID = claims["shipper_id"].(string)
+
+	info.UserID = claims["sub"].(string)
+	info.ClientID = claims["client_id"].(string)
+	info.ShipperID = claims["shipper_id"].(string)
+	info.UserTypeID = claims["user_type_id"].(string)
+
+	return info, nil
+}
+
 func getUserInfo(h *handlerV1, c *gin.Context, info *models.UserInfo) error {
 	claims, err := GetClaims(h, c)
 
@@ -374,7 +394,12 @@ func getUserInfo(h *handlerV1, c *gin.Context, info *models.UserInfo) error {
 
 	info.ID = claims["sub"].(string)
 	info.UserType = claims["user_type"].(string)
+	// info.ShipperID = claims["shipper_id"].(string)
+
+	info.UserID = claims["sub"].(string)
+	info.ClientID = claims["client_id"].(string)
 	info.ShipperID = claims["shipper_id"].(string)
+	info.UserTypeID = claims["user_type_id"].(string)
 
 	return nil
 }

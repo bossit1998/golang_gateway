@@ -1578,7 +1578,7 @@ var file_order_service_proto_rawDesc = []byte{
 	0x16, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x6f, 0x6c, 0x64, 0x50,
 	0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x0c, 0x73, 0x6f, 0x6c, 0x64, 0x50, 0x72, 0x6f,
 	0x64, 0x75, 0x63, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x32, 0xb5, 0x09, 0x0a, 0x0c,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x32, 0xf0, 0x09, 0x0a, 0x0c,
 	0x4f, 0x72, 0x64, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x35, 0x0a, 0x06,
 	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x12, 0x0f, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x1a, 0x18, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f,
@@ -1654,9 +1654,12 @@ var file_order_service_proto_rawDesc = []byte{
 	0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x67, 0x65,
 	0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x42, 0x72, 0x61,
 	0x6e, 0x63, 0x68, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x42, 0x18, 0x5a, 0x16, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x22, 0x00, 0x12, 0x39, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x52, 0x65, 0x76,
+	0x69, 0x65, 0x77, 0x12, 0x0f, 0x2e, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4f,
+	0x72, 0x64, 0x65, 0x72, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x18,
+	0x5a, 0x16, 0x67, 0x65, 0x6e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72,
+	0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1723,24 +1726,26 @@ var file_order_service_proto_depIdxs = []int32{
 	14, // 18: genproto.OrderService.GetCustomerAddresses:input_type -> genproto.GetCustomerAddressesRequest
 	16, // 19: genproto.OrderService.AddBranchID:input_type -> genproto.AddBranchIDRequest
 	17, // 20: genproto.OrderService.GetAllBranchOrders:input_type -> genproto.GetAllBranchOrdersRequest
-	13, // 21: genproto.OrderService.Create:output_type -> genproto.CreateResponse
-	23, // 22: genproto.OrderService.Get:output_type -> genproto.Order
-	2,  // 23: genproto.OrderService.GetAll:output_type -> genproto.OrdersResponse
-	26, // 24: genproto.OrderService.Delete:output_type -> google.protobuf.Empty
-	26, // 25: genproto.OrderService.AddCourier:output_type -> google.protobuf.Empty
-	26, // 26: genproto.OrderService.Update:output_type -> google.protobuf.Empty
-	26, // 27: genproto.OrderService.RemoveCourier:output_type -> google.protobuf.Empty
-	26, // 28: genproto.OrderService.ChangeStatus:output_type -> google.protobuf.Empty
-	2,  // 29: genproto.OrderService.GetCourierOrders:output_type -> genproto.OrdersResponse
-	2,  // 30: genproto.OrderService.GetCustomerOrders:output_type -> genproto.OrdersResponse
-	2,  // 31: genproto.OrderService.GetBranchOrders:output_type -> genproto.OrdersResponse
-	2,  // 32: genproto.OrderService.GetCourierNewOrders:output_type -> genproto.OrdersResponse
-	26, // 33: genproto.OrderService.ChangeStatusStep:output_type -> google.protobuf.Empty
-	15, // 34: genproto.OrderService.GetCustomerAddresses:output_type -> genproto.GetCustomerAddressesResponse
-	26, // 35: genproto.OrderService.AddBranchID:output_type -> google.protobuf.Empty
-	18, // 36: genproto.OrderService.GetAllBranchOrders:output_type -> genproto.GetAllBranchOrdersResponse
-	21, // [21:37] is the sub-list for method output_type
-	5,  // [5:21] is the sub-list for method input_type
+	23, // 21: genproto.OrderService.CreateReview:input_type -> genproto.Order
+	13, // 22: genproto.OrderService.Create:output_type -> genproto.CreateResponse
+	23, // 23: genproto.OrderService.Get:output_type -> genproto.Order
+	2,  // 24: genproto.OrderService.GetAll:output_type -> genproto.OrdersResponse
+	26, // 25: genproto.OrderService.Delete:output_type -> google.protobuf.Empty
+	26, // 26: genproto.OrderService.AddCourier:output_type -> google.protobuf.Empty
+	26, // 27: genproto.OrderService.Update:output_type -> google.protobuf.Empty
+	26, // 28: genproto.OrderService.RemoveCourier:output_type -> google.protobuf.Empty
+	26, // 29: genproto.OrderService.ChangeStatus:output_type -> google.protobuf.Empty
+	2,  // 30: genproto.OrderService.GetCourierOrders:output_type -> genproto.OrdersResponse
+	2,  // 31: genproto.OrderService.GetCustomerOrders:output_type -> genproto.OrdersResponse
+	2,  // 32: genproto.OrderService.GetBranchOrders:output_type -> genproto.OrdersResponse
+	2,  // 33: genproto.OrderService.GetCourierNewOrders:output_type -> genproto.OrdersResponse
+	26, // 34: genproto.OrderService.ChangeStatusStep:output_type -> google.protobuf.Empty
+	15, // 35: genproto.OrderService.GetCustomerAddresses:output_type -> genproto.GetCustomerAddressesResponse
+	26, // 36: genproto.OrderService.AddBranchID:output_type -> google.protobuf.Empty
+	18, // 37: genproto.OrderService.GetAllBranchOrders:output_type -> genproto.GetAllBranchOrdersResponse
+	26, // 38: genproto.OrderService.CreateReview:output_type -> google.protobuf.Empty
+	22, // [22:39] is the sub-list for method output_type
+	5,  // [5:22] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -2078,6 +2083,7 @@ type OrderServiceClient interface {
 	GetCustomerAddresses(ctx context.Context, in *GetCustomerAddressesRequest, opts ...grpc.CallOption) (*GetCustomerAddressesResponse, error)
 	AddBranchID(ctx context.Context, in *AddBranchIDRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	GetAllBranchOrders(ctx context.Context, in *GetAllBranchOrdersRequest, opts ...grpc.CallOption) (*GetAllBranchOrdersResponse, error)
+	CreateReview(ctx context.Context, in *Order, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type orderServiceClient struct {
@@ -2232,6 +2238,15 @@ func (c *orderServiceClient) GetAllBranchOrders(ctx context.Context, in *GetAllB
 	return out, nil
 }
 
+func (c *orderServiceClient) CreateReview(ctx context.Context, in *Order, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/genproto.OrderService/CreateReview", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 type OrderServiceServer interface {
 	Create(context.Context, *Order) (*CreateResponse, error)
@@ -2250,6 +2265,7 @@ type OrderServiceServer interface {
 	GetCustomerAddresses(context.Context, *GetCustomerAddressesRequest) (*GetCustomerAddressesResponse, error)
 	AddBranchID(context.Context, *AddBranchIDRequest) (*empty.Empty, error)
 	GetAllBranchOrders(context.Context, *GetAllBranchOrdersRequest) (*GetAllBranchOrdersResponse, error)
+	CreateReview(context.Context, *Order) (*empty.Empty, error)
 }
 
 // UnimplementedOrderServiceServer can be embedded to have forward compatible implementations.
@@ -2303,6 +2319,9 @@ func (*UnimplementedOrderServiceServer) AddBranchID(context.Context, *AddBranchI
 }
 func (*UnimplementedOrderServiceServer) GetAllBranchOrders(context.Context, *GetAllBranchOrdersRequest) (*GetAllBranchOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllBranchOrders not implemented")
+}
+func (*UnimplementedOrderServiceServer) CreateReview(context.Context, *Order) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateReview not implemented")
 }
 
 func RegisterOrderServiceServer(s *grpc.Server, srv OrderServiceServer) {
@@ -2597,6 +2616,24 @@ func _OrderService_GetAllBranchOrders_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_CreateReview_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Order)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).CreateReview(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/genproto.OrderService/CreateReview",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).CreateReview(ctx, req.(*Order))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _OrderService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "genproto.OrderService",
 	HandlerType: (*OrderServiceServer)(nil),
@@ -2664,6 +2701,10 @@ var _OrderService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllBranchOrders",
 			Handler:    _OrderService_GetAllBranchOrders_Handler,
+		},
+		{
+			MethodName: "CreateReview",
+			Handler:    _OrderService_CreateReview_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
