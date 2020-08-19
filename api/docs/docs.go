@@ -59,8 +59,13 @@ var doc = `{
                         "type": "string",
                         "description": "shipper",
                         "name": "shipper",
-                        "in": "header",
-                        "required": true
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "fcm",
+                        "name": "fcm",
+                        "in": "header"
                     }
                 ],
                 "responses": {
@@ -122,8 +127,7 @@ var doc = `{
                         "type": "string",
                         "description": "shipper",
                         "name": "shipper",
-                        "in": "header",
-                        "required": true
+                        "in": "header"
                     }
                 ],
                 "responses": {
