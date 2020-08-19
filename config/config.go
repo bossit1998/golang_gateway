@@ -131,8 +131,6 @@ func Load() Config {
 
 	c.AuthServiceHost = cast.ToString(getOrReturnDefault("AUTH_SERVICE_HOST", "auth_service"))
 	c.AuthServicePort = cast.ToInt(getOrReturnDefault("AUTH_SERVICE_PORT", 80))
-	// c.AuthServiceHost = cast.ToString(getOrReturnDefault("AUTH_SERVICE_HOST", "localhost"))
-	// c.AuthServicePort = cast.ToInt(getOrReturnDefault("AUTH_SERVICE_PORT", 7070))
 
 	c.NotificationServiceHost = cast.ToString(getOrReturnDefault("NOTIFICATION_SERVICE_HOST", "notification_service"))
 	c.NotificationServicePort = cast.ToInt(getOrReturnDefault("NOTIFICATION_SERVICE_PORT", 80))

@@ -43,6 +43,7 @@ func (h *handlerV1) RefreshToken(c *gin.Context) {
 		c.JSON(http.StatusForbidden, models.ResponseError{
 			Error: err.Error(),
 		})
+		return
 	}
 
 	clientID := c.GetHeader("client")
