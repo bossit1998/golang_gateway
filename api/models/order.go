@@ -283,3 +283,7 @@ type OrderReview struct {
 	Rating string `json:"rating"`
 	Review string `json:"review"`
 }
+
+type ConfirmFinishOrderModel struct {
+	Code string `json:"code"`
+}
