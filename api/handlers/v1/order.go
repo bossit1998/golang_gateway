@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	pbo "genproto/order_service"
-	pbs "genproto/sms_service"
 	"net/http"
 	"strings"
 
@@ -14,11 +13,10 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/google/uuid"
 
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/config"
-	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/logger"
-	"bitbucket.org/alien_soft/api_getaway/storage/redis"
 )
 
 // @Security ApiKeyAuth
@@ -504,6 +502,13 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 		return
 	}
 
+	// send push for aliftech
+	go func() {
+		if userInfo.ShipperID == config.AliftechShipperId && statusNote.StatusId == config.CourierPickedUpStatusId {
+			helpers.SendPush(c.Param("order_id"), statusNote.StatusId, h.log)
+		}
+	}()
+
 	c.JSON(200, models.ResponseOK{
 		Message: "changing order status successfully",
 	})
@@ -611,6 +616,11 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 	}
 
 	go func() {
+		// send push for aliftech
+		if userInfo.ShipperID == config.AliftechShipperId {
+			go helpers.SendPush(c.Param("order_id"), config.CourierAcceptedStatusId, h.log)
+		}
+
 		values, err := json.Marshal(map[string]string{
 			"order_id":   orderID,
 			"courier_id": addCourierModel.CourierID,
@@ -665,6 +675,13 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 	if handleGrpcErrWithMessage(c, h.log, err, "error while removing order courier") {
 		return
 	}
+
+	// send push for aliftech
+	go func() {
+		if userInfo.ShipperID == config.AliftechShipperId {
+			helpers.SendPush(c.Param("order_id"), config.VendorReadyStatusId, h.log)
+		}
+	}()
 
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "courier removed successfully",
@@ -1255,10 +1272,7 @@ func (h *handlerV1) CreateReview(c *gin.Context) {
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) FinishOTP(c *gin.Context) {
-	var (
-		code     string
-		userInfo models.UserInfo
-	)
+	var userInfo models.UserInfo
 
 	err := getUserInfo(h, c, &userInfo)
 	if err != nil {
@@ -1267,31 +1281,21 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 
 	orderID := c.Param("order_id")
 
-	order, err := h.grpcClient.OrderService().Get(context.Background(), &pbo.GetRequest{
-		ShipperId: userInfo.ShipperID,
-		Id:        orderID,
-	})
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting order") {
+	client := &http.Client{}
+	request, err := http.NewRequest(
+		"POST",
+		"https://services.test.aliftech.uz/api/gate/delever/"+orderID+"/request-complete",
+		nil)
+	if err != nil {
+		h.log.Error("Error while sending push", logger.Error(err))
 		return
 	}
 
-	if h.cfg.Environment == "develop" {
-		code = etc.GenerateCode(6, true)
-	} else {
-		code = etc.GenerateCode(6)
-		_, err = h.grpcClient.SmsService().Send(
-			context.Background(), &pbs.Sms{
-				Text:       code,
-				Recipients: []string{order.ClientPhoneNumber},
-			},
-		)
-		if handleGrpcErrWithMessage(c, h.log, err, "Error while sending sms") {
-			return
-		}
-	}
-
-	err = h.inMemoryStorage.SetWithTTl(orderID, code, 1800)
-	if handleInternalWithMessage(c, h.log, err, "Error while setting map for code") {
+	request.Header.Add("Authorization", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL")
+	request.Header.Add("Content-Type", "application/json")
+	_, err = client.Do(request)
+	if err != nil {
+		h.log.Error("Error while sending push", logger.Error(err))
 		return
 	}
 
@@ -1330,29 +1334,31 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 
 	cm.Code = strings.TrimSpace(cm.Code)
 
-	//Getting code from redis
-	key := c.Param("order_id")
-	s, err := redis.String(h.inMemoryStorage.Get(key))
-	if err != nil || s == "" {
-		c.JSON(http.StatusInternalServerError, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInternal,
-				Message: "Internal Server error",
-			},
-		})
-		h.log.Error("Key does not exist", logger.Error(err))
+	orderID := c.Param("order_id")
+	values, err := json.Marshal(map[string]string{
+		"otp": cm.Code,
+	})
+	if err != nil {
+		h.log.Error("Error while marshaling", logger.Error(err))
 		return
 	}
 
-	//Checking whether received code is valid
-	if cm.Code != s && cm.Code != "395167" {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code:    ErrorCodeInvalidCode,
-				Message: "Code is invalid",
-			},
-		})
-		h.log.Error("Code is invalid", logger.Error(err))
+	client := &http.Client{}
+	request, err := http.NewRequest(
+		"POST",
+		"https://services.test.aliftech.uz/api/gate/delever/"+orderID+"/complete",
+		bytes.NewBuffer(values))
+	if err != nil {
+		h.log.Error("Error while sending push", logger.Error(err))
+		return
+	}
+
+	request.Header.Add("Accept", "application/json")
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Access-Token", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL")
+	_, err = client.Do(request)
+	if err != nil {
+		h.log.Error("Error while sending push", logger.Error(err))
 		return
 	}
 

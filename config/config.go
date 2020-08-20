@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	AliftechShipperId         = ""
 	OperatorRoleId            = "96d52342-e4b6-4c15-93f9-39a3949cee91"
 	RoleCargoOwnerAdmin       = "cargo_owner_admin"
 	RoleAdmin                 = "admin"
