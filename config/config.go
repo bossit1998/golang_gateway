@@ -7,7 +7,6 @@ import (
 )
 
 const (
-	AliftechShipperId         = ""
 	OperatorRoleId            = "96d52342-e4b6-4c15-93f9-39a3949cee91"
 	RoleCargoOwnerAdmin       = "cargo_owner_admin"
 	RoleAdmin                 = "admin"
@@ -28,10 +27,16 @@ const (
 	FinishedStatusId          = "e665273d-5415-4243-a329-aee410e39465"
 	ServerCancelledStatusId   = "d39cb255-6cf5-4602-896d-9c559d40cbbe"
 	TelegramBotURL            = "https://bot.delever.uz"
+	AliftechShipperId         = "4a94d9f5-506a-4e51-8e31-6dbb931c37f3"
+	AliftechURL               = "https://services.test.aliftech.uz/api/gate/delever/"
 )
 
 var (
 	PaymentTypes = []interface{}{"cash", "payme", "click"}
+)
+
+var (
+	OrderSources = []interface{}{"admin_panel", "ios", "android", "website", "bot"}
 )
 
 // Config ...
@@ -89,6 +94,8 @@ type Config struct {
 	MinioEndpoint       string
 	MinioAccessKeyID    string
 	MinioSecretAccesKey string
+
+	AliftechAccessToken string
 }
 
 // Load loads environment vars and inflates Config
@@ -146,6 +153,8 @@ func Load() Config {
 	c.MinioEndpoint = cast.ToString(getOrReturnDefault("MINIO_ENDPOINT", "api.delever.uz:9001"))
 	c.MinioAccessKeyID = cast.ToString(getOrReturnDefault("MINIO_ACCESS_KEY_ID", "d0097ebbb13854f41d6b4d150ace067b4c860169efc6fafd0e8864f4a7307814"))
 	c.MinioSecretAccesKey = cast.ToString(getOrReturnDefault("MINIO_SECRET_KEY_ID", "56ee38257eb238304a7dee5a6d59bdf9c57f1fea53e0f400d939bf2aa64090d1"))
+
+	c.AliftechAccessToken = cast.ToString(getOrReturnDefault("ALIFTECH_ACCESS_TOKEN", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL"))
 
 	return c
 }

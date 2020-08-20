@@ -1284,15 +1284,16 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 	client := &http.Client{}
 	request, err := http.NewRequest(
 		"POST",
-		"https://services.test.aliftech.uz/api/gate/delever/"+orderID+"/request-complete",
+		config.AliftechURL+orderID+"/request-complete",
 		nil)
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
 		return
 	}
 
-	request.Header.Add("Authorization", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL")
+	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Access-Token", config.Load().AliftechAccessToken)
 	_, err = client.Do(request)
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
@@ -1355,10 +1356,19 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Access-Token", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL")
-	_, err = client.Do(request)
+	request.Header.Add("Access-Token", config.Load().AliftechAccessToken)
+	resp, err := client.Do(request)
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
+		return
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("code is invalid", logger.Error(err))
 		return
 	}
 
