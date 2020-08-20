@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
 	"strings"
@@ -854,12 +855,14 @@ func (h *handlerV1) CourierNewOrders(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param step_id path string true "step_id"
+// @Param courier_pickedup body models.CourierPickedUpRequest true "courier_pickedup"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 	var (
 		userInfo models.UserInfo
+		model    models.CourierPickedUpRequest
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -875,11 +878,20 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 	stepID := c.Param("step_id")
 
 	_, err = uuid.Parse(stepID)
-
 	if err != nil {
 		c.JSON(http.StatusOK, models.ResponseError{
 			Error: "invalid uuid format in param",
 		})
+	}
+
+	err = c.ShouldBindJSON(&model)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: models.InternalServerError{
+				Code: ErrorBadRequest,
+			},
+		})
+		return
 	}
 
 	_, err = h.grpcClient.OrderService().ChangeStatusStep(
@@ -895,8 +907,11 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
+		fmt.Println("==================")
+		fmt.Println(model.OrderID)
+		fmt.Println("==================")
 		if userInfo.ShipperID == config.AliftechShipperId {
-			helpers.SendPush(c.Param("order_id"), config.CourierPickedUpStatusId, h.log)
+			helpers.SendPush(model.OrderID, config.CourierPickedUpStatusId, h.log)
 		}
 	}()
 

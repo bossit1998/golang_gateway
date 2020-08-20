@@ -287,3 +287,7 @@ type OrderReview struct {
 type ConfirmFinishOrderModel struct {
 	Code string `json:"code"`
 }
+
+type CourierPickedUpRequest struct {
+	OrderID string `json:"order_id"`
+}
