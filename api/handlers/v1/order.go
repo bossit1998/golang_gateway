@@ -1313,7 +1313,7 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param order_id path string true "order_id"
-// @Param confirm_finish body models.ConfirmFinishOrderOTP true "confirm finish"
+// @Param confirm_finish body models.ConfirmFinishOrderModel true "confirm finish"
 // @Success 200 {object} models.ResponseOK
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError

@@ -112,6 +112,11 @@ definitions:
       phone:
         type: string
     type: object
+  models.ConfirmFinishOrderModel:
+    properties:
+      code:
+        type: string
+    type: object
   models.ConfirmLoginRequest:
     properties:
       code:
@@ -720,8 +725,6 @@ definitions:
         type: string
       name:
         type: string
-      order_no:
-        type: integer
       parent_id:
         type: string
       slug:
@@ -4158,6 +4161,74 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Take Order Steps
+      tags:
+      - order
+  /v1/order/:order_id/confirm-finish-otp:
+    post:
+      consumes:
+      - application/json
+      description: API that confirm finish order otp
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      - description: confirm finish
+        in: body
+        name: confirm_finish
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfirmFinishOrderModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Confirm Finish Order OTP
+      tags:
+      - order
+  /v1/order/:order_id/finish-otp:
+    post:
+      consumes:
+      - application/json
+      description: API that finish order otp
+      parameters:
+      - description: order_id
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Finish Order OTP
       tags:
       - order
   /v1/order/{order_id}:
