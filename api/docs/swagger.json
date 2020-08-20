@@ -3837,6 +3837,15 @@
                         "name": "step_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "courier_pickedup",
+                        "name": "courier_pickedup",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CourierPickedUpRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -6281,6 +6290,14 @@
                     "type": "string"
                 },
                 "vehicle_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CourierPickedUpRequest": {
+            "type": "object",
+            "properties": {
+                "order_id": {
                     "type": "string"
                 }
             }

@@ -3857,6 +3857,15 @@ var doc = `{
                         "name": "step_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "courier_pickedup",
+                        "name": "courier_pickedup",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CourierPickedUpRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -6301,6 +6310,14 @@ var doc = `{
                     "type": "string"
                 },
                 "vehicle_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CourierPickedUpRequest": {
+            "type": "object",
+            "properties": {
+                "order_id": {
                     "type": "string"
                 }
             }

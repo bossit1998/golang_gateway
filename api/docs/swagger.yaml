@@ -158,6 +158,11 @@ definitions:
       vehicle_number:
         type: string
     type: object
+  models.CourierPickedUpRequest:
+    properties:
+      order_id:
+        type: string
+    type: object
   models.CreateBranchModel:
     properties:
       address:
@@ -4143,6 +4148,12 @@ paths:
         name: step_id
         required: true
         type: string
+      - description: courier_pickedup
+        in: body
+        name: courier_pickedup
+        required: true
+        schema:
+          $ref: '#/definitions/models.CourierPickedUpRequest'
       produces:
       - application/json
       responses:
