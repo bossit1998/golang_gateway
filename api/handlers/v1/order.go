@@ -893,6 +893,13 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 		return
 	}
 
+	// send push for aliftech
+	go func() {
+		if userInfo.ShipperID == config.AliftechShipperId {
+			helpers.SendPush(c.Param("order_id"), config.CourierPickedUpStatusId, h.log)
+		}
+	}()
+
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "order step took",
 	})
