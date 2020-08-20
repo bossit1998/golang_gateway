@@ -16,7 +16,7 @@ type GetCategoryModel struct {
 	Description     string             `json:"description"`
 	ChildCategories []GetCategoryModel `json:"child_categories"`
 	Image           string             `json:"image"`
-	OrderNo         int64              `json:"order_no"`
+	// OrderNo         uint64             `json:"order_no"`
 }
 
 type GetAllCategoriesModel struct {
