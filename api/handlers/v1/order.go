@@ -1283,7 +1283,7 @@ func (h *handlerV1) CreateReview(c *gin.Context) {
 }
 
 // @Security ApiKeyAuth
-// @Router /v1/order/:order_id/finish-otp [POST]
+// @Router /v1/order/{order_id}/finish-otp [POST]
 // @Summary Finish Order OTP
 // @Description API that finish order otp
 // @Tags order
@@ -1316,9 +1316,17 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Access-Token", config.Load().AliftechAccessToken)
-	_, err = client.Do(request)
+	resp, err := client.Do(request)
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: ErrorBadRequest,
+		})
+		h.log.Error("code has not been sent", logger.Error(err))
 		return
 	}
 
@@ -1328,7 +1336,7 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 }
 
 // @Security ApiKeyAuth
-// @Router /v1/order/:order_id/confirm-finish-otp [POST]
+// @Router /v1/order/{order_id}/confirm-finish-otp [POST]
 // @Summary Confirm Finish Order OTP
 // @Description API that confirm finish order otp
 // @Tags order
@@ -1369,7 +1377,7 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 	client := &http.Client{}
 	request, err := http.NewRequest(
 		"POST",
-		"https://services.test.aliftech.uz/api/gate/delever/"+orderID+"/complete",
+		config.AliftechURL+orderID+"/complete",
 		bytes.NewBuffer(values))
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
@@ -1386,6 +1394,7 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 	}
 
 	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
 			Error: ErrorBadRequest,
