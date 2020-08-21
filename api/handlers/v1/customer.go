@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
@@ -61,6 +62,14 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	err = jspbUnmarshal.Unmarshal(c.Request.Body, &customer)
 	if handleInternalWithMessage(c, h.log, err, "Error while unmarshalling") {
+		return
+	}
+
+	err = helpers.ValidatePhone(customer.Phone)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
 		return
 	}
 

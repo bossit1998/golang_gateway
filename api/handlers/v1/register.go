@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"bitbucket.org/alien_soft/api_getaway/pkg/etc"
 	"bitbucket.org/alien_soft/api_getaway/pkg/jwt"
@@ -50,6 +51,14 @@ func (h *handlerV1) Register(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&reg)
 	if handleBadRequestErrWithMessage(c, h.log, err, "Error binding json") {
+		return
+	}
+
+	err = helpers.ValidatePhone(reg.Phone)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ResponseError{
+			Error: err.Error(),
+		})
 		return
 	}
 

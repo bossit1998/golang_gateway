@@ -7966,14 +7966,8 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
-                "phone": {
-                    "type": "string"
-                },
                 "total_orders_count": {
                     "type": "integer"
-                },
-                "username": {
-                    "type": "string"
                 },
                 "website_orders_count": {
                     "type": "integer"

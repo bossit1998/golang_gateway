@@ -2,15 +2,14 @@ package v1
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
 	pbo "genproto/order_service"
 	pbr "genproto/report_service"
-	pbu "genproto/user_service"
 
 	"bitbucket.org/alien_soft/api_getaway/api/models"
-	"bitbucket.org/alien_soft/api_getaway/config"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
 )
@@ -121,11 +120,12 @@ func (h *handlerV1) GetCouriersReportExcel(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 	var (
-		userInfo  models.UserInfo
-		reports   []models.OperatorReport
-		layout    = "2006-01-02 15:04:05"
-		startDate time.Time
-		endDate   time.Time
+		userInfo    models.UserInfo
+		layout      = "2006-01-02 15:04:05"
+		startDate   time.Time
+		endDate     time.Time
+		model       models.OperatorsReport
+		jspbMarshal jsonpb.Marshaler
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -156,64 +156,29 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 		return
 	}
 
-	users, err := h.grpcClient.SystemUserService().GetAllSystemUsers(
-		context.Background(),
-		&pbu.GetAllSystemUsersRequest{
-			ShipperId:  userInfo.ShipperID,
-			UserRoleId: config.OperatorRoleId,
-			Page:       1,
-			Limit:      1000,
-		},
-	)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all operators") {
-		return
-	}
-
-	// getting all orders
-	orders, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
+	reports, err := h.grpcClient.OrderService().GetOperatorsReport(context.Background(), &pbo.GetReportsRequest{
 		ShipperId: userInfo.ShipperID,
-		StatusId:  config.FinishedStatusId,
-		StartTime: c.Query("start_date"),
-		EndTime:   c.Query("end_date"),
+		StartDate: c.Query("start_date"),
+		EndDate:   c.Query("end_date"),
 	})
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting operators report") {
 		return
 	}
 
-	// calculate hours between startTime and endTime
-	diff := endDate.Sub(startDate)
+	js, err := jspbMarshal.MarshalToString(reports)
 
-	for _, user := range users.SystemUsers {
-		var report models.OperatorReport
-
-		report.Username = user.Username
-		report.Name = user.Name
-		report.Phone = user.Phone[0]
-
-		for _, order := range orders.Orders {
-			if order.CreatorId == user.Id {
-				report.TotalOrdersCount++
-
-				if order.Source == "bot" {
-					report.BotOrdersCount++
-				} else if order.Source == "admin_panel" {
-					report.AdminPanelOrdersCount++
-				} else if order.Source == "ios" || order.Source == "android" {
-					report.AppOrdersCount++
-				} else if order.Source == "website" {
-					report.WebsiteOrdersCount++
-				}
-			}
-		}
-		report.AvgPerHour = float32(float64(report.TotalOrdersCount) / diff.Hours())
-		reports = append(reports, report)
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, &models.OperatorsReport{
-		Reports: reports,
-	})
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
 
 // @Security ApiKeyAuth
@@ -230,11 +195,12 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 	var (
-		userInfo  models.UserInfo
-		reports   []models.BranchReport
-		layout    = "2006-01-02 15:04:05"
-		startDate time.Time
-		endDate   time.Time
+		userInfo    models.UserInfo
+		model       []models.BranchReport
+		layout      = "2006-01-02 15:04:05"
+		startDate   time.Time
+		endDate     time.Time
+		jspbMarshal jsonpb.Marshaler
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -265,66 +231,32 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 		return
 	}
 
-	respBranch, err := h.grpcClient.BranchService().GetAllBranches(
+	// getting branches report
+	reports, err := h.grpcClient.OrderService().GetBranchesReport(
 		context.Background(),
-		&pbu.GetAllBranchesRequest{
+		&pbo.GetReportsRequest{
 			ShipperId: userInfo.ShipperID,
-			Page:      1,
-			Limit:     1000,
-		},
-	)
-
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all operators") {
-		return
-	}
-
-	// getting all orders
-	respOrder, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-		ShipperId: userInfo.ShipperID,
-		StatusId:  config.FinishedStatusId,
-		StartTime: c.Query("start_date"),
-		EndTime:   c.Query("end_date"),
-	})
+			StartDate: c.Query("start_date"),
+			EndDate:   c.Query("end_date"),
+		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
 		return
 	}
 
-	for _, branch := range respBranch.Branches {
-		var report models.BranchReport
-		report.Name = branch.Name
-		for _, order := range respOrder.Orders {
-			if order.Steps[0].BranchId.Value == branch.Id {
-				report.TotalCount++
+	js, err := jspbMarshal.MarshalToString(reports)
 
-				if order.Source == "bot" {
-					report.BotOrdersCount++
-				} else if order.Source == "admin_panel" {
-					report.AdminPanelOrdersCount++
-				} else if order.Source == "ios" || order.Source == "android" {
-					report.AppOrdersCount++
-				} else if order.Source == "website" {
-					report.WebsiteOrdersCount++
-				}
-
-				report.TotalSum += order.OrderAmount
-
-				if order.PaymentType == "cash" {
-					report.TotalSumCash += order.OrderAmount
-				} else if order.PaymentType == "payme" {
-					report.TotalSumPayme += order.OrderAmount
-				} else if order.PaymentType == "click" {
-					report.TotalSumClick += order.OrderAmount
-				}
-			}
-		}
-
-		reports = append(reports, report)
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, &models.BranchesReport{
-		Reports: reports,
-	})
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }
 
 // @Security ApiKeyAuth
@@ -341,11 +273,12 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 // @Failure 500 {object} models.ResponseError
 func (h *handlerV1) GetShipperReport(c *gin.Context) {
 	var (
-		userInfo  models.UserInfo
-		report    models.ShipperReport
-		layout    = "2006-01-02 15:04:05"
-		startDate time.Time
-		endDate   time.Time
+		userInfo    models.UserInfo
+		model       models.ShipperReport
+		layout      = "2006-01-02 15:04:05"
+		startDate   time.Time
+		endDate     time.Time
+		jspbMarshal jsonpb.Marshaler
 	)
 	err := getUserInfo(h, c, &userInfo)
 
@@ -377,38 +310,30 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 	}
 
 	// getting all orders
-	respOrder, err := h.grpcClient.OrderService().GetAll(context.Background(), &pbo.OrdersRequest{
-		ShipperId: userInfo.ShipperID,
-		StatusId:  config.FinishedStatusId,
-		StartTime: c.Query("start_date"),
-		EndTime:   c.Query("end_date"),
-	})
+	report, err := h.grpcClient.OrderService().GetShippersReport(
+		context.Background(),
+		&pbo.GetReportsRequest{
+			ShipperId: userInfo.ShipperID,
+			StartDate: c.Query("start_date"),
+			EndDate:   c.Query("end_date"),
+		},
+	)
 
-	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {
+	if handleGrpcErrWithMessage(c, h.log, err, "error while getting shipper report") {
 		return
 	}
 
-	report.TotalOrdersCount = respOrder.Count
-	for _, order := range respOrder.Orders {
-		if order.Source == "bot" {
-			report.BotOrdersCount++
-		} else if order.Source == "admin_panel" {
-			report.AdminPanelOrdersCount++
-		} else if order.Source == "ios" || order.Source == "android" {
-			report.AppOrdersCount++
-		} else if order.Source == "website" {
-			report.WebsiteOrdersCount++
-		}
+	js, err := jspbMarshal.MarshalToString(report)
 
-		if order.PaymentType == "cash" {
-			report.TotalSumCash += order.OrderAmount
-		} else if order.PaymentType == "payme" {
-			report.TotalSumPayme += order.OrderAmount
-		} else if order.PaymentType == "click" {
-			report.TotalSumClick += order.OrderAmount
-		}
-		report.TotalSum += order.OrderAmount
+	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
+		return
 	}
 
-	c.JSON(http.StatusOK, report)
+	err = json.Unmarshal([]byte(js), &model)
+
+	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
+		return
+	}
+
+	c.JSON(http.StatusOK, model)
 }

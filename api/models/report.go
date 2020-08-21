@@ -6,8 +6,6 @@ type GetReportModel struct {
 
 type OperatorReport struct {
 	Name                  string  `json:"name"`
-	Username              string  `json:"username"`
-	Phone                 string  `json:"phone"`
 	TotalOrdersCount      uint64  `json:"total_orders_count"`
 	AvgPerHour            float32 `json:"average_per_hour"`
 	BotOrdersCount        uint64  `json:"bot_orders_count"`
