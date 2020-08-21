@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	pbo "genproto/order_service"
 	"net/http"
 	"strings"
@@ -907,9 +906,6 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
-		fmt.Println("==================")
-		fmt.Println(model.OrderID)
-		fmt.Println("==================")
 		if userInfo.ShipperID == config.AliftechShipperId {
 			helpers.SendPush(model.OrderID, config.CourierPickedUpStatusId, h.log)
 		}
@@ -1409,6 +1405,7 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 		&pbo.ChangeStatusRequest{
 			ShipperId: userInfo.ShipperID,
 			StatusNote: &pbo.StatusNote{
+				Id:       orderID,
 				StatusId: config.FinishedStatusId,
 			},
 		})
