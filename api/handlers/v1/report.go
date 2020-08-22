@@ -2,13 +2,12 @@ package v1
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
-	"time"
 
 	pbo "genproto/order_service"
 	pbr "genproto/report_service"
 
+	"bitbucket.org/alien_soft/api_getaway/api/helpers"
 	"bitbucket.org/alien_soft/api_getaway/api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/protobuf/jsonpb"
@@ -121,37 +120,21 @@ func (h *handlerV1) GetCouriersReportExcel(c *gin.Context) {
 func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 	var (
 		userInfo    models.UserInfo
-		layout      = "2006-01-02 15:04:05"
-		startDate   time.Time
-		endDate     time.Time
-		model       models.OperatorsReport
 		jspbMarshal jsonpb.Marshaler
 	)
+
 	err := getUserInfo(h, c, &userInfo)
-
 	if err != nil {
 		return
 	}
 
-	startDate, err = time.Parse(layout, c.Query("start_date"))
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	err = helpers.ValidateDates(c.Query("start_date"), c.Query("end_date"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_date is invalid",
-		})
-		return
-	}
-
-	endDate, err = time.Parse(layout, c.Query("end_date"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "end_time is invalid",
-		})
-		return
-	}
-
-	if !startDate.Before(endDate) {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_time can not be greater than end_time",
+			Error: err,
 		})
 		return
 	}
@@ -172,13 +155,8 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 		return
 	}
 
-	err = json.Unmarshal([]byte(js), &model)
-
-	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
-		return
-	}
-
-	c.JSON(http.StatusOK, model)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
 // @Security ApiKeyAuth
@@ -196,37 +174,21 @@ func (h *handlerV1) GetOperatorsReport(c *gin.Context) {
 func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 	var (
 		userInfo    models.UserInfo
-		model       []models.BranchReport
-		layout      = "2006-01-02 15:04:05"
-		startDate   time.Time
-		endDate     time.Time
 		jspbMarshal jsonpb.Marshaler
 	)
+
 	err := getUserInfo(h, c, &userInfo)
-
 	if err != nil {
 		return
 	}
 
-	startDate, err = time.Parse(layout, c.Query("start_date"))
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	err = helpers.ValidateDates(c.Query("start_date"), c.Query("end_date"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_date is invalid",
-		})
-		return
-	}
-
-	endDate, err = time.Parse(layout, c.Query("end_date"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "end_time is invalid",
-		})
-		return
-	}
-
-	if !startDate.Before(endDate) {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_time can not be greater than end_time",
+			Error: err,
 		})
 		return
 	}
@@ -245,18 +207,12 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 	}
 
 	js, err := jspbMarshal.MarshalToString(reports)
-
 	if handleGrpcErrWithMessage(c, h.log, err, "error while marshalling") {
 		return
 	}
 
-	err = json.Unmarshal([]byte(js), &model)
-
-	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
-		return
-	}
-
-	c.JSON(http.StatusOK, model)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
 
 // @Security ApiKeyAuth
@@ -274,10 +230,6 @@ func (h *handlerV1) GetBranchesReport(c *gin.Context) {
 func (h *handlerV1) GetShipperReport(c *gin.Context) {
 	var (
 		userInfo    models.UserInfo
-		model       models.ShipperReport
-		layout      = "2006-01-02 15:04:05"
-		startDate   time.Time
-		endDate     time.Time
 		jspbMarshal jsonpb.Marshaler
 	)
 	err := getUserInfo(h, c, &userInfo)
@@ -286,25 +238,13 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 		return
 	}
 
-	startDate, err = time.Parse(layout, c.Query("start_date"))
+	jspbMarshal.OrigName = true
+	jspbMarshal.EmitDefaults = true
+
+	err = helpers.ValidateDates(c.Query("start_date"), c.Query("end_date"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_date is invalid",
-		})
-		return
-	}
-
-	endDate, err = time.Parse(layout, c.Query("end_date"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "end_time is invalid",
-		})
-		return
-	}
-
-	if !startDate.Before(endDate) {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: "start_time can not be greater than end_time",
+			Error: err,
 		})
 		return
 	}
@@ -318,7 +258,6 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 			EndDate:   c.Query("end_date"),
 		},
 	)
-
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting shipper report") {
 		return
 	}
@@ -329,11 +268,6 @@ func (h *handlerV1) GetShipperReport(c *gin.Context) {
 		return
 	}
 
-	err = json.Unmarshal([]byte(js), &model)
-
-	if handleInternalWithMessage(c, h.log, err, "error while unmarshal to json") {
-		return
-	}
-
-	c.JSON(http.StatusOK, model)
+	c.Header("Content-Type", "application/json")
+	c.String(http.StatusOK, js)
 }
