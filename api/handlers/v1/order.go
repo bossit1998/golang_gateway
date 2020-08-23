@@ -885,12 +885,13 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	err = c.ShouldBindJSON(&model)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ResponseError{
-			Error: models.InternalServerError{
-				Code: ErrorBadRequest,
-			},
-		})
-		return
+		h.log.Error("order_id does not exists in body", logger.Error(err))
+		// c.JSON(http.StatusBadRequest, models.ResponseError{
+		// 	Error: models.InternalServerError{
+		// 		Code: ErrorBadRequest,
+		// 	},
+		// })
+		// return
 	}
 
 	_, err = h.grpcClient.OrderService().ChangeStatusStep(
@@ -906,7 +907,7 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
-		if userInfo.ShipperID == config.AliftechShipperId {
+		if userInfo.ShipperID == config.AliftechShipperId && model.OrderID != "" {
 			helpers.SendPush(model.OrderID, config.CourierPickedUpStatusId, h.log)
 		}
 	}()
