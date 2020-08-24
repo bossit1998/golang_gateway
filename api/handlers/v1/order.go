@@ -1406,7 +1406,7 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 		&pbo.ChangeStatusRequest{
 			ShipperId: userInfo.ShipperID,
 			StatusNote: &pbo.StatusNote{
-				Id:       orderID,
+				OrderId:  orderID,
 				StatusId: config.FinishedStatusId,
 			},
 		})
