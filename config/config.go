@@ -27,7 +27,7 @@ const (
 	FinishedStatusId          = "e665273d-5415-4243-a329-aee410e39465"
 	ServerCancelledStatusId   = "d39cb255-6cf5-4602-896d-9c559d40cbbe"
 	TelegramBotURL            = "https://bot.delever.uz"
-	AliftechURL               = "https://services.aliftech.uz/api/gate/delever/"
+	AliftechURL               = "https://services.alifshop.uz/api/gate/delever/"
 	// AliftechShipperId         = "4a94d9f5-506a-4e51-8e31-6dbb931c37f3"
 	AliftechShipperId = "eff69e99-176e-4ceb-8738-62533921873e"
 )
