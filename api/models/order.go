@@ -72,7 +72,7 @@ type orderOnDemandModel struct {
 	Building         string   `json:"building"`
 	Floor            string   `json:"floor"`
 	ExtraPhoneNumber string   `json:"extra_phone_number"`
-	DeliveryTime     uint64   `json:"delivery_time"`
+	DeliveryTime     string   `json:"delivery_time"`
 	Paid             bool     `json:"paid"`
 }
 

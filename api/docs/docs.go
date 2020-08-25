@@ -6555,7 +6555,7 @@ var doc = `{
                     "example": 10000
                 },
                 "delivery_time": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"
@@ -7246,7 +7246,7 @@ var doc = `{
                                 "type": "string"
                             },
                             "delivery_time": {
-                                "type": "integer"
+                                "type": "string"
                             },
                             "description": {
                                 "type": "string"
@@ -8378,7 +8378,7 @@ var doc = `{
                     "example": 10000
                 },
                 "delivery_time": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "description": {
                     "type": "string"

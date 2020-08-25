@@ -319,7 +319,7 @@ definitions:
         example: 10000
         type: number
       delivery_time:
-        type: integer
+        type: string
       description:
         type: string
       extra_phone_number:
@@ -776,7 +776,7 @@ definitions:
             created_at:
               type: string
             delivery_time:
-              type: integer
+              type: string
             description:
               type: string
             extra_phone_number:
@@ -1524,7 +1524,7 @@ definitions:
         example: 10000
         type: number
       delivery_time:
-        type: integer
+        type: string
       description:
         type: string
       extra_phone_number:
