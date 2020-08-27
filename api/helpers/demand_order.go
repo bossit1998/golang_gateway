@@ -21,7 +21,7 @@ func SendPush(orderID, statusID string, log logger.Logger) {
 	client := &http.Client{}
 	request, err := http.NewRequest(
 		"POST",
-		config.AliftechURL+orderID+"/change-status",
+		config.Load().AliftechURL+orderID+"/change-status",
 		bytes.NewBuffer(values))
 
 	if err != nil {

@@ -504,7 +504,7 @@ func (h *handlerV1) ChangeOrderStatus(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
-		if userInfo.ShipperID == config.AliftechShipperId && statusNote.StatusId == config.CourierPickedUpStatusId {
+		if userInfo.ShipperID == config.Load().AliftechShipperId && statusNote.StatusId == config.CourierPickedUpStatusId {
 			helpers.SendPush(c.Param("order_id"), statusNote.StatusId, h.log)
 		}
 	}()
@@ -617,7 +617,7 @@ func (h *handlerV1) AddCourier(c *gin.Context) {
 
 	go func() {
 		// send push for aliftech
-		if userInfo.ShipperID == config.AliftechShipperId {
+		if userInfo.ShipperID == config.Load().AliftechShipperId {
 			go helpers.SendPush(c.Param("order_id"), config.CourierAcceptedStatusId, h.log)
 		}
 
@@ -678,7 +678,7 @@ func (h *handlerV1) RemoveCourier(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
-		if userInfo.ShipperID == config.AliftechShipperId {
+		if userInfo.ShipperID == config.Load().AliftechShipperId {
 			helpers.SendPush(c.Param("order_id"), config.VendorReadyStatusId, h.log)
 		}
 	}()
@@ -907,7 +907,7 @@ func (h *handlerV1) TakeOrderStep(c *gin.Context) {
 
 	// send push for aliftech
 	go func() {
-		if userInfo.ShipperID == config.AliftechShipperId && model.OrderID != "" {
+		if userInfo.ShipperID == config.Load().AliftechShipperId && model.OrderID != "" {
 			helpers.SendPush(model.OrderID, config.CourierPickedUpStatusId, h.log)
 		}
 	}()
@@ -1303,7 +1303,7 @@ func (h *handlerV1) FinishOTP(c *gin.Context) {
 	client := &http.Client{}
 	request, err := http.NewRequest(
 		"POST",
-		config.AliftechURL+orderID+"/request-complete",
+		config.Load().AliftechURL+orderID+"/request-complete",
 		nil)
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
@@ -1374,7 +1374,7 @@ func (h *handlerV1) ConfirmFinishOTP(c *gin.Context) {
 	client := &http.Client{}
 	request, err := http.NewRequest(
 		"POST",
-		config.AliftechURL+orderID+"/complete",
+		config.Load().AliftechURL+orderID+"/complete",
 		bytes.NewBuffer(values))
 	if err != nil {
 		h.log.Error("Error while sending push", logger.Error(err))
