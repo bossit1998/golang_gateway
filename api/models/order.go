@@ -84,6 +84,13 @@ type CreateOnDemandOrderModel struct {
 	} `json:"steps"`
 }
 
+type StatusNote struct {
+	ID          string `json:"id"`
+	Description string `json:"description"`
+	StatusID    string `json:"status_id"`
+	CreatedAt   string `json:"created_at"`
+}
+
 type GetOrderModel struct {
 	orderDemandModel
 	ID               string       `json:"id"`
@@ -116,12 +123,7 @@ type GetOrderModel struct {
 			TotalAmount uint64 `json:"total_amount,string"`
 		} `json:"products"`
 	} `json:"steps"`
-	StatusNotes []struct {
-		ID          string `json:"id"`
-		Description string `json:"description"`
-		StatusID    string `json:"status_id"`
-		CreatedAt   string `json:"created_at"`
-	} `json:"status_notes"`
+	StatusNotes []StatusNote `json:"status_notes"`
 }
 
 type GetAllOrderModel struct {
@@ -145,6 +147,7 @@ type GetAllOrderModel struct {
 		Rating           string            `json:"rating"`
 		Review           string            `json:"review"`
 		Steps            []stepDemandModel `json:"steps"`
+		StatusNotes      []StatusNote      `json:"status_notes"`
 	} `json:"orders"`
 	Count int64 `json:"count,string"`
 }

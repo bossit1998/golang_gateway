@@ -380,8 +380,8 @@ func (h *handlerV1) GetOrder(c *gin.Context) {
 // @Param limit query integer false "limit"
 // @Param branch_ids query []string false "branch_ids"
 // @Param customer_phone query string false "customer_phone"
-// @Param start_time query string false "start_time"
-// @Param end_time query string false "end_time"
+// @Param start_date query string false "start_date"
+// @Param end_date query string false "end_date"
 // @Success 200 {object} models.GetAllOrderModel
 // @Failure 404 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -437,8 +437,8 @@ func (h *handlerV1) GetOrders(c *gin.Context) {
 		Limit:         limit,
 		CustomerPhone: c.Query("customer_phone"),
 		BranchIds:     c.QueryArray("branch_ids[]"),
-		StartTime:     c.Query("start_time"),
-		EndTime:       c.Query("end_time"),
+		StartDate:     c.Query("start_date"),
+		EndDate:       c.Query("end_date"),
 	})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all order") {

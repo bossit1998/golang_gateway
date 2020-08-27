@@ -628,6 +628,10 @@ definitions:
               type: string
             status_id:
               type: string
+            status_notes:
+              items:
+                $ref: '#/definitions/models.StatusNote'
+              type: array
             steps:
               items:
                 $ref: '#/definitions/models.stepDemandModel'
@@ -981,16 +985,7 @@ definitions:
         type: string
       status_notes:
         items:
-          properties:
-            created_at:
-              type: string
-            description:
-              type: string
-            id:
-              type: string
-            status_id:
-              type: string
-          type: object
+          $ref: '#/definitions/models.StatusNote'
         type: array
       steps:
         items:
@@ -1381,6 +1376,17 @@ definitions:
       id:
         type: string
       name:
+        type: string
+    type: object
+  models.StatusNote:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      status_id:
         type: string
     type: object
   models.SystemUserChangePassword:
@@ -4080,13 +4086,13 @@ paths:
         in: query
         name: customer_phone
         type: string
-      - description: start_time
+      - description: start_date
         in: query
-        name: start_time
+        name: start_date
         type: string
-      - description: end_time
+      - description: end_date
         in: query
-        name: end_time
+        name: end_date
         type: string
       produces:
       - application/json

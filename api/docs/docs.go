@@ -3759,14 +3759,14 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "start_time",
-                        "name": "start_time",
+                        "description": "start_date",
+                        "name": "start_date",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "end_time",
-                        "name": "end_time",
+                        "description": "end_date",
+                        "name": "end_date",
                         "in": "query"
                     }
                 ],
@@ -7023,6 +7023,12 @@ var doc = `{
                             "status_id": {
                                 "type": "string"
                             },
+                            "status_notes": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/models.StatusNote"
+                                }
+                            },
                             "steps": {
                                 "type": "array",
                                 "items": {
@@ -7553,21 +7559,7 @@ var doc = `{
                 "status_notes": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "properties": {
-                            "created_at": {
-                                "type": "string"
-                            },
-                            "description": {
-                                "type": "string"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "status_id": {
-                                "type": "string"
-                            }
-                        }
+                        "$ref": "#/definitions/models.StatusNote"
                     }
                 },
                 "steps": {
@@ -8160,6 +8152,23 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StatusNote": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status_id": {
                     "type": "string"
                 }
             }
