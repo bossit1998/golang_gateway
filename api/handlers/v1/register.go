@@ -27,6 +27,7 @@ import (
 // @Tags register
 // @Accept  json
 // @Produce  json
+// @Param Shipper header string true "shipper"
 // @Param register body models.RegisterModel true "register"
 // @Success 200
 // @Failure 400 {object} models.ResponseError
@@ -136,6 +137,7 @@ func (h *handlerV1) Register(c *gin.Context) {
 // @Tags register
 // @Accept  json
 // @Produce  json
+// @Param Shipper header string true "shipper"
 // @Param register_confirm body models.RegisterConfirmModel true "register_confirm"
 // @Success 200 {object} models.GetCustomerModel
 // @Failure 400 {object} models.ResponseError

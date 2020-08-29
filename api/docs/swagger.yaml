@@ -3300,6 +3300,11 @@ paths:
       - application/json
       description: Register - API for confirming and inserting user to DB
       parameters:
+      - description: shipper
+        in: header
+        name: Shipper
+        required: true
+        type: string
       - description: register_confirm
         in: body
         name: register_confirm
@@ -3330,6 +3335,11 @@ paths:
       - application/json
       description: Register - API for registering customers
       parameters:
+      - description: shipper
+        in: header
+        name: Shipper
+        required: true
+        type: string
       - description: register
         in: body
         name: register

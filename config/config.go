@@ -154,13 +154,13 @@ func Load() Config {
 	c.MinioAccessKeyID = cast.ToString(getOrReturnDefault("MINIO_ACCESS_KEY_ID", "d0097ebbb13854f41d6b4d150ace067b4c860169efc6fafd0e8864f4a7307814"))
 	c.MinioSecretAccesKey = cast.ToString(getOrReturnDefault("MINIO_SECRET_KEY_ID", "56ee38257eb238304a7dee5a6d59bdf9c57f1fea53e0f400d939bf2aa64090d1"))
 
-	c.AliftechAccessToken = cast.ToString(getOrReturnDefault("ALIFTECH_ACCESS_TOKEN", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL"))
-	c.AliftechURL = cast.ToString(getOrReturnDefault("ALIFTECH_URL", "https://services.test.aliftech.uz/api/gate/delever/"))
-	c.AliftechShipperId = cast.ToString(getOrReturnDefault("ALIFTECH_SHIPPER_ID", "4a94d9f5-506a-4e51-8e31-6dbb931c37f3"))
+	// c.AliftechAccessToken = cast.ToString(getOrReturnDefault("ALIFTECH_ACCESS_TOKEN", "lkjISFALKFNQWIOJSALNFLKSMAG;KS;LDD!@3KDKLSAL"))
+	// c.AliftechURL = cast.ToString(getOrReturnDefault("ALIFTECH_URL", "https://services.test.aliftech.uz/api/gate/delever/"))
+	// c.AliftechShipperId = cast.ToString(getOrReturnDefault("ALIFTECH_SHIPPER_ID", "4a94d9f5-506a-4e51-8e31-6dbb931c37f3"))
 
-	// c.AliftechAccessToken = cast.ToString(getOrReturnDefault("ALIFTECH_ACCESS_TOKEN", "HA9zAZlVxiAhIDU"))
-	// c.AliftechURL = cast.ToString(getOrReturnDefault("ALIFTECH_URL", "https://services.alifshop.uz/api/gate/delever/"))
-	// c.AliftechShipperId = cast.ToString(getOrReturnDefault("ALIFTECH_SHIPPER_ID", "eff69e99-176e-4ceb-8738-62533921873e"))
+	c.AliftechAccessToken = cast.ToString(getOrReturnDefault("ALIFTECH_ACCESS_TOKEN", "HA9zAZlVxiAhIDU"))
+	c.AliftechURL = cast.ToString(getOrReturnDefault("ALIFTECH_URL", "https://services.alifshop.uz/api/gate/delever/"))
+	c.AliftechShipperId = cast.ToString(getOrReturnDefault("ALIFTECH_SHIPPER_ID", "eff69e99-176e-4ceb-8738-62533921873e"))
 
 	return c
 }

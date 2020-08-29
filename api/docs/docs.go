@@ -2370,6 +2370,13 @@ var doc = `{
                 "summary": "Register confirm",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "shipper",
+                        "name": "Shipper",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "register_confirm",
                         "name": "register_confirm",
                         "in": "body",
@@ -2415,6 +2422,13 @@ var doc = `{
                 ],
                 "summary": "Register",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "shipper",
+                        "name": "Shipper",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "register",
                         "name": "register",
