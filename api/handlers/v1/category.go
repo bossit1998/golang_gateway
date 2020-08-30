@@ -70,6 +70,7 @@ func (h *handlerV1) CreateCategory(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
+// @Param parent_id query integer false "parent_id"
 // @Success 200 {object} models.GetAllCategoriesModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -119,6 +120,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 		&pb.GetAllRequest{
 			ShipperId: shipperId,
 			Page:      int64(page),
+			ParentId:  c.Param("parent_id"),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all categories") {

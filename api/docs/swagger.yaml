@@ -2280,6 +2280,10 @@ paths:
         in: query
         name: page
         type: integer
+      - description: parent_id
+        in: query
+        name: parent_id
+        type: integer
       produces:
       - application/json
       responses:
@@ -4625,6 +4629,10 @@ paths:
       - description: page
         in: query
         name: page
+        type: integer
+      - description: category_id
+        in: query
+        name: category_id
         type: integer
       produces:
       - application/json

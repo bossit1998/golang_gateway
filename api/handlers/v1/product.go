@@ -71,6 +71,7 @@ func (h *handlerV1) CreateProduct(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param page query integer false "page"
+// @Param category_id query integer false "category_id"
 // @Success 200 {object} models.GetAllProductsModel
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
@@ -99,7 +100,6 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 	} else if c.GetHeader("Shipper") != "" {
 		shipperId = c.GetHeader("Shipper")
 	}
-	fmt.Println(shipperId)
 	marshaller.OrigName = true
 
 	page, err := ParsePageQueryParam(c)
@@ -117,9 +117,10 @@ func (h *handlerV1) GetAllProducts(c *gin.Context) {
 
 	resp, err := h.grpcClient.ProductService().GetAll(
 		context.Background(),
-		&pb.GetAllRequest{
-			ShipperId: shipperId,
-			Page:      int64(page),
+		&pb.GetAllProductsRequest{
+			ShipperId:  shipperId,
+			Page:       int64(page),
+			CategoryId: c.Param("category_id"),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all products") {

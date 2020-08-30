@@ -946,6 +946,12 @@ var doc = `{
                         "description": "page",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "parent_id",
+                        "name": "parent_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -4596,6 +4602,12 @@ var doc = `{
                         "type": "integer",
                         "description": "page",
                         "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "category_id",
+                        "name": "category_id",
                         "in": "query"
                     }
                 ],
