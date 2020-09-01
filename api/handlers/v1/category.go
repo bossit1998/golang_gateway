@@ -120,7 +120,7 @@ func (h *handlerV1) GetAllCategory(c *gin.Context) {
 		&pb.GetAllRequest{
 			ShipperId: shipperId,
 			Page:      int64(page),
-			ParentId:  c.Param("parent_id"),
+			ParentId:  c.Query("parent_id"),
 		})
 
 	if handleGrpcErrWithMessage(c, h.log, err, "error while getting all categories") {
